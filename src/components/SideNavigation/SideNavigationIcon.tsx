@@ -1,5 +1,4 @@
 import { SideLink, Actions, Icon } from '@twilio/flex-ui';
-import { ChatBubbleIconFilled, ChatBubbleIcon } from '../utils/ChatBubbleIcon';
 
 interface SideNavigationProps {
   activeView?: string;
@@ -16,8 +15,8 @@ const SideNavigationIcon = ({ activeView, viewName }: SideNavigationProps) => {
   return (
     <SideLink
       showLabel
-      icon={<ChatBubbleIcon />}
-      iconActive={<ChatBubbleIconFilled />}
+      icon={<Icon icon="Message" />}
+      iconActive={<Icon icon="MessageBold" />}
       onClick={navigateHandler}
       isActive={activeView === viewName}
       key="InternalAgentChat"
