@@ -4,7 +4,6 @@ const toggleSidePanelHandler = () => {
   // Actions.invokeAction('ToggleSidePanel');
   console.log('test');
 };
-
 const TopNavigation = () => (
   <IconButton icon="Message" onClick={toggleSidePanelHandler} />
 );
