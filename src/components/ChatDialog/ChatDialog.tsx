@@ -12,13 +12,13 @@ import {
   TextArea,
   Button,
 } from '@twilio-paste/core/';
-import { IconButton } from '@twilio/flex-ui';
+import { Icon } from '@twilio/flex-ui';
 
 const ChatDialog = () => {
   return (
     <MinimizableDialogContainer>
       <MinimizableDialogButton variant="reset" size="reset">
-        <IconButton icon="Message" />
+        <Icon icon="Message" />
       </MinimizableDialogButton>
       <MinimizableDialog aria-label="Live chat">
         <MinimizableDialogHeader>Agent-to-Agent Chat</MinimizableDialogHeader>
