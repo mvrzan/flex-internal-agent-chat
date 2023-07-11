@@ -1,12 +1,14 @@
 import { Stack, Avatar, Text, Flex, Tooltip, Button } from '@twilio-paste/core';
 import { StatusBadge } from '@twilio-paste/core/status';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import liveQuerySearch from '../utils/liveQuerySearch';
 
 interface AgentCardProps {
   fullName: string;
   firstName: string;
   lastName: string;
   imageUrl: string;
+  activityName: string;
 }
 
 // TODO: Randomly change the color of avatars: https://paste.twilio.design/components/avatar#changing-the-color-of-an-avatar
@@ -15,9 +17,23 @@ const AgentCard = ({
   firstName,
   lastName,
   imageUrl,
+  activityName,
 }: AgentCardProps) => {
   const [isPressed, setIsPressed] = useState(false);
   const [onHover, setOnHover] = useState(false);
+  const [activity, setActivity] = useState('');
+
+  useEffect(() => {
+    const getActivity = async () => {
+      const agentActivity = await liveQuerySearch(
+        'tr-worker',
+        `data.attributes.full_name == "${fullName}"`
+      );
+      setActivity(agentActivity[0].activityName);
+    };
+    getActivity();
+    console.log('activityName', activity);
+  }, [activity]);
 
   return (
     <Button
@@ -41,8 +57,16 @@ const AgentCard = ({
             {fullName}
           </Text>
         </Stack>
-        <Tooltip text="Offline">
-          <StatusBadge as="span" variant="ConnectivityOffline" size="small">
+        <Tooltip text={activity}>
+          <StatusBadge
+            as="span"
+            variant={
+              activity === 'Available'
+                ? 'ConnectivityAvailable'
+                : 'ConnectivityOffline'
+            }
+            size="small"
+          >
             {' '}
           </StatusBadge>
         </Tooltip>
