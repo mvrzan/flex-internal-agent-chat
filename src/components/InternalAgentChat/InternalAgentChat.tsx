@@ -17,6 +17,7 @@ const InternalAgentChat = () => {
   // TODO: Fix state types
   const [agents, setAgents] = useState<any>([]);
   const [selectedAgent, setSelectedAgent] = useState<any>({});
+  const [isAgentSelected, setIsAgentSelected] = useState<boolean>(false);
 
   useEffect(() => {
     const liveQuerySearch = async (index: string, query: string) => {
@@ -105,6 +106,7 @@ const InternalAgentChat = () => {
               imageUrl={agent.imageUrl}
               activityName={agent.activityName}
               email={agent.email}
+              setIsAgentSelected={setIsAgentSelected}
               setSelectedAgent={setSelectedAgent}
             />
           ))}
@@ -116,8 +118,12 @@ const InternalAgentChat = () => {
           margin="space40"
           marginTop="space0"
         >
-          <SelectedAgentView selectedAgent={selectedAgent} />
-          <ChatInterface />
+          {isAgentSelected && (
+            <>
+              <SelectedAgentView selectedAgent={selectedAgent} />
+              <ChatInterface />
+            </>
+          )}
         </Box>
       </Flex>
     </Box>

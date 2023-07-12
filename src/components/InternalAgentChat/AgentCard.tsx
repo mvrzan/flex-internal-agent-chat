@@ -9,6 +9,7 @@ interface AgentCardProps {
   imageUrl: string;
   activityName: string;
   email: string;
+  setIsAgentSelected: React.Dispatch<React.SetStateAction<boolean>>;
   setSelectedAgent: React.Dispatch<React.SetStateAction<{}>>;
 }
 
@@ -20,6 +21,7 @@ const AgentCard = ({
   imageUrl,
   activityName,
   email,
+  setIsAgentSelected,
   setSelectedAgent,
 }: AgentCardProps) => {
   const [isPressed, setIsPressed] = useState(false);
@@ -40,6 +42,7 @@ const AgentCard = ({
           activityName,
           email,
         });
+        setIsAgentSelected(true);
       }}
       onMouseEnter={() => {
         setOnHover(true);
