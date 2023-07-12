@@ -10,10 +10,13 @@ import {
 import AgentCard from './AgentCard';
 import { Manager } from '@twilio/flex-ui';
 import { SearchIcon } from '@twilio-paste/icons/esm/SearchIcon';
+import SelectedAgentView from './SelectedAgentView';
+import ChatInterface from './ChatInterface';
 
 const InternalAgentChat = () => {
   // TODO: Fix state types
   const [agents, setAgents] = useState<any>([]);
+  const [selectedAgent, setSelectedAgent] = useState<any>({});
 
   useEffect(() => {
     const liveQuerySearch = async (index: string, query: string) => {
@@ -79,13 +82,14 @@ const InternalAgentChat = () => {
               firstName={agent.firstName}
               lastName={agent.lastName}
               imageUrl={agent.imageUrl}
+              activityName={agent.activityName}
             />
           ))}
         </Stack>
       </Box> */}
-      <Flex vAlignContent="center" hAlignContent="left">
+      <Flex vAlignContent="top" hAlignContent="left">
         <Stack orientation="vertical" spacing="space10">
-          <Box marginBottom="space40">
+          <Box marginBottom="space40" width="250px">
             <Input
               type="text"
               placeholder="Search for agents..."
@@ -100,9 +104,21 @@ const InternalAgentChat = () => {
               lastName={agent.lastName}
               imageUrl={agent.imageUrl}
               activityName={agent.activityName}
+              email={agent.email}
+              setSelectedAgent={setSelectedAgent}
             />
           ))}
         </Stack>
+        <Box
+          overflow="auto"
+          padding="space80"
+          width="100%"
+          margin="space40"
+          marginTop="space0"
+        >
+          <SelectedAgentView selectedAgent={selectedAgent} />
+          <ChatInterface />
+        </Box>
       </Flex>
     </Box>
   );

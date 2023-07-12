@@ -8,6 +8,8 @@ interface AgentCardProps {
   lastName: string;
   imageUrl: string;
   activityName: string;
+  email: string;
+  setSelectedAgent: React.Dispatch<React.SetStateAction<{}>>;
 }
 
 // TODO: Randomly change the color of avatars: https://paste.twilio.design/components/avatar#changing-the-color-of-an-avatar
@@ -17,6 +19,8 @@ const AgentCard = ({
   lastName,
   imageUrl,
   activityName,
+  email,
+  setSelectedAgent,
 }: AgentCardProps) => {
   const [isPressed, setIsPressed] = useState(false);
   const [onHover, setOnHover] = useState(false);
@@ -28,6 +32,14 @@ const AgentCard = ({
       pressed={isPressed ? isPressed : onHover}
       onClick={() => {
         setIsPressed(!isPressed);
+        setSelectedAgent({
+          fullName,
+          firstName,
+          lastName,
+          imageUrl,
+          activityName,
+          email,
+        });
       }}
       onMouseEnter={() => {
         setOnHover(true);
