@@ -106,25 +106,29 @@ const InternalAgentChat = () => {
               imageUrl={agent.imageUrl}
               activityName={agent.activityName}
               email={agent.email}
+              isAgentSelected={isAgentSelected}
               setIsAgentSelected={setIsAgentSelected}
               setSelectedAgent={setSelectedAgent}
+              selectedAgent={selectedAgent}
             />
           ))}
         </Stack>
-        <Box
-          overflow="auto"
-          padding="space80"
-          width="100%"
-          margin="space40"
-          marginTop="space0"
-        >
-          {isAgentSelected && (
-            <>
-              <SelectedAgentView selectedAgent={selectedAgent} />
-              <ChatInterface />
-            </>
-          )}
-        </Box>
+
+        {isAgentSelected && (
+          <Box
+            overflow="auto"
+            padding="space80"
+            width="100%"
+            margin="space40"
+            marginTop="space0"
+            borderRadius="borderRadius30"
+            backgroundColor="colorBackgroundNewWeakest"
+            borderColor="colorBorderDecorative20Weaker"
+          >
+            <SelectedAgentView selectedAgent={selectedAgent} />
+            <ChatInterface />
+          </Box>
+        )}
       </Flex>
     </Box>
   );

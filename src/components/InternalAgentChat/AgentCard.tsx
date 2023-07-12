@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { StatusBadge } from '@twilio-paste/core/status';
 import { Stack, Avatar, Text, Flex, Tooltip, Button } from '@twilio-paste/core';
 
@@ -9,6 +9,8 @@ interface AgentCardProps {
   imageUrl: string;
   activityName: string;
   email: string;
+  isAgentSelected: boolean;
+  selectedAgent: any;
   setIsAgentSelected: React.Dispatch<React.SetStateAction<boolean>>;
   setSelectedAgent: React.Dispatch<React.SetStateAction<{}>>;
 }
@@ -21,19 +23,26 @@ const AgentCard = ({
   imageUrl,
   activityName,
   email,
+  isAgentSelected,
+  selectedAgent,
   setIsAgentSelected,
   setSelectedAgent,
 }: AgentCardProps) => {
   const [isPressed, setIsPressed] = useState(false);
   const [onHover, setOnHover] = useState(false);
 
+  useEffect(() => {
+    if (selectedAgent.email !== email) {
+      setIsPressed(false);
+    }
+  }, [selectedAgent]);
+
   return (
     <Button
       variant="secondary"
       fullWidth
-      pressed={isPressed ? isPressed : onHover}
+      pressed={onHover || isPressed ? true : false}
       onClick={() => {
-        setIsPressed(!isPressed);
         setSelectedAgent({
           fullName,
           firstName,
@@ -43,6 +52,7 @@ const AgentCard = ({
           email,
         });
         setIsAgentSelected(true);
+        setIsPressed(!isPressed);
       }}
       onMouseEnter={() => {
         setOnHover(true);
