@@ -1,7 +1,6 @@
-import { Stack, Avatar, Text, Flex, Tooltip, Button } from '@twilio-paste/core';
+import { useState } from 'react';
 import { StatusBadge } from '@twilio-paste/core/status';
-import { useState, useEffect } from 'react';
-import liveQuerySearch from '../utils/liveQuerySearch';
+import { Stack, Avatar, Text, Flex, Tooltip, Button } from '@twilio-paste/core';
 
 interface AgentCardProps {
   fullName: string;
@@ -21,19 +20,6 @@ const AgentCard = ({
 }: AgentCardProps) => {
   const [isPressed, setIsPressed] = useState(false);
   const [onHover, setOnHover] = useState(false);
-  const [activity, setActivity] = useState('');
-
-  useEffect(() => {
-    const getActivity = async () => {
-      const agentActivity = await liveQuerySearch(
-        'tr-worker',
-        `data.attributes.full_name == "${fullName}"`
-      );
-      setActivity(agentActivity[0].activityName);
-    };
-    getActivity();
-    console.log('activityName', activity);
-  }, [activity]);
 
   return (
     <Button
@@ -57,15 +43,16 @@ const AgentCard = ({
             {fullName}
           </Text>
         </Stack>
-        <Tooltip text={activity}>
+        <Tooltip text={activityName}>
           <StatusBadge
             as="span"
             variant={
-              activity === 'Available'
-                ? 'ConnectivityAvailable'
-                : 'ConnectivityOffline'
+              activityName === 'Available'
+                ? 'ProcessSuccess'
+                : activityName === 'Offline'
+                ? 'ProcessDisabled'
+                : 'ProcessWarning'
             }
-            size="small"
           >
             {' '}
           </StatusBadge>

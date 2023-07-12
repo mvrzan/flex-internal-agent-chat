@@ -7,7 +7,7 @@ const liveQuerySearch = async (index: string, query: string) => {
   );
 
   const items = liveQueryClient.getItems();
-  console.log('items', items);
+
   const workerdata = Object.values(items).map((worker: any) => {
     return {
       firstName: worker.attributes.full_name.split(' ')[0],
@@ -21,8 +21,6 @@ const liveQuerySearch = async (index: string, query: string) => {
     };
   });
 
-  console.log('workerdata', workerdata);
-
   let testData = { ...workerdata };
   liveQueryClient.on('itemRemoved', function (args) {
     console.log('Worker ' + args.key + ' is no longer "Available"');
@@ -32,11 +30,6 @@ const liveQuerySearch = async (index: string, query: string) => {
     console.log('Worker ' + args.key + ' is now ' + args.value.activity_name);
     testData[0].activityName = 'test';
   });
-
-  // const updatedWorkerdata = {
-  //   ...workerdata,
-  //   activityName
-  // }
 
   return workerdata;
 };

@@ -1,22 +1,60 @@
 import { useEffect, useState } from 'react';
-import { Heading, Stack, Flex, Separator, Box } from '@twilio-paste/core';
-import getWorkers from '../utils/instantQuerySearch';
+import {
+  Heading,
+  Stack,
+  Flex,
+  Separator,
+  Box,
+  Input,
+} from '@twilio-paste/core';
 import AgentCard from './AgentCard';
-import liveQuerySearch from '../utils/liveQuerySearch';
+import { Manager } from '@twilio/flex-ui';
+import { SearchIcon } from '@twilio-paste/icons/esm/SearchIcon';
 
 const InternalAgentChat = () => {
+  // TODO: Fix state types
   const [agents, setAgents] = useState<any>([]);
-  const [agents2, setAgents2] = useState<any>([]);
+
   useEffect(() => {
-    const getAgents = async () => {
-      const data = await getWorkers();
-      setAgents(data);
+    const liveQuerySearch = async (index: string, query: string) => {
+      const liveQueryClient =
+        await Manager.getInstance().insightsClient.liveQuery(index, query);
 
-      const newAgents = await liveQuerySearch('tr-worker', '');
-      setAgents2(newAgents);
+      const items = liveQueryClient.getItems();
+      const workerdata = Object.values(items).map((worker: any) => {
+        return {
+          firstName: worker.attributes.full_name.split(' ')[0],
+          lastName: worker.attributes.full_name.split(' ')[1],
+          fullName: worker.attributes.full_name,
+          imageUrl: worker.attributes.image_url,
+          value: worker.attributes.contact_uri,
+          workerSid: worker.worker_sid,
+          email: worker.attributes.email,
+          activityName: worker.activity_name,
+        };
+      });
+
+      liveQueryClient.on('itemRemoved', args => {
+        console.log('Worker ' + args.key + ' is no longer "Available"');
+      });
+
+      liveQueryClient.on('itemUpdated', args => {
+        const updatedWorkerdata = workerdata.map(worker =>
+          worker.fullName === args.value.attributes.full_name
+            ? { ...worker, activityName: args.value.activity_name }
+            : worker
+        );
+        setAgents(updatedWorkerdata);
+      });
+
+      setAgents(workerdata);
+      return liveQueryClient;
     };
+    const liveQueryClient = liveQuerySearch('tr-worker', '');
 
-    getAgents();
+    return () => {
+      liveQueryClient.then(liveQueryClient => liveQueryClient.close());
+    };
   }, []);
 
   // TODO: Fix agent:any type
@@ -47,7 +85,14 @@ const InternalAgentChat = () => {
       </Box> */}
       <Flex vAlignContent="center" hAlignContent="left">
         <Stack orientation="vertical" spacing="space10">
-          {agents2.map((agent: any) => (
+          <Box marginBottom="space40">
+            <Input
+              type="text"
+              placeholder="Search for agents..."
+              insertBefore={<SearchIcon decorative />}
+            />
+          </Box>
+          {agents.map((agent: any) => (
             <AgentCard
               key={agent.workerSid}
               fullName={agent.fullName}
