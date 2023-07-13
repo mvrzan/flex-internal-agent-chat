@@ -12,7 +12,7 @@ import {
 
 const ChatInterface = () => {
   return (
-    <Box>
+    <>
       <ChatLog>
         <ChatMessage variant="inbound">
           <ChatBubble>Ahoy!</ChatBubble>
@@ -42,7 +42,7 @@ const ChatInterface = () => {
         ariaLabel="A basic chat composer"
         placeholder="Chat text"
       />
-    </Box>
+    </>
   );
 };
 

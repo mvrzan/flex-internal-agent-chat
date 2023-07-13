@@ -89,7 +89,12 @@ const InternalAgentChat = () => {
           ))}
         </Stack>
       </Box> */}
-      <Flex vAlignContent="top" hAlignContent="left">
+      <Flex
+        vAlignContent="top"
+        hAlignContent="left"
+        height="100%"
+        maxHeight="90%"
+      >
         <Stack orientation="vertical" spacing="space10">
           <Box marginBottom="space40" width="250px">
             <Input
@@ -114,26 +119,25 @@ const InternalAgentChat = () => {
             />
           ))}
         </Stack>
-        <Box
-          overflow="auto"
-          padding="space80"
-          width="100%"
-          margin="space40"
-          marginTop="space0"
-          borderRadius="borderRadius30"
-          // backgroundColor="colorBackgroundNewWeakest"
-          backgroundColor="colorBackgroundPrimaryWeakest"
-          borderColor="colorBorderDecorative20Weaker"
-        >
-          {!isAgentSelected ? (
-            <LandingScreen />
-          ) : (
-            <>
-              <SelectedAgentView selectedAgent={selectedAgent} />
-              <ChatInterface />
-            </>
-          )}
-        </Box>
+
+        {!isAgentSelected ? (
+          <LandingScreen />
+        ) : (
+          <Box
+            overflow="auto"
+            padding="space80"
+            width="100%"
+            height="100%"
+            margin="space40"
+            marginTop="space0"
+            borderRadius="borderRadius30"
+            backgroundColor="colorBackgroundPrimaryWeakest"
+            borderColor="colorBorderDecorative20Weaker"
+          >
+            <SelectedAgentView selectedAgent={selectedAgent} />
+            <ChatInterface />
+          </Box>
+        )}
       </Flex>
     </Box>
   );
