@@ -24,7 +24,6 @@ const LandingScreen = () => {
       marginTop="space0"
       borderRadius="borderRadius30"
       backgroundColor="colorBackgroundPrimaryWeakest"
-      borderColor="colorBorderDecorative20Weaker"
     >
       <Stack orientation="vertical" spacing="space40">
         <ProgressSteps orientation="horizontal">

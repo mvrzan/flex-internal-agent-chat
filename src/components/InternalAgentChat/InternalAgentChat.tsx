@@ -132,7 +132,8 @@ const InternalAgentChat = () => {
             marginTop="space0"
             borderRadius="borderRadius30"
             backgroundColor="colorBackgroundPrimaryWeakest"
-            borderColor="colorBorderDecorative20Weaker"
+            border-collapse="collapse"
+            display="table"
           >
             <SelectedAgentView selectedAgent={selectedAgent} />
             <ChatInterface />

@@ -1,5 +1,5 @@
 import { ChatComposer } from '@twilio-paste/core/chat-composer';
-import { Box } from '@twilio-paste/core';
+import { Box, Stack, Button } from '@twilio-paste/core';
 import {
   ChatLog,
   ChatMessage,
@@ -9,6 +9,7 @@ import {
   ChatBookend,
   ChatBookendItem,
 } from '@twilio-paste/core/chat-log';
+import { SendIcon } from '@twilio-paste/icons/esm/SendIcon';
 
 const ChatInterface = () => {
   return (
@@ -32,16 +33,27 @@ const ChatInterface = () => {
           </ChatMessageMeta>
         </ChatMessage>
       </ChatLog>
-      <ChatComposer
-        config={{
-          namespace: 'customer-chat',
-          onError: e => {
-            throw e;
-          },
-        }}
-        ariaLabel="A basic chat composer"
-        placeholder="Chat text"
-      />
+      <Box
+        display="table-row"
+        vertical-align="bottom"
+        height="1px"
+        borderRadius="borderRadius20"
+        borderColor="colorBorderPrimaryWeak"
+        borderStyle="solid"
+        borderWidth="borderWidth20"
+      >
+        <ChatComposer
+          ariaLabel="Message"
+          placeholder="Chat text"
+          maxHeight="size10"
+          config={{
+            namespace: 'customer-chat',
+            onError(e) {
+              throw e;
+            },
+          }}
+        />
+      </Box>
     </>
   );
 };
