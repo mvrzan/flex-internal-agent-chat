@@ -12,6 +12,7 @@ import { Manager } from '@twilio/flex-ui';
 import { SearchIcon } from '@twilio-paste/icons/esm/SearchIcon';
 import SelectedAgentView from './SelectedAgentView';
 import ChatInterface from './ChatInterface';
+import LandingScreen from './LandingScreen';
 
 const InternalAgentChat = () => {
   // TODO: Fix state types
@@ -113,22 +114,26 @@ const InternalAgentChat = () => {
             />
           ))}
         </Stack>
-
-        {isAgentSelected && (
-          <Box
-            overflow="auto"
-            padding="space80"
-            width="100%"
-            margin="space40"
-            marginTop="space0"
-            borderRadius="borderRadius30"
-            backgroundColor="colorBackgroundNewWeakest"
-            borderColor="colorBorderDecorative20Weaker"
-          >
-            <SelectedAgentView selectedAgent={selectedAgent} />
-            <ChatInterface />
-          </Box>
-        )}
+        <Box
+          overflow="auto"
+          padding="space80"
+          width="100%"
+          margin="space40"
+          marginTop="space0"
+          borderRadius="borderRadius30"
+          // backgroundColor="colorBackgroundNewWeakest"
+          backgroundColor="colorBackgroundPrimaryWeakest"
+          borderColor="colorBorderDecorative20Weaker"
+        >
+          {!isAgentSelected ? (
+            <LandingScreen />
+          ) : (
+            <>
+              <SelectedAgentView selectedAgent={selectedAgent} />
+              <ChatInterface />
+            </>
+          )}
+        </Box>
       </Flex>
     </Box>
   );
