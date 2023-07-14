@@ -124,16 +124,14 @@ const InternalAgentChat = () => {
           <LandingScreen />
         ) : (
           <Box
-            overflow="auto"
             padding="space80"
             width="100%"
             height="100%"
             margin="space40"
+            marginBottom="space0"
             marginTop="space0"
             borderRadius="borderRadius30"
             backgroundColor="colorBackgroundPrimaryWeakest"
-            border-collapse="collapse"
-            display="table"
           >
             <SelectedAgentView selectedAgent={selectedAgent} />
             <ChatInterface />
