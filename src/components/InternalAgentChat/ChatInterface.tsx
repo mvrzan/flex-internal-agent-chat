@@ -48,6 +48,7 @@ const ChatInterface = () => {
           width="100%"
           marginTop="space190"
           marginBottom="space0"
+          paddingBottom="space0"
         >
           <ChatComposer
             ariaLabel="Message"

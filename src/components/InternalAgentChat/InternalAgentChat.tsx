@@ -70,6 +70,7 @@ const InternalAgentChat = () => {
       padding="space60"
       borderStyle="solid"
       backgroundColor="colorBackgroundBody"
+      paddingBottom="space0"
     >
       <Heading as="h1" variant="heading10" marginBottom="space0">
         Internal Agent Chat
@@ -94,6 +95,8 @@ const InternalAgentChat = () => {
         hAlignContent="left"
         height="100%"
         maxHeight="90%"
+        marginBottom="space0"
+        paddingBottom="space0"
       >
         <Stack orientation="vertical" spacing="space10">
           <Box marginBottom="space40" width="250px">
@@ -125,6 +128,7 @@ const InternalAgentChat = () => {
         ) : (
           <Box
             padding="space80"
+            paddingBottom="space0"
             width="100%"
             height="100%"
             margin="space40"
@@ -134,7 +138,9 @@ const InternalAgentChat = () => {
             backgroundColor="colorBackgroundPrimaryWeakest"
           >
             <SelectedAgentView selectedAgent={selectedAgent} />
-            <ChatInterface />
+            <Flex vAlignContent="bottom" height="95%" paddingBottom="space40">
+              <ChatInterface />
+            </Flex>
           </Box>
         )}
       </Flex>
