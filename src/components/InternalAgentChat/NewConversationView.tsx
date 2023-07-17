@@ -12,7 +12,8 @@ const NewConversationView = ({ selectedAgent }: any) => {
           <Text as="span" fontWeight="fontWeightSemibold">
             {selectedAgent.fullName}
           </Text>{' '}
-          and you. Check out their profile to learn more about them.
+          and you. Check out their profile to learn more about them. Type them a
+          message to get the conversation going!
         </Paragraph>
       </Text>
     </Card>
