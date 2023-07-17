@@ -140,7 +140,7 @@ const InternalAgentChat = () => {
             <SelectedAgentView selectedAgent={selectedAgent} />
             <Separator orientation="horizontal" verticalSpacing="space50" />
             <Flex vAlignContent="bottom" height="90%" paddingBottom="space40">
-              <ChatInterface />
+              <ChatInterface selectedAgent={selectedAgent} />
             </Flex>
           </Box>
         )}
