@@ -16,9 +16,9 @@ const ChatInterface = ({ selectedAgent }: any) => {
   const [conversation, setConversation] = useState(true);
 
   return (
-    <Flex vertical grow width="100%" height="90%">
+    <Flex vertical grow width="100%" height="100%">
       <Flex grow width="100%">
-        <Box width="100%" height="100%" marginBottom="space190">
+        <Box width="100%" height="100%">
           {conversation ? (
             <NewConversationView selectedAgent={selectedAgent} />
           ) : (
