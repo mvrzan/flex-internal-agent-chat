@@ -138,7 +138,8 @@ const InternalAgentChat = () => {
             backgroundColor="colorBackgroundPrimaryWeakest"
           >
             <SelectedAgentView selectedAgent={selectedAgent} />
-            <Flex vAlignContent="bottom" height="95%" paddingBottom="space40">
+            <Separator orientation="horizontal" verticalSpacing="space50" />
+            <Flex vAlignContent="bottom" height="90%" paddingBottom="space40">
               <ChatInterface />
             </Flex>
           </Box>
