@@ -1,5 +1,5 @@
 import { ChatComposer } from '@twilio-paste/core/chat-composer';
-import { Box, Stack, Button, Flex } from '@twilio-paste/core';
+import { Box, Stack, Button, Flex, Separator } from '@twilio-paste/core';
 import {
   ChatLog,
   ChatMessage,
@@ -9,7 +9,6 @@ import {
   ChatBookend,
   ChatBookendItem,
 } from '@twilio-paste/core/chat-log';
-import { SendIcon } from '@twilio-paste/icons/esm/SendIcon';
 
 const ChatInterface = () => {
   return (
