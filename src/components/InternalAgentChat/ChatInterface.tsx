@@ -1,5 +1,5 @@
 import { ChatComposer } from '@twilio-paste/core/chat-composer';
-import { Box, Stack, Button, Flex, Separator } from '@twilio-paste/core';
+import { Box, Stack, Button, Flex, Separator, Input } from '@twilio-paste/core';
 import {
   ChatLog,
   ChatMessage,
@@ -11,9 +11,36 @@ import {
 } from '@twilio-paste/core/chat-log';
 import NewConversationView from './NewConversationView';
 import { useState } from 'react';
+import { conversationClient } from '../utils/conversationsClient';
 
 const ChatInterface = ({ selectedAgent }: any) => {
   const [conversation, setConversation] = useState(true);
+
+  const conversationHandler = async (event: any) => {
+    console.log(event.target.value);
+    console.log('selectedAgent', selectedAgent);
+
+    const uniqueName = `${selectedAgent.contactUri}+${
+      conversationClient.user.identity
+    }+${new Date().toJSON().slice(0, 10)}`;
+
+    const conversationAttributes = { testAttribute: 'testAttribute' };
+    const friendlyName = 'internal-chat';
+
+    // TODO: Before creating a conversation, first check if an existing conversation already exists by looking at the unique name
+
+    const test = await conversationClient.getConversationByUniqueName(
+      uniqueName
+    );
+    console.log(test);
+
+    // const createdConversation = await conversationClient.createConversation({
+    //   attributes: conversationAttributes,
+    //   friendlyName,
+    //   uniqueName,
+    // });
+    // console.log(createdConversation);
+  };
 
   return (
     <Flex vertical grow width="100%" height="100%">
@@ -57,7 +84,8 @@ const ChatInterface = ({ selectedAgent }: any) => {
           marginBottom="space0"
           paddingBottom="space0"
         >
-          <ChatComposer
+          <Input type="text" onChange={conversationHandler} />
+          {/* <ChatComposer
             ariaLabel="Message"
             placeholder="Chat text"
             maxHeight="size10"
@@ -67,7 +95,7 @@ const ChatInterface = ({ selectedAgent }: any) => {
                 throw e;
               },
             }}
-          />
+          /> */}
         </Box>
       </Flex>
     </Flex>
