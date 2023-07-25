@@ -30,6 +30,7 @@ const InternalAgentChat = () => {
         return {
           firstName: worker.attributes.full_name.split(' ')[0],
           lastName: worker.attributes.full_name.split(' ')[1],
+          contactUri: worker.attributes.contact_uri.split(':')[1],
           fullName: worker.attributes.full_name,
           imageUrl: worker.attributes.image_url,
           value: worker.attributes.contact_uri,
@@ -115,6 +116,7 @@ const InternalAgentChat = () => {
               imageUrl={agent.imageUrl}
               activityName={agent.activityName}
               email={agent.email}
+              contactUri={agent.contactUri}
               isAgentSelected={isAgentSelected}
               setIsAgentSelected={setIsAgentSelected}
               setSelectedAgent={setSelectedAgent}

@@ -9,6 +9,7 @@ interface AgentCardProps {
   imageUrl: string;
   activityName: string;
   email: string;
+  contactUri: string;
   isAgentSelected: boolean;
   selectedAgent: any;
   setIsAgentSelected: React.Dispatch<React.SetStateAction<boolean>>;
@@ -23,6 +24,7 @@ const AgentCard = ({
   imageUrl,
   activityName,
   email,
+  contactUri,
   isAgentSelected,
   selectedAgent,
   setIsAgentSelected,
@@ -44,12 +46,14 @@ const AgentCard = ({
       pressed={onHover || isPressed ? true : false}
       onClick={() => {
         setSelectedAgent({
+          ...selectedAgent,
           fullName,
           firstName,
           lastName,
           imageUrl,
           activityName,
           email,
+          contactUri,
         });
         setIsAgentSelected(true);
         setIsPressed(!isPressed);
