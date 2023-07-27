@@ -16,6 +16,7 @@ import {
   getConversationByUniqueName,
 } from '../utils/conversationsClient';
 import { Conversation } from '@twilio/conversations';
+import { SendIcon } from '@twilio-paste/icons/esm/SendIcon';
 
 const ChatInterface = ({ selectedAgent }: any) => {
   const [conversation, setConversation] = useState(true);
@@ -29,20 +30,27 @@ const ChatInterface = ({ selectedAgent }: any) => {
     const conversationAttributes = { testAttribute: 'testAttribute' };
     const friendlyName = 'internal-chat';
 
-    // TODO: Before creating a conversation, first check if an existing conversation already exists by looking at the unique name
     try {
+      // fetch Conversation by the unique name
       const fetchedConversation = await getConversationByUniqueName(uniqueName);
 
+      // if the Conversation exists, set all messages to read and remove all listeners
       if (fetchedConversation !== null) {
         fetchedConversation.setAllMessagesRead();
         fetchedConversation.removeAllListeners();
-        fetchedConversation.on('messageUpdated', message => {
-          const newMessage = message.message;
+
+        // when the messages gets updated, update the messageList state
+        fetchedConversation.on('messageUpdated', updatedMessage => {
           setMessageList((prevState: any[]) =>
-            prevState.map(o => (o.sid == newMessage.sid ? newMessage : o))
+            prevState.map(prevMessage =>
+              prevMessage.sid === updatedMessage.message.sid
+                ? updatedMessage.message
+                : prevMessage
+            )
           );
         });
 
+        // when the messages gets added, update the messageList state
         fetchedConversation.on('messageAdded', async message => {
           // const mediaUrl =
           // message.type === "media" ? await message.attachedMedia : "";
@@ -85,7 +93,8 @@ const ChatInterface = ({ selectedAgent }: any) => {
 
         console.log(messages);
         setMessageList(messages);
-        chat.sendMessage(event.target.value);
+        console.log(event);
+        // chat.sendMessage(event.target.value);
       } else {
         console.log('The conversation is null');
       }
@@ -107,6 +116,10 @@ const ChatInterface = ({ selectedAgent }: any) => {
         console.error(error);
       }
     }
+  };
+
+  const sendMessage = (event: any) => {
+    console.log(event);
   };
 
   return (
@@ -154,7 +167,15 @@ const ChatInterface = ({ selectedAgent }: any) => {
           marginBottom="space0"
           paddingBottom="space0"
         >
-          <Input type="text" onChange={conversationHandler} />
+          <Input
+            type="text"
+            onChange={conversationHandler}
+            insertAfter={
+              <Button variant="primary_icon" onClick={sendMessage}>
+                <SendIcon decorative={false} size="sizeIcon20" title="send" />
+              </Button>
+            }
+          />
           {/* <ChatComposer
             ariaLabel="Message"
             placeholder="Chat text"
@@ -165,6 +186,7 @@ const ChatInterface = ({ selectedAgent }: any) => {
                 throw e;
               },
             }}
+            onChange={conversationHandler}
           /> */}
         </Box>
       </Flex>
