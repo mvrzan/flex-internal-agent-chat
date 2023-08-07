@@ -99,11 +99,11 @@ const ChatInterface = ({ selectedAgent }: any) => {
             })
           );
 
-          console.log(messages);
           setMessageList(messages);
-          if (messages.length < 0) {
-            setIsConversationEmpty(false);
-          }
+
+          messages.length > 0
+            ? setIsConversationEmpty(false)
+            : setIsConversationEmpty(true);
 
           return fetchedConversation;
         }
