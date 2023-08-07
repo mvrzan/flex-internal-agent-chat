@@ -10,18 +10,24 @@ import {
   ChatBookendItem,
 } from '@twilio-paste/core/chat-log';
 import NewConversationView from './NewConversationView';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import {
   conversationClient,
   getConversationByUniqueName,
 } from '../utils/conversationsClient';
-import { Conversation } from '@twilio/conversations';
 import { SendIcon } from '@twilio-paste/icons/esm/SendIcon';
 
 const ChatInterface = ({ selectedAgent }: any) => {
   const [conversation, setConversation] = useState(true);
   const [messageList, setMessageList] = useState<any>([{}]);
   const [chat, setChat] = useState<any>();
+  const [newMessage, setNewMessage] = useState('');
+
+  useEffect(() => {
+    return () => {
+      chat.leave();
+    };
+  }, [chat]);
 
   const conversationHandler = async (event: any) => {
     const uniqueName = `${selectedAgent.contactUri}+${
@@ -29,13 +35,16 @@ const ChatInterface = ({ selectedAgent }: any) => {
     }+${new Date().toJSON().slice(0, 10)}`;
     const conversationAttributes = { testAttribute: 'testAttribute' };
     const friendlyName = 'internal-chat';
+    setNewMessage(event.target.value);
 
     try {
       // fetch Conversation by the unique name
       const fetchedConversation = await getConversationByUniqueName(uniqueName);
-
+      console.log('fetchedConversation', fetchedConversation);
       // if the Conversation exists, set all messages to read and remove all listeners
       if (fetchedConversation !== null) {
+        console.log('Conversation found!');
+        // fetchedConversation.join();
         fetchedConversation.setAllMessagesRead();
         fetchedConversation.removeAllListeners();
 
@@ -52,6 +61,7 @@ const ChatInterface = ({ selectedAgent }: any) => {
 
         // when the messages gets added, update the messageList state
         fetchedConversation.on('messageAdded', async message => {
+          console.log(message);
           // const mediaUrl =
           // message.type === "media" ? await message.attachedMedia : "";
           // const mediaType = message.type === "media" ? message.attachedMedia : "";
@@ -69,6 +79,8 @@ const ChatInterface = ({ selectedAgent }: any) => {
           setMessageList((prevState: any[]) => [...prevState, updatedMessage]);
           console.log(updatedMessage);
         });
+        const res = await fetchedConversation.sendMessage('test');
+        console.log(res);
         setChat(fetchedConversation);
 
         //3. Load messages
@@ -93,7 +105,7 @@ const ChatInterface = ({ selectedAgent }: any) => {
 
         console.log(messages);
         setMessageList(messages);
-        console.log(event);
+        // console.log(event);
         // chat.sendMessage(event.target.value);
       } else {
         console.log('The conversation is null');
@@ -118,8 +130,13 @@ const ChatInterface = ({ selectedAgent }: any) => {
     }
   };
 
-  const sendMessage = (event: any) => {
-    console.log(event);
+  const sendMessage = async () => {
+    try {
+      const response = await chat.sendMessage(newMessage);
+      console.log('response', response);
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   return (
@@ -130,7 +147,6 @@ const ChatInterface = ({ selectedAgent }: any) => {
             <NewConversationView selectedAgent={selectedAgent} />
           ) : (
             <>
-              {}
               <ChatLog>
                 <ChatMessage variant="inbound">
                   <ChatBubble>Ahoy!</ChatBubble>
