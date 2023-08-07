@@ -17,6 +17,7 @@ import {
 } from '../utils/conversationsClient';
 import { SendIcon } from '@twilio-paste/icons/esm/SendIcon';
 import { Fragment } from 'react';
+import useConversationsClient from '../utils/useConversationsClient';
 
 const ChatInterface = ({ selectedAgent }: any) => {
   const [isConversationEmpty, setIsConversationEmpty] = useState(true);
@@ -24,6 +25,12 @@ const ChatInterface = ({ selectedAgent }: any) => {
   const [chat, setChat] = useState<any>();
   const [newMessage, setNewMessage] = useState('');
   const [inputValue, setInputValue] = useState('');
+  const uniqueName = `${selectedAgent.contactUri}+${
+    conversationClient.user.identity
+  }+${new Date().toJSON().slice(0, 10)}`;
+
+  // const { conversationMessages, instantiatedConversation } =
+  //   useConversationsClient(uniqueName);
 
   useEffect(() => {
     const getConversation = async () => {
@@ -35,7 +42,6 @@ const ChatInterface = ({ selectedAgent }: any) => {
           await conversationClient.getConversationByUniqueName(uniqueName);
 
         if (fetchedConversation !== null) {
-          console.log('Conversation found!', fetchedConversation);
           fetchedConversation.status === 'notParticipating' &&
             (await fetchedConversation.join());
           fetchedConversation.setAllMessagesRead();
@@ -43,6 +49,7 @@ const ChatInterface = ({ selectedAgent }: any) => {
 
           // when the messages gets updated, update the messageList state
           fetchedConversation.on('messageUpdated', updatedMessage => {
+            console.log('messageUpdated');
             setMessageList((prevState: any[]) =>
               prevState.map(prevMessage =>
                 prevMessage.sid === updatedMessage.message.sid
@@ -54,7 +61,7 @@ const ChatInterface = ({ selectedAgent }: any) => {
 
           // when the messages gets added, update the messageList state
           fetchedConversation.on('messageAdded', async message => {
-            console.log(message);
+            console.log('messageAdded');
             // const mediaUrl =
             // message.type === "media" ? await message.attachedMedia : "";
             // const mediaType = message.type === "media" ? message.attachedMedia : "";
@@ -126,14 +133,15 @@ const ChatInterface = ({ selectedAgent }: any) => {
     };
     const fetchedConversation = getConversation();
 
-    return () => {
-      const leaveConversation = async () => {
-        const conversation = await fetchedConversation;
-        conversation?.removeAllListeners();
-        console.log('removingAllListeners');
-      };
-      leaveConversation();
-    };
+    // return () => {
+    //   const leaveConversation = async () => {
+    //     const conversation = await fetchedConversation;
+    //     conversation?.removeAllListeners();
+    //     // conversationClient.removeAllListeners();
+    //     console.log('removingAllListeners');
+    //   };
+    //   leaveConversation();
+    // };
   }, [chat, selectedAgent.contactUri]);
 
   const conversationHandler = async (event: any) => {
