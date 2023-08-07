@@ -101,6 +101,9 @@ const ChatInterface = ({ selectedAgent }: any) => {
 
           console.log(messages);
           setMessageList(messages);
+          if (messages.length < 0) {
+            setIsConversationEmpty(false);
+          }
 
           return fetchedConversation;
         }
@@ -136,7 +139,6 @@ const ChatInterface = ({ selectedAgent }: any) => {
   const conversationHandler = async (event: any) => {
     setNewMessage(event.target.value);
     setInputValue(event.target.value);
-    console.log(event);
   };
 
   const sendMessage = async () => {
@@ -152,8 +154,8 @@ const ChatInterface = ({ selectedAgent }: any) => {
     <Flex vertical grow width="100%" height="100%">
       <Flex grow width="100%">
         <Box width="100%" height="100%">
-          {!isConversationEmpty ? (
-            <NewConversationView />
+          {isConversationEmpty ? (
+            <NewConversationView selectedAgent={selectedAgent} />
           ) : (
             <ChatLog>
               {messageList?.map((message: any) => {
@@ -166,20 +168,13 @@ const ChatInterface = ({ selectedAgent }: any) => {
                           : 'inbound'
                       }
                     >
-                      <ChatBubble key={message.sid}>{message.body}</ChatBubble>
-                      <ChatMessageMeta aria-label="said by Gibby Radki 4 minutes ago">
+                      <ChatBubble>{message.body}</ChatBubble>
+                      <ChatMessageMeta
+                        aria-label={`chat-message-${message.author}`}
+                      >
                         <ChatMessageMetaItem>
                           {message.author} ・ 4 minutes ago
                         </ChatMessageMetaItem>
-                      </ChatMessageMeta>
-                    </ChatMessage>
-                    <ChatMessage variant="inbound">
-                      <ChatBubble>Howdy!</ChatBubble>
-                      <ChatMessageMeta aria-label="said by you 2 minutes ago">
-                        <ChatMessageMetaItem>2 minutes ago</ChatMessageMetaItem>
-                      </ChatMessageMeta>
-                      <ChatMessageMeta aria-label="(read)">
-                        <ChatMessageMetaItem>Read</ChatMessageMetaItem>
                       </ChatMessageMeta>
                     </ChatMessage>
                   </Fragment>
