@@ -29,120 +29,125 @@ const ChatInterface = ({ selectedAgent }: any) => {
     conversationClient.user.identity
   }+${new Date().toJSON().slice(0, 10)}`;
 
-  // const { conversationMessages, instantiatedConversation } =
-  //   useConversationsClient(uniqueName);
+  const { conversationMessages, instantiatedConversation } =
+    useConversationsClient(uniqueName);
 
   useEffect(() => {
-    const getConversation = async () => {
-      const uniqueName = `${selectedAgent.contactUri}+${
-        conversationClient.user.identity
-      }+${new Date().toJSON().slice(0, 10)}`;
-      try {
-        const fetchedConversation =
-          await conversationClient.getConversationByUniqueName(uniqueName);
+    conversationMessages && conversationMessages.length > 0
+      ? setIsConversationEmpty(false)
+      : setIsConversationEmpty(true);
+  }, [instantiatedConversation, selectedAgent.contactUri]);
 
-        if (fetchedConversation !== null) {
-          fetchedConversation.status === 'notParticipating' &&
-            (await fetchedConversation.join());
-          fetchedConversation.setAllMessagesRead();
-          fetchedConversation.removeAllListeners();
+  // useEffect(() => {
+  //   const getConversation = async () => {
+  //     const uniqueName = `${selectedAgent.contactUri}+${
+  //       conversationClient.user.identity
+  //     }+${new Date().toJSON().slice(0, 10)}`;
+  //     try {
+  //       const fetchedConversation =
+  //         await conversationClient.getConversationByUniqueName(uniqueName);
 
-          // when the messages gets updated, update the messageList state
-          fetchedConversation.on('messageUpdated', updatedMessage => {
-            console.log('messageUpdated');
-            setMessageList((prevState: any[]) =>
-              prevState.map(prevMessage =>
-                prevMessage.sid === updatedMessage.message.sid
-                  ? updatedMessage.message
-                  : prevMessage
-              )
-            );
-          });
+  //       if (fetchedConversation !== null) {
+  //         fetchedConversation.status === 'notParticipating' &&
+  //           (await fetchedConversation.join());
+  //         fetchedConversation.setAllMessagesRead();
+  //         fetchedConversation.removeAllListeners();
 
-          // when the messages gets added, update the messageList state
-          fetchedConversation.on('messageAdded', async message => {
-            console.log('messageAdded');
-            // const mediaUrl =
-            // message.type === "media" ? await message.attachedMedia : "";
-            // const mediaType = message.type === "media" ? message.attachedMedia : "";
-            const author = message.author;
-            const sid = message.sid;
-            const body = message.body;
-            const updatedMessage = {
-              ...message,
-              // mediaUrl,
-              // mediaType,
-              author,
-              sid,
-              body,
-            };
-            setMessageList((prevState: any[]) => [
-              ...prevState,
-              updatedMessage,
-            ]);
-            console.log(updatedMessage);
-          });
-          // const res = await fetchedConversation.sendMessage('test');
-          // console.log(res);
-          setChat(fetchedConversation);
+  //         // when the messages gets updated, update the messageList state
+  //         fetchedConversation.on('messageUpdated', updatedMessage => {
+  //           console.log('messageUpdated');
+  //           setMessageList((prevState: any[]) =>
+  //             prevState.map(prevMessage =>
+  //               prevMessage.sid === updatedMessage.message.sid
+  //                 ? updatedMessage.message
+  //                 : prevMessage
+  //             )
+  //           );
+  //         });
 
-          //3. Load messages
-          const paginator = await fetchedConversation.getMessages(1000);
-          const messages = await Promise.all(
-            paginator.items.map(async s => {
-              // const mediaUrl =
-              //   s.type === "media" ? await s.media.getContentTemporaryUrl() : "";
-              // const mediaType = s.type === "media" ? s.media.contentType : "";
-              return {
-                author: s.author,
-                sid: s.sid,
-                body: s.body,
-                dateCreated: s.dateCreated,
-                attributes: s.attributes,
-                type: s.type,
-                // mediaUrl,
-                // mediaType,
-              };
-            })
-          );
+  //         // when the messages gets added, update the messageList state
+  //         fetchedConversation.on('messageAdded', async message => {
+  //           console.log('messageAdded');
+  //           // const mediaUrl =
+  //           // message.type === "media" ? await message.attachedMedia : "";
+  //           // const mediaType = message.type === "media" ? message.attachedMedia : "";
+  //           const author = message.author;
+  //           const sid = message.sid;
+  //           const body = message.body;
+  //           const updatedMessage = {
+  //             ...message,
+  //             // mediaUrl,
+  //             // mediaType,
+  //             author,
+  //             sid,
+  //             body,
+  //           };
+  //           setMessageList((prevState: any[]) => [
+  //             ...prevState,
+  //             updatedMessage,
+  //           ]);
+  //           console.log(updatedMessage);
+  //         });
+  //         // const res = await fetchedConversation.sendMessage('test');
+  //         // console.log(res);
+  //         setChat(fetchedConversation);
 
-          setMessageList(messages);
+  //         //3. Load messages
+  //         const paginator = await fetchedConversation.getMessages(1000);
+  //         const messages = await Promise.all(
+  //           paginator.items.map(async s => {
+  //             // const mediaUrl =
+  //             //   s.type === "media" ? await s.media.getContentTemporaryUrl() : "";
+  //             // const mediaType = s.type === "media" ? s.media.contentType : "";
+  //             return {
+  //               author: s.author,
+  //               sid: s.sid,
+  //               body: s.body,
+  //               dateCreated: s.dateCreated,
+  //               attributes: s.attributes,
+  //               type: s.type,
+  //               // mediaUrl,
+  //               // mediaType,
+  //             };
+  //           })
+  //         );
 
-          messages.length > 0
-            ? setIsConversationEmpty(false)
-            : setIsConversationEmpty(true);
+  //         setMessageList(messages);
 
-          return fetchedConversation;
-        }
-        console.log('useEffect fetchedConversation', fetchedConversation);
-      } catch (error) {
-        if (error instanceof Error) {
-          if (error.message === 'Not Found') {
-            console.warn(
-              'The conversation was not found; creating a new conversation with uniqueName:',
-              uniqueName
-            );
-            await conversationClient.createConversation({
-              attributes: { testAttribute: 'testAttribute' },
-              friendlyName: 'internal-chat',
-              uniqueName,
-            });
-          }
-        }
-      }
-    };
-    const fetchedConversation = getConversation();
+  //         messages.length > 0
+  //           ? setIsConversationEmpty(false)
+  //           : setIsConversationEmpty(true);
 
-    // return () => {
-    //   const leaveConversation = async () => {
-    //     const conversation = await fetchedConversation;
-    //     conversation?.removeAllListeners();
-    //     // conversationClient.removeAllListeners();
-    //     console.log('removingAllListeners');
-    //   };
-    //   leaveConversation();
-    // };
-  }, [chat, selectedAgent.contactUri]);
+  //         return fetchedConversation;
+  //       }
+  //     } catch (error) {
+  //       if (error instanceof Error) {
+  //         if (error.message === 'Not Found') {
+  //           console.warn(
+  //             'The conversation was not found; creating a new conversation with uniqueName:',
+  //             uniqueName
+  //           );
+  //           await conversationClient.createConversation({
+  //             attributes: { testAttribute: 'testAttribute' },
+  //             friendlyName: 'internal-chat',
+  //             uniqueName,
+  //           });
+  //         }
+  //       }
+  //     }
+  //   };
+  //   const fetchedConversation = getConversation();
+
+  //   // return () => {
+  //   //   const leaveConversation = async () => {
+  //   //     const conversation = await fetchedConversation;
+  //   //     conversation?.removeAllListeners();
+  //   //     // conversationClient.removeAllListeners();
+  //   //     console.log('removingAllListeners');
+  //   //   };
+  //   //   leaveConversation();
+  //   // };
+  // }, [chat, selectedAgent.contactUri]);
 
   const conversationHandler = async (event: any) => {
     setNewMessage(event.target.value);
@@ -151,7 +156,8 @@ const ChatInterface = ({ selectedAgent }: any) => {
 
   const sendMessage = async () => {
     try {
-      await chat.sendMessage(newMessage);
+      // await chat.sendMessage(newMessage);
+      await instantiatedConversation.sendMessage(newMessage);
       setInputValue('');
     } catch (error) {
       console.error(error);
@@ -166,7 +172,7 @@ const ChatInterface = ({ selectedAgent }: any) => {
             <NewConversationView selectedAgent={selectedAgent} />
           ) : (
             <ChatLog>
-              {messageList?.map((message: any) => {
+              {conversationMessages?.map((message: any) => {
                 return (
                   <Fragment key={message.sid}>
                     <ChatMessage

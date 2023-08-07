@@ -23,9 +23,14 @@ const useConversationsClient = (uniqueName: string) => {
 
   try {
     const getConversation = async (uniqueName: string) => {
+      if (instantiatedConversation) {
+        console.log('conversationMessages', conversationMessages);
+        return { conversationMessages, instantiatedConversation };
+      }
+
       const fetchedConversation: Conversation =
         await conversationClient.getConversationByUniqueName(uniqueName);
-
+      setInstantiatedConversation(fetchedConversation);
       if (fetchedConversation !== null) {
         fetchedConversation.status === 'notParticipating' &&
           (await fetchedConversation.join());
@@ -80,10 +85,6 @@ const useConversationsClient = (uniqueName: string) => {
           );
         });
 
-        // const res = await fetchedConversation.sendMessage('test');
-        // console.log(res);
-        setInstantiatedConversation(fetchedConversation);
-
         //3. Load messages
         const paginator = await fetchedConversation.getMessages(1000);
         const messages = await Promise.all(
@@ -105,17 +106,20 @@ const useConversationsClient = (uniqueName: string) => {
         );
 
         setConversationMessages(messages);
-        return { conversationMessages, instantiatedConversation };
       }
     };
 
     getConversation(uniqueName);
 
-    if (conversationMessages !== undefined) {
+    if (instantiatedConversation && conversationMessages) {
       return { conversationMessages, instantiatedConversation };
-    } else {
-      return {};
     }
+
+    // if (conversationMessages !== undefined) {
+    //   return { conversationMessages, instantiatedConversation };
+    // } else {
+    //   return {};
+    // }
     // return { conversationMessages, instantiatedConversation };
   } catch (error) {
     if (error instanceof Error) {
@@ -148,6 +152,7 @@ const useConversationsClient = (uniqueName: string) => {
       }
     }
   }
+  return {};
 };
 
 export default useConversationsClient;
