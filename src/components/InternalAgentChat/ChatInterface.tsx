@@ -24,6 +24,7 @@ import { SendIcon } from '@twilio-paste/icons/esm/SendIcon';
 import { Fragment } from 'react';
 import useConversationsClient from '../utils/useConversationsClient';
 import moment from 'moment';
+import GroupedMessages from './GroupedMessages';
 
 const ChatInterface = ({ selectedAgent }: any) => {
   const [newMessage, setNewMessage] = useState('');
@@ -68,17 +69,33 @@ const ChatInterface = ({ selectedAgent }: any) => {
               {conversationMessages?.map((message: any) => {
                 return (
                   <>
-                    {moment(message.dateCreated).format('MM/DD/YYYY') !==
-                    moment().format('MM/DD/YYYY')
-                      ? console.log('dates not the same')
-                      : console.log('it is today')}
                     <ChatBookend>
-                      <ChatBookendItem>Yesterday</ChatBookendItem>
                       <ChatBookendItem>
-                        <strong>Chat Started</strong>・3:34 PM
+                        {moment(message.dateCreated).format('MM/DD/YYYY') ===
+                        moment().format('MM/DD/YYYY') ? (
+                          <>
+                            <ChatBookend>
+                              <ChatBookendItem>Today</ChatBookendItem>
+                            </ChatBookend>
+                            <GroupedMessages
+                              message={message}
+                              identity={conversationClient.user.identity}
+                            />
+                          </>
+                        ) : (
+                          <>
+                            <ChatBookend>
+                              <ChatBookendItem>Some other day</ChatBookendItem>
+                            </ChatBookend>
+                            <GroupedMessages
+                              message={message}
+                              identity={conversationClient.user.identity}
+                            />
+                          </>
+                        )}
                       </ChatBookendItem>
                     </ChatBookend>
-                    <Fragment>
+                    {/* <Fragment>
                       <ChatMessage
                         variant={
                           message.author === conversationClient.user.identity
@@ -100,7 +117,7 @@ const ChatInterface = ({ selectedAgent }: any) => {
                           </ChatMessageMetaItem>
                         </ChatMessageMeta>
                       </ChatMessage>
-                    </Fragment>
+                    </Fragment> */}
                   </>
                 );
               })}
