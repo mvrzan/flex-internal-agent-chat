@@ -1,5 +1,13 @@
 import { ChatComposer } from '@twilio-paste/core/chat-composer';
-import { Box, Stack, Button, Flex, Separator, Input } from '@twilio-paste/core';
+import {
+  Box,
+  Stack,
+  Button,
+  Flex,
+  Separator,
+  Input,
+  Text,
+} from '@twilio-paste/core';
 import {
   ChatLog,
   ChatMessage,
@@ -46,29 +54,54 @@ const ChatInterface = ({ selectedAgent }: any) => {
             <NewConversationView selectedAgent={selectedAgent} />
           ) : (
             <ChatLog>
+              <ChatBookend>
+                <ChatBookendItem>
+                  <Text as="span" fontWeight="fontWeightBold">
+                    Chat Started
+                  </Text>
+                  ・
+                  {moment(conversationMessages[0].dateCreated).format(
+                    'MM/DD/YYYY, h:mm:ss a'
+                  )}
+                </ChatBookendItem>
+              </ChatBookend>
               {conversationMessages?.map((message: any) => {
                 return (
-                  <Fragment>
-                    <ChatMessage
-                      variant={
-                        message.author === conversationClient.user.identity
-                          ? 'outbound'
-                          : 'inbound'
-                      }
-                    >
-                      <ChatBubble key={message.sid}>{message.body}</ChatBubble>
-                      <ChatMessageMeta
-                        aria-label={`chat-message-${message.author}`}
+                  <>
+                    {moment(message.dateCreated).format('MM/DD/YYYY') !==
+                    moment().format('MM/DD/YYYY')
+                      ? console.log('dates not the same')
+                      : console.log('it is today')}
+                    <ChatBookend>
+                      <ChatBookendItem>Yesterday</ChatBookendItem>
+                      <ChatBookendItem>
+                        <strong>Chat Started</strong>・3:34 PM
+                      </ChatBookendItem>
+                    </ChatBookend>
+                    <Fragment>
+                      <ChatMessage
+                        variant={
+                          message.author === conversationClient.user.identity
+                            ? 'outbound'
+                            : 'inbound'
+                        }
                       >
-                        <ChatMessageMetaItem>
-                          {message.author} ・{' '}
-                          {moment(message.dateCreated).format(
-                            'MM/DD/YYYY, h:mm:ss a'
-                          )}
-                        </ChatMessageMetaItem>
-                      </ChatMessageMeta>
-                    </ChatMessage>
-                  </Fragment>
+                        <ChatBubble key={message.sid}>
+                          {message.body}
+                        </ChatBubble>
+                        <ChatMessageMeta
+                          aria-label={`chat-message-${message.author}`}
+                        >
+                          <ChatMessageMetaItem>
+                            {message.author} ・{' '}
+                            {moment(message.dateCreated).format(
+                              'MM/DD/YYYY, h:mm:ss a'
+                            )}
+                          </ChatMessageMetaItem>
+                        </ChatMessageMeta>
+                      </ChatMessage>
+                    </Fragment>
+                  </>
                 );
               })}
             </ChatLog>
