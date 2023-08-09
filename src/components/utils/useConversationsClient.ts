@@ -97,7 +97,7 @@ const useConversationsClient = (uniqueName: string) => {
             author,
             sid,
             body,
-            dateCreated: '',
+            dateCreated: message.dateCreated,
             attributes: '',
             type: '',
           };

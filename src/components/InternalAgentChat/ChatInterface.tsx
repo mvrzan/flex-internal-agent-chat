@@ -10,20 +10,17 @@ import {
   ChatBookendItem,
 } from '@twilio-paste/core/chat-log';
 import NewConversationView from './NewConversationView';
-import { useEffect, useState } from 'react';
-import {
-  conversationClient,
-  getConversationByUniqueName,
-} from '../utils/conversationsClient';
+import { useState } from 'react';
+import { conversationClient } from '../utils/conversationsClient';
 import { SendIcon } from '@twilio-paste/icons/esm/SendIcon';
 import { Fragment } from 'react';
 import useConversationsClient from '../utils/useConversationsClient';
+import moment from 'moment';
 
 const ChatInterface = ({ selectedAgent }: any) => {
   const [newMessage, setNewMessage] = useState('');
   const [inputValue, setInputValue] = useState('');
   const uniqueName = `${selectedAgent.contactUri}+${conversationClient.user.identity}`;
-
   const { conversationMessages, instantiatedConversation, isEmpty } =
     useConversationsClient(uniqueName);
 
@@ -51,7 +48,7 @@ const ChatInterface = ({ selectedAgent }: any) => {
             <ChatLog>
               {conversationMessages?.map((message: any) => {
                 return (
-                  <Fragment key={message.sid}>
+                  <Fragment>
                     <ChatMessage
                       variant={
                         message.author === conversationClient.user.identity
@@ -59,12 +56,15 @@ const ChatInterface = ({ selectedAgent }: any) => {
                           : 'inbound'
                       }
                     >
-                      <ChatBubble>{message.body}</ChatBubble>
+                      <ChatBubble key={message.sid}>{message.body}</ChatBubble>
                       <ChatMessageMeta
                         aria-label={`chat-message-${message.author}`}
                       >
                         <ChatMessageMetaItem>
-                          {message.author} ・ 4 minutes ago
+                          {message.author} ・{' '}
+                          {moment(message.dateCreated).format(
+                            'MM/DD/YYYY, h:mm:ss a'
+                          )}
                         </ChatMessageMetaItem>
                       </ChatMessageMeta>
                     </ChatMessage>
