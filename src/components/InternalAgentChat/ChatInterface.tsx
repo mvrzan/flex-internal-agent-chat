@@ -1,4 +1,3 @@
-import { ChatComposer } from '@twilio-paste/core/chat-composer';
 import {
   Box,
   Stack,
@@ -7,6 +6,7 @@ import {
   Separator,
   Input,
   Text,
+  TextArea,
 } from '@twilio-paste/core';
 import {
   ChatLog,
@@ -25,23 +25,28 @@ import { Fragment } from 'react';
 import useConversationsClient from '../utils/useConversationsClient';
 import moment from 'moment';
 import GroupedMessages from './GroupedMessages';
+import { AttachIcon } from '@twilio-paste/icons/esm/AttachIcon';
+import { EmojiIcon } from '@twilio-paste/icons/esm/EmojiIcon';
 
 const ChatInterface = ({ selectedAgent }: any) => {
   const [newMessage, setNewMessage] = useState('');
-  const [inputValue, setInputValue] = useState('');
+  const [isButtonDisabled, setIsButtonDisabled] = useState(true);
   const uniqueName = `${selectedAgent.contactUri}+${conversationClient.user.identity}`;
   const { conversationMessages, instantiatedConversation, isEmpty } =
     useConversationsClient(uniqueName);
 
   const conversationHandler = async (event: any) => {
-    setNewMessage(event.target.value);
-    setInputValue(event.target.value);
+    if (event.target.value === '') {
+      setIsButtonDisabled(true);
+    } else {
+      setNewMessage(event.target.value);
+      setIsButtonDisabled(false);
+    }
   };
 
   const sendMessage = async () => {
     try {
       await instantiatedConversation.sendMessage(newMessage);
-      setInputValue('');
     } catch (error) {
       console.error(error);
     }
@@ -95,29 +100,6 @@ const ChatInterface = ({ selectedAgent }: any) => {
                         )}
                       </ChatBookendItem>
                     </ChatBookend>
-                    {/* <Fragment>
-                      <ChatMessage
-                        variant={
-                          message.author === conversationClient.user.identity
-                            ? 'outbound'
-                            : 'inbound'
-                        }
-                      >
-                        <ChatBubble key={message.sid}>
-                          {message.body}
-                        </ChatBubble>
-                        <ChatMessageMeta
-                          aria-label={`chat-message-${message.author}`}
-                        >
-                          <ChatMessageMetaItem>
-                            {message.author} ・{' '}
-                            {moment(message.dateCreated).format(
-                              'MM/DD/YYYY, h:mm:ss a'
-                            )}
-                          </ChatMessageMetaItem>
-                        </ChatMessageMeta>
-                      </ChatMessage>
-                    </Fragment> */}
                   </>
                 );
               })}
@@ -128,38 +110,34 @@ const ChatInterface = ({ selectedAgent }: any) => {
       <Flex grow width="100%" height="100%" vAlignContent="bottom">
         <Box
           borderRadius="borderRadius20"
-          borderColor="colorBorderPrimaryWeak"
+          // borderColor="colorBorderPrimaryWeak"
           borderStyle="solid"
           borderWidth="borderWidth20"
           objectPosition="bottom"
           position="relative"
           width="100%"
           marginTop="space190"
-          marginBottom="space0"
-          paddingBottom="space0"
+          marginBottom="space30"
+          // paddingBottom="space30"
         >
-          <Input
-            type="text"
-            value={inputValue}
-            onChange={conversationHandler}
-            insertAfter={
-              <Button variant="primary_icon" onClick={sendMessage}>
-                <SendIcon decorative={false} size="sizeIcon20" title="send" />
+          <TextArea onChange={conversationHandler} />
+          <Flex hAlignContent="between" vAlignContent="center" width="100%">
+            <Stack orientation="horizontal" spacing="space0">
+              <Button variant="secondary_icon" onClick={sendMessage}>
+                <AttachIcon decorative={false} title="attach" />
               </Button>
-            }
-          />
-          {/* <ChatComposer
-            ariaLabel="Message"
-            placeholder="Chat text"
-            maxHeight="size10"
-            config={{
-              namespace: 'customer-chat',
-              onError(e) {
-                throw e;
-              },
-            }}
-            onChange={conversationHandler}
-          /> */}
+              <Button variant="secondary_icon" onClick={sendMessage}>
+                <EmojiIcon decorative={false} title="emoji" />
+              </Button>
+            </Stack>
+            <Button
+              variant="primary_icon"
+              onClick={sendMessage}
+              disabled={isButtonDisabled}
+            >
+              <SendIcon decorative={false} size="sizeIcon20" title="send" />
+            </Button>
+          </Flex>
         </Box>
       </Flex>
     </Flex>
