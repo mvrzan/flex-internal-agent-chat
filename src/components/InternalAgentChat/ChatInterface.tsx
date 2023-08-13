@@ -18,21 +18,19 @@ import {
   ChatBookendItem,
 } from '@twilio-paste/core/chat-log';
 import NewConversationView from './NewConversationView';
-import { useState } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { conversationClient } from '../utils/conversationsClient';
 import { SendIcon } from '@twilio-paste/icons/esm/SendIcon';
-import { Fragment } from 'react';
 import useConversationsClient from '../utils/useConversationsClient';
 import moment from 'moment';
 import GroupedMessages from './GroupedMessages';
 import { AttachIcon } from '@twilio-paste/icons/esm/AttachIcon';
 import { EmojiIcon } from '@twilio-paste/icons/esm/EmojiIcon';
-import { CustomizationProvider } from '@twilio-paste/core/customization';
-import CustomFlexComponent from './CustomFlexComponent';
 
 const ChatInterface = ({ selectedAgent }: any) => {
   const [newMessage, setNewMessage] = useState('');
   const [isButtonDisabled, setIsButtonDisabled] = useState(true);
+  const messagesEndRef = useRef<null | HTMLDivElement>(null);
   const uniqueName = `${selectedAgent.contactUri}+${conversationClient.user.identity}`;
   const { conversationMessages, instantiatedConversation, isEmpty } =
     useConversationsClient(uniqueName);
@@ -55,6 +53,17 @@ const ChatInterface = ({ selectedAgent }: any) => {
     }
   };
 
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({
+      behavior: 'smooth',
+      block: 'end',
+    });
+  };
+
+  useEffect(() => {
+    scrollToBottom();
+  }, [conversationMessages]);
+
   return (
     <Flex vertical width="100%" height="100%">
       <Flex element="FLEX_WITH_OVERFLOW" width="100%" height="5000px">
@@ -62,7 +71,7 @@ const ChatInterface = ({ selectedAgent }: any) => {
           {isEmpty ? (
             <NewConversationView selectedAgent={selectedAgent} />
           ) : (
-            <ChatLog>
+            <ChatLog ref={messagesEndRef}>
               <ChatBookend>
                 <ChatBookendItem>
                   <Text as="span" fontWeight="fontWeightBold">
@@ -118,7 +127,6 @@ const ChatInterface = ({ selectedAgent }: any) => {
           width="100%"
           marginTop="space190"
           marginBottom="space30"
-          // paddingBottom="space30"
         >
           <TextArea
             onChange={conversationHandler}

@@ -34,7 +34,7 @@ export default class InternalAgentChatPlugin extends FlexPlugin {
           style: { minWidth: '100%', height: '100%' },
           elements: {
             FLEX_WITH_OVERFLOW: {
-              overflow: 'auto',
+              overflowY: 'auto',
             },
           },
         };
