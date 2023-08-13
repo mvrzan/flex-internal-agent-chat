@@ -18,7 +18,7 @@ import {
   ChatBookendItem,
 } from '@twilio-paste/core/chat-log';
 import NewConversationView from './NewConversationView';
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect, Fragment } from 'react';
 import { conversationClient } from '../utils/conversationsClient';
 import { SendIcon } from '@twilio-paste/icons/esm/SendIcon';
 import useConversationsClient from '../utils/useConversationsClient';
@@ -26,16 +26,23 @@ import moment from 'moment';
 import GroupedMessages from './GroupedMessages';
 import { AttachIcon } from '@twilio-paste/icons/esm/AttachIcon';
 import { EmojiIcon } from '@twilio-paste/icons/esm/EmojiIcon';
+import { Message, SelectedAgent } from '../utils/types';
 
-const ChatInterface = ({ selectedAgent }: any) => {
+interface ChatInterfaceProps {
+  selectedAgent: SelectedAgent;
+}
+
+const ChatInterface = ({ selectedAgent }: ChatInterfaceProps) => {
   const [newMessage, setNewMessage] = useState('');
   const [isButtonDisabled, setIsButtonDisabled] = useState(true);
   const messagesEndRef = useRef<null | HTMLDivElement>(null);
-  const uniqueName = `${selectedAgent.contactUri}+${conversationClient.user.identity}`;
+  const uniqueName: string = `${selectedAgent.contactUri}+${conversationClient.user.identity}`;
   const { conversationMessages, instantiatedConversation, isEmpty } =
     useConversationsClient(uniqueName);
 
-  const conversationHandler = async (event: any) => {
+  const conversationHandler = async (
+    event: React.ChangeEvent<HTMLTextAreaElement>
+  ) => {
     if (event.target.value === '') {
       setIsButtonDisabled(true);
     } else {
@@ -44,7 +51,7 @@ const ChatInterface = ({ selectedAgent }: any) => {
     }
   };
 
-  const sendMessage = async () => {
+  const sendMessage = async (): Promise<void> => {
     try {
       await instantiatedConversation.sendMessage(newMessage);
       setNewMessage('');
@@ -82,10 +89,11 @@ const ChatInterface = ({ selectedAgent }: any) => {
                     'MM/DD/YYYY, h:mm:ss a'
                   )}
                 </ChatBookendItem>
+                <ChatBookendItem>Previous messages</ChatBookendItem>
               </ChatBookend>
-              {conversationMessages?.map((message: any) => {
+              {conversationMessages?.map((message: Message, index: number) => {
                 return (
-                  <>
+                  <Fragment key={Math.random()}>
                     <ChatBookend>
                       <ChatBookendItem>
                         {moment(message.dateCreated).format('MM/DD/YYYY') ===
@@ -94,16 +102,22 @@ const ChatInterface = ({ selectedAgent }: any) => {
                             <ChatBookend>
                               <ChatBookendItem>Today</ChatBookendItem>
                             </ChatBookend>
-                            <GroupedMessages
-                              message={message}
-                              identity={conversationClient.user.identity}
-                            />
+                            {moment(message.dateCreated).format(
+                              'MM/DD/YYYY'
+                            ) ===
+                              moment(
+                                conversationMessages[index - 1]?.dateCreated
+                              ).format('MM/DD/YYYY') && (
+                              <>
+                                <GroupedMessages
+                                  message={message}
+                                  identity={conversationClient.user.identity}
+                                />
+                              </>
+                            )}
                           </>
                         ) : (
                           <>
-                            <ChatBookend>
-                              <ChatBookendItem>Some other day</ChatBookendItem>
-                            </ChatBookend>
                             <GroupedMessages
                               message={message}
                               identity={conversationClient.user.identity}
@@ -112,7 +126,7 @@ const ChatInterface = ({ selectedAgent }: any) => {
                         )}
                       </ChatBookendItem>
                     </ChatBookend>
-                  </>
+                  </Fragment>
                 );
               })}
             </ChatLog>
