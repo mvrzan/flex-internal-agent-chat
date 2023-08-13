@@ -27,6 +27,8 @@ import moment from 'moment';
 import GroupedMessages from './GroupedMessages';
 import { AttachIcon } from '@twilio-paste/icons/esm/AttachIcon';
 import { EmojiIcon } from '@twilio-paste/icons/esm/EmojiIcon';
+import { CustomizationProvider } from '@twilio-paste/core/customization';
+import CustomFlexComponent from './CustomFlexComponent';
 
 const ChatInterface = ({ selectedAgent }: any) => {
   const [newMessage, setNewMessage] = useState('');
@@ -47,15 +49,16 @@ const ChatInterface = ({ selectedAgent }: any) => {
   const sendMessage = async () => {
     try {
       await instantiatedConversation.sendMessage(newMessage);
+      setNewMessage('');
     } catch (error) {
       console.error(error);
     }
   };
 
   return (
-    <Flex vertical grow width="100%" height="100%">
-      <Flex grow width="100%">
-        <Box width="100%" height="100%">
+    <Flex vertical width="100%" height="100%">
+      <Flex element="FLEX_WITH_OVERFLOW" width="100%" height="5000px">
+        <Box width="100%">
           {isEmpty ? (
             <NewConversationView selectedAgent={selectedAgent} />
           ) : (
@@ -120,6 +123,7 @@ const ChatInterface = ({ selectedAgent }: any) => {
           <TextArea
             onChange={conversationHandler}
             placeholder={`Message ${selectedAgent.fullName}`}
+            value={newMessage}
           />
           <Flex hAlignContent="between" vAlignContent="center" width="100%">
             <Stack orientation="horizontal" spacing="space0">
