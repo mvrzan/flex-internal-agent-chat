@@ -111,8 +111,8 @@ const ChatInterface = ({ selectedAgent }: any) => {
         <Box
           borderRadius="borderRadius20"
           // borderColor="colorBorderPrimaryWeak"
-          borderStyle="solid"
-          borderWidth="borderWidth20"
+          // borderStyle="solid"
+          // borderWidth="borderWidth10"
           objectPosition="bottom"
           position="relative"
           width="100%"
@@ -120,13 +120,21 @@ const ChatInterface = ({ selectedAgent }: any) => {
           marginBottom="space30"
           // paddingBottom="space30"
         >
-          <TextArea onChange={conversationHandler} />
+          <TextArea
+            onChange={conversationHandler}
+            placeholder="Write something down"
+          />
           <Flex hAlignContent="between" vAlignContent="center" width="100%">
             <Stack orientation="horizontal" spacing="space0">
               <Button variant="secondary_icon" onClick={sendMessage}>
                 <AttachIcon decorative={false} title="attach" />
               </Button>
-              <Button variant="secondary_icon" onClick={sendMessage}>
+              <Button
+                variant="secondary_icon"
+                onClick={() => {
+                  console.log('The button does nothing at the moment!');
+                }}
+              >
                 <EmojiIcon decorative={false} title="emoji" />
               </Button>
             </Stack>
