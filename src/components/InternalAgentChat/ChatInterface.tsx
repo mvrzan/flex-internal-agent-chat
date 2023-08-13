@@ -110,9 +110,6 @@ const ChatInterface = ({ selectedAgent }: any) => {
       <Flex grow width="100%" height="100%" vAlignContent="bottom">
         <Box
           borderRadius="borderRadius20"
-          // borderColor="colorBorderPrimaryWeak"
-          // borderStyle="solid"
-          // borderWidth="borderWidth10"
           objectPosition="bottom"
           position="relative"
           width="100%"
@@ -122,7 +119,7 @@ const ChatInterface = ({ selectedAgent }: any) => {
         >
           <TextArea
             onChange={conversationHandler}
-            placeholder="Write something down"
+            placeholder={`Message ${selectedAgent.fullName}`}
           />
           <Flex hAlignContent="between" vAlignContent="center" width="100%">
             <Stack orientation="horizontal" spacing="space0">
