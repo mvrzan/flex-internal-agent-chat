@@ -27,6 +27,7 @@ import GroupedMessages from './GroupedMessages';
 import { AttachIcon } from '@twilio-paste/icons/esm/AttachIcon';
 import { EmojiIcon } from '@twilio-paste/icons/esm/EmojiIcon';
 import { Message, SelectedAgent } from '../utils/types';
+import LoadingConversations from './LoadingConversations';
 
 interface ChatInterfaceProps {
   selectedAgent: SelectedAgent;
@@ -42,8 +43,14 @@ const ChatInterface = ({ selectedAgent }: ChatInterfaceProps) => {
   ]
     .sort()
     .join('+');
-  const { conversationMessages, instantiatedConversation, isEmpty } =
-    useConversationsClient(uniqueName, selectedAgent.contactUri);
+  const {
+    conversationMessages,
+    instantiatedConversation,
+    isEmpty,
+    isLoadingMessages,
+  } = useConversationsClient(uniqueName, selectedAgent.contactUri);
+
+  console.log(isEmpty, isLoadingMessages);
 
   const conversationHandler = async (
     event: React.ChangeEvent<HTMLTextAreaElement>
@@ -80,7 +87,9 @@ const ChatInterface = ({ selectedAgent }: ChatInterfaceProps) => {
     <Flex vertical width="100%" height="100%">
       <Flex element="FLEX_WITH_OVERFLOW" width="100%" height="5000px">
         <Box width="100%">
-          {isEmpty ? (
+          {isLoadingMessages ? (
+            <LoadingConversations />
+          ) : isEmpty ? (
             <NewConversationView selectedAgent={selectedAgent} />
           ) : (
             <ChatLog ref={messagesEndRef}>

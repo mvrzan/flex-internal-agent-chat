@@ -17,6 +17,7 @@ const useConversationsClient = (
   selectedAgentIdentity: string
 ) => {
   const [conversationMessages, setConversationMessages] = useState<any>([]);
+  const [isLoadingMessages, setIsLoadingMessages] = useState(true);
   const [instantiatedConversation, setInstantiatedConversation] =
     useState<any>();
   const conversationClient = Flex.Manager.getInstance().conversationsClient;
@@ -150,6 +151,7 @@ const useConversationsClient = (
         );
 
         setConversationMessages(messages);
+        setIsLoadingMessages(false);
       } catch (error) {
         console.error(
           'an error has happened when updating conversation messages',
@@ -174,15 +176,19 @@ const useConversationsClient = (
     init(uniqueName);
   }, [uniqueName]);
 
-  if (conversationMessages.length === 0) {
-    console.log('conversation is empty');
-    console.log(conversationMessages);
-    return { conversationMessages, instantiatedConversation, isEmpty: true };
-  } else {
-    console.log('conversation is not empty!');
-    console.log(conversationMessages);
-    return { conversationMessages, instantiatedConversation, isEmpty: false };
-  }
+  return conversationMessages.length === 0
+    ? {
+        conversationMessages,
+        instantiatedConversation,
+        isEmpty: true,
+        isLoadingMessages,
+      }
+    : {
+        conversationMessages,
+        instantiatedConversation,
+        isEmpty: false,
+        isLoadingMessages,
+      };
 };
 
 export default useConversationsClient;
