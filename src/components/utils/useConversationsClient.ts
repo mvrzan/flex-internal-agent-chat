@@ -16,7 +16,7 @@ const useConversationsClient = (
   uniqueName: string,
   selectedAgentIdentity: string
 ) => {
-  const [conversationMessages, setConversationMessages] = useState<any>([{}]);
+  const [conversationMessages, setConversationMessages] = useState<any>([]);
   const [instantiatedConversation, setInstantiatedConversation] =
     useState<any>();
   const conversationClient = Flex.Manager.getInstance().conversationsClient;
@@ -117,6 +117,7 @@ const useConversationsClient = (
             attributes: '',
             type: '',
           };
+          console.log('updatedMessage', updatedMessage);
           setConversationMessages(
             (prevState: ConversationMessage[] | undefined) => {
               if (prevState !== undefined) {
@@ -173,9 +174,13 @@ const useConversationsClient = (
     init(uniqueName);
   }, [uniqueName]);
 
-  if (conversationMessages.length < 1) {
+  if (conversationMessages.length === 0) {
+    console.log('conversation is empty');
+    console.log(conversationMessages);
     return { conversationMessages, instantiatedConversation, isEmpty: true };
   } else {
+    console.log('conversation is not empty!');
+    console.log(conversationMessages);
     return { conversationMessages, instantiatedConversation, isEmpty: false };
   }
 };
