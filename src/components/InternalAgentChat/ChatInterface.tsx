@@ -43,7 +43,7 @@ const ChatInterface = ({ selectedAgent }: ChatInterfaceProps) => {
     .sort()
     .join('+');
   const { conversationMessages, instantiatedConversation, isEmpty } =
-    useConversationsClient(uniqueName);
+    useConversationsClient(uniqueName, selectedAgent.contactUri);
 
   const conversationHandler = async (
     event: React.ChangeEvent<HTMLTextAreaElement>

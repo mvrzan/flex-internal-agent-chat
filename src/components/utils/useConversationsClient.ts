@@ -12,11 +12,15 @@ interface ConversationMessage {
   type: string | undefined;
 }
 
-const useConversationsClient = (uniqueName: string) => {
+const useConversationsClient = (
+  uniqueName: string,
+  selectedAgentIdentity: string
+) => {
   const [conversationMessages, setConversationMessages] = useState<any>([{}]);
   const [instantiatedConversation, setInstantiatedConversation] =
     useState<any>();
   const conversationClient = Flex.Manager.getInstance().conversationsClient;
+  const workerInitiatingConversation = conversationClient.user.identity;
 
   useEffect(() => {
     const getInstantiatedConversation = async (uniqueName: string) => {
@@ -32,8 +36,8 @@ const useConversationsClient = (uniqueName: string) => {
               'The conversation was not found; creating a new conversation with uniqueName:',
               uniqueName
             );
-            // Create a new Conversation since one does not exist
             try {
+              // Create a new Conversation since one does not exist
               const createNewConversation = async () => {
                 const newConversation =
                   await conversationClient.createConversation({
@@ -43,6 +47,15 @@ const useConversationsClient = (uniqueName: string) => {
                   });
                 console.log('Conversation successfully created');
                 setInstantiatedConversation(newConversation);
+
+                await newConversation.add(selectedAgentIdentity);
+                console.log(
+                  `${selectedAgentIdentity} successfully added to the conversation!`
+                );
+                await newConversation.add(workerInitiatingConversation);
+                console.log(
+                  `${workerInitiatingConversation} successfully added to the conversation!`
+                );
               };
               createNewConversation();
             } catch (error) {
@@ -59,8 +72,8 @@ const useConversationsClient = (uniqueName: string) => {
 
     const getConversation = async (fetchedConversation: any) => {
       try {
-        fetchedConversation.status === 'notParticipating' &&
-          (await fetchedConversation.join());
+        // fetchedConversation.status === 'notParticipating' &&
+        //   (await fetchedConversation.join());
         fetchedConversation.setAllMessagesRead();
         fetchedConversation.removeAllListeners();
 
