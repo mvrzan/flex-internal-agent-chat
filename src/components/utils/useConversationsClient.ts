@@ -23,7 +23,9 @@ const useConversationsClient = (
   const workerInitiatingConversation = conversationClient.user.identity;
 
   useEffect(() => {
-    const getInstantiatedConversation = async (uniqueName: string) => {
+    const getInstantiatedConversation = async (
+      uniqueName: string
+    ): Promise<Conversation | undefined> => {
       try {
         const fetchedConversation: Conversation =
           await conversationClient.getConversationByUniqueName(uniqueName);
@@ -66,16 +68,15 @@ const useConversationsClient = (
                 'There was a problem creating a new conversation!',
                 error
               );
+              return undefined;
             }
           }
         }
       }
     };
 
-    const getConversation = async (fetchedConversation: any) => {
+    const getConversation = async (fetchedConversation: Conversation) => {
       try {
-        // fetchedConversation.status === 'notParticipating' &&
-        //   (await fetchedConversation.join());
         fetchedConversation.setAllMessagesRead();
         fetchedConversation.removeAllListeners();
 
@@ -157,9 +158,17 @@ const useConversationsClient = (
     };
 
     const init = async (uniqueName: string) => {
-      const fetchedConversation = await getInstantiatedConversation(uniqueName);
-      console.log(fetchedConversation);
-      await getConversation(fetchedConversation);
+      try {
+        const fetchedConversation = await getInstantiatedConversation(
+          uniqueName
+        );
+        if (fetchedConversation === undefined) {
+          return;
+        }
+        await getConversation(fetchedConversation);
+      } catch (error) {
+        console.error(error);
+      }
     };
     init(uniqueName);
   }, [uniqueName]);
