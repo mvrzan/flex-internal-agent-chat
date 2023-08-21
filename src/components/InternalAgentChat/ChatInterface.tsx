@@ -36,7 +36,12 @@ const ChatInterface = ({ selectedAgent }: ChatInterfaceProps) => {
   const [newMessage, setNewMessage] = useState('');
   const [isButtonDisabled, setIsButtonDisabled] = useState(true);
   const messagesEndRef = useRef<null | HTMLDivElement>(null);
-  const uniqueName: string = `${selectedAgent.contactUri}+${conversationClient.user.identity}`;
+  const uniqueName: string = [
+    selectedAgent.contactUri,
+    conversationClient.user.identity,
+  ]
+    .sort()
+    .join('+');
   const { conversationMessages, instantiatedConversation, isEmpty } =
     useConversationsClient(uniqueName);
 
