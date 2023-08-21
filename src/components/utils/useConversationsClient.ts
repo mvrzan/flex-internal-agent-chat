@@ -56,8 +56,10 @@ const useConversationsClient = (
                 console.log(
                   `${workerInitiatingConversation} successfully added to the conversation!`
                 );
+                return newConversation;
               };
-              createNewConversation();
+
+              return createNewConversation();
             } catch (error) {
               // Catch and log an error in case we can't create a new Conversation
               console.error(
@@ -156,6 +158,7 @@ const useConversationsClient = (
 
     const init = async (uniqueName: string) => {
       const fetchedConversation = await getInstantiatedConversation(uniqueName);
+      console.log(fetchedConversation);
       await getConversation(fetchedConversation);
     };
     init(uniqueName);
