@@ -1,19 +1,6 @@
-import {
-  Box,
-  Stack,
-  Button,
-  Flex,
-  Separator,
-  Input,
-  Text,
-  TextArea,
-} from '@twilio-paste/core';
+import { Box, Stack, Button, Flex, Text, TextArea } from '@twilio-paste/core';
 import {
   ChatLog,
-  ChatMessage,
-  ChatMessageMeta,
-  ChatMessageMetaItem,
-  ChatBubble,
   ChatBookend,
   ChatBookendItem,
 } from '@twilio-paste/core/chat-log';
@@ -49,8 +36,6 @@ const ChatInterface = ({ selectedAgent }: ChatInterfaceProps) => {
     isEmpty,
     isLoadingMessages,
   } = useConversationsClient(uniqueName, selectedAgent.contactUri);
-
-  console.log(isEmpty, isLoadingMessages);
 
   const conversationHandler = async (
     event: React.ChangeEvent<HTMLTextAreaElement>
@@ -107,40 +92,12 @@ const ChatInterface = ({ selectedAgent }: ChatInterfaceProps) => {
               </ChatBookend>
               {conversationMessages?.map((message: Message, index: number) => {
                 return (
-                  <Fragment key={Math.random()}>
-                    <ChatBookend>
-                      <ChatBookendItem>
-                        {moment(message.dateCreated).format('MM/DD/YYYY') ===
-                        moment().format('MM/DD/YYYY') ? (
-                          <>
-                            <ChatBookend>
-                              <ChatBookendItem>Today</ChatBookendItem>
-                            </ChatBookend>
-                            {moment(message.dateCreated).format(
-                              'MM/DD/YYYY'
-                            ) ===
-                              moment(
-                                conversationMessages[index - 1]?.dateCreated
-                              ).format('MM/DD/YYYY') && (
-                              <>
-                                <GroupedMessages
-                                  message={message}
-                                  identity={conversationClient.user.identity}
-                                />
-                              </>
-                            )}
-                          </>
-                        ) : (
-                          <>
-                            <GroupedMessages
-                              message={message}
-                              identity={conversationClient.user.identity}
-                            />
-                          </>
-                        )}
-                      </ChatBookendItem>
-                    </ChatBookend>
-                  </Fragment>
+                  <GroupedMessages
+                    key={message.sid}
+                    message={message}
+                    prevMessage={conversationMessages[index - 1]}
+                    identity={conversationClient.user.identity}
+                  />
                 );
               })}
             </ChatLog>
