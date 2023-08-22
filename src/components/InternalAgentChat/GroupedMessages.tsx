@@ -1,6 +1,5 @@
 import moment from 'moment';
 import {
-  ChatLog,
   ChatMessage,
   ChatMessageMeta,
   ChatMessageMetaItem,
@@ -8,11 +7,12 @@ import {
   ChatBookend,
   ChatBookendItem,
 } from '@twilio-paste/core/chat-log';
+import { Message } from '../utils/types';
 
 interface GroupedMessagesProps {
-  message: any;
+  message: Message;
   identity: string;
-  prevMessage: any;
+  prevMessage: Message;
 }
 
 const GroupedMessages = ({
