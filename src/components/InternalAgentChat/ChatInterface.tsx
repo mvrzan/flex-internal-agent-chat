@@ -6,6 +6,7 @@ import {
   Text,
   TextArea,
   Input,
+  Label,
 } from '@twilio-paste/core';
 import {
   ChatLog,
@@ -23,7 +24,7 @@ import { AttachIcon } from '@twilio-paste/icons/esm/AttachIcon';
 import { EmojiIcon } from '@twilio-paste/icons/esm/EmojiIcon';
 import { Message, SelectedAgent } from '../utils/types';
 import LoadingConversations from './LoadingConversations';
-import { FilePicker, FilePickerButton } from '@twilio-paste/core';
+import AttachmentButton from './AttachmentButton';
 
 interface ChatInterfaceProps {
   selectedAgent: SelectedAgent;
@@ -31,6 +32,7 @@ interface ChatInterfaceProps {
 
 const ChatInterface = ({ selectedAgent }: ChatInterfaceProps) => {
   const [newMessage, setNewMessage] = useState('');
+  const [hovered, setHovered] = useState(false);
   const [isButtonDisabled, setIsButtonDisabled] = useState(true);
   const messagesEndRef = useRef<null | HTMLDivElement>(null);
   const uniqueName: string = [
@@ -137,16 +139,23 @@ const ChatInterface = ({ selectedAgent }: ChatInterfaceProps) => {
               >
                 <EmojiIcon decorative={false} title="emoji" />
               </Button>
-              <div className="flex items-center  border border-solid border-gray-300">
-                <label>
-                  <input
-                    type="file"
-                    id="file-input"
-                    multiple
-                    style={{ display: 'none' }}
-                  />
-                  <AttachIcon decorative={false} title="attach" />
-                </label>
+              {/* <Button
+                variant="primary_icon"
+                onClick={() => {
+                  console.log('attach');
+                }}
+              >
+                <AttachmentButton hovered={hovered} />
+              </Button> */}
+              <div
+                onMouseEnter={() => {
+                  setHovered(true);
+                }}
+                onMouseLeave={() => {
+                  setHovered(false);
+                }}
+              >
+                <AttachmentButton hovered={hovered} />
               </div>
             </Stack>
             <Button
