@@ -1,4 +1,12 @@
-import { Box, Stack, Button, Flex, Text, TextArea } from '@twilio-paste/core';
+import {
+  Box,
+  Stack,
+  Button,
+  Flex,
+  Text,
+  TextArea,
+  Input,
+} from '@twilio-paste/core';
 import {
   ChatLog,
   ChatBookend,
@@ -15,6 +23,7 @@ import { AttachIcon } from '@twilio-paste/icons/esm/AttachIcon';
 import { EmojiIcon } from '@twilio-paste/icons/esm/EmojiIcon';
 import { Message, SelectedAgent } from '../utils/types';
 import LoadingConversations from './LoadingConversations';
+import { FilePicker, FilePickerButton } from '@twilio-paste/core';
 
 interface ChatInterfaceProps {
   selectedAgent: SelectedAgent;
@@ -120,9 +129,6 @@ const ChatInterface = ({ selectedAgent }: ChatInterfaceProps) => {
           />
           <Flex hAlignContent="between" vAlignContent="center" width="100%">
             <Stack orientation="horizontal" spacing="space0">
-              <Button variant="secondary_icon" onClick={sendMessage}>
-                <AttachIcon decorative={false} title="attach" />
-              </Button>
               <Button
                 variant="secondary_icon"
                 onClick={() => {
@@ -131,6 +137,17 @@ const ChatInterface = ({ selectedAgent }: ChatInterfaceProps) => {
               >
                 <EmojiIcon decorative={false} title="emoji" />
               </Button>
+              <div className="flex items-center  border border-solid border-gray-300">
+                <label>
+                  <input
+                    type="file"
+                    id="file-input"
+                    multiple
+                    style={{ display: 'none' }}
+                  />
+                  <AttachIcon decorative={false} title="attach" />
+                </label>
+              </div>
             </Stack>
             <Button
               variant="primary_icon"
