@@ -14,13 +14,12 @@ import {
   ChatBookendItem,
 } from '@twilio-paste/core/chat-log';
 import NewConversationView from './NewConversationView';
-import { useState, useRef, useEffect, Fragment } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { conversationClient } from '../utils/conversationsClient';
 import { SendIcon } from '@twilio-paste/icons/esm/SendIcon';
 import useConversationsClient from '../utils/useConversationsClient';
 import moment from 'moment';
 import GroupedMessages from './GroupedMessages';
-import { AttachIcon } from '@twilio-paste/icons/esm/AttachIcon';
 import { EmojiIcon } from '@twilio-paste/icons/esm/EmojiIcon';
 import { Message, SelectedAgent } from '../utils/types';
 import LoadingConversations from './LoadingConversations';
@@ -32,7 +31,6 @@ interface ChatInterfaceProps {
 
 const ChatInterface = ({ selectedAgent }: ChatInterfaceProps) => {
   const [newMessage, setNewMessage] = useState('');
-  const [hovered, setHovered] = useState(false);
   const [isButtonDisabled, setIsButtonDisabled] = useState(true);
   const messagesEndRef = useRef<null | HTMLDivElement>(null);
   const uniqueName: string = [
@@ -139,24 +137,7 @@ const ChatInterface = ({ selectedAgent }: ChatInterfaceProps) => {
               >
                 <EmojiIcon decorative={false} title="emoji" />
               </Button>
-              {/* <Button
-                variant="primary_icon"
-                onClick={() => {
-                  console.log('attach');
-                }}
-              >
-                <AttachmentButton hovered={hovered} />
-              </Button> */}
-              <div
-                onMouseEnter={() => {
-                  setHovered(true);
-                }}
-                onMouseLeave={() => {
-                  setHovered(false);
-                }}
-              >
-                <AttachmentButton hovered={hovered} />
-              </div>
+              <AttachmentButton />
             </Stack>
             <Button
               variant="primary_icon"
