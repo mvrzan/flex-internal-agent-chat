@@ -20,10 +20,6 @@ export default class InternalAgentChatPlugin extends FlexPlugin {
   }
 
   async init(flex: typeof Flex, manager: Flex.Manager): Promise<void> {
-    // flex.setProviders({
-    //   PasteThemeProvider: CustomizationProvider,
-    // });
-
     flex.setProviders({
       CustomProvider: RootComponent => props => {
         const pasteProviderProps: CustomizationProviderProps & {
@@ -35,6 +31,9 @@ export default class InternalAgentChatPlugin extends FlexPlugin {
           elements: {
             FLEX_WITH_OVERFLOW: {
               overflowY: 'auto',
+            },
+            BUTTON_WITH_PADDING: {
+              padding: 'space30',
             },
           },
         };

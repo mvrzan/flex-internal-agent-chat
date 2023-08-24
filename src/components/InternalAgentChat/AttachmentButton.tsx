@@ -2,12 +2,11 @@ import { AttachIcon } from '@twilio-paste/icons/esm/AttachIcon';
 import { useRef, useState } from 'react';
 import { Button } from '@twilio-paste/core';
 
-const AttachmentButton = ({}: any) => {
+const AttachmentButton = () => {
   const hiddenFileInput = useRef<any>(null);
   const [hovered, setHovered] = useState(false);
 
-  const clickHandler = () => {
-    console.log('clickHandler');
+  const clickHandler = (): void => {
     return hiddenFileInput.current === null
       ? ''
       : hiddenFileInput.current.click();
@@ -23,30 +22,28 @@ const AttachmentButton = ({}: any) => {
       onMouseLeave={() => {
         setHovered(false);
       }}
+      onFocus={() => {
+        setHovered(true);
+      }}
+      onBlur={() => {
+        setHovered(false);
+      }}
+      element="BUTTON_WITH_PADDING"
     >
-      <div
-        onMouseEnter={() => {
-          setHovered(true);
-        }}
-        onMouseLeave={() => {
-          setHovered(false);
-        }}
-      >
-        <label style={{ cursor: 'pointer' }} htmlFor="file-upload">
-          <input
-            type="file"
-            id="file-upload"
-            multiple
-            style={{ display: 'none', border: 'none' }}
-            ref={hiddenFileInput}
-          />
-          <AttachIcon
-            decorative={false}
-            title="attach"
-            color={hovered ? 'colorTextPrimary' : 'colorText'}
-          />
-        </label>
-      </div>
+      <AttachIcon
+        decorative={false}
+        title="attach"
+        color={hovered ? 'colorTextPrimary' : 'colorText'}
+      />
+      <label style={{ margin: '-2px' }} htmlFor="file-upload">
+        <input
+          type="file"
+          id="file-upload"
+          multiple
+          style={{ display: 'none', border: 'none' }}
+          ref={hiddenFileInput}
+        />
+      </label>
     </Button>
   );
 };
