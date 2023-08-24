@@ -1,13 +1,4 @@
-import {
-  Box,
-  Stack,
-  Button,
-  Flex,
-  Text,
-  TextArea,
-  Input,
-  Label,
-} from '@twilio-paste/core';
+import { Box, Stack, Button, Flex, Text, TextArea } from '@twilio-paste/core';
 import {
   ChatLog,
   ChatBookend,
