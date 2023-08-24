@@ -66,7 +66,7 @@ const ChatInterface = ({ selectedAgent }: ChatInterfaceProps) => {
 
   useEffect(() => {
     scrollToBottom();
-  }, [conversationMessages]);
+  }, [conversationMessages, isLoadingMessages]);
 
   return (
     <Flex vertical width="100%" height="100%">
