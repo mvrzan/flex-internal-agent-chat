@@ -1,14 +1,14 @@
-import { AttachIcon } from '@twilio-paste/icons/esm/AttachIcon';
 import { useRef, useState } from 'react';
 import { Button } from '@twilio-paste/core';
+import { AttachIcon } from '@twilio-paste/icons/esm/AttachIcon';
 
 const AttachmentButton = () => {
-  const hiddenFileInput = useRef<any>(null);
+  const hiddenFileInput = useRef<HTMLInputElement>(null);
   const [hovered, setHovered] = useState(false);
 
   const clickHandler = (): void => {
     return hiddenFileInput.current === null
-      ? ''
+      ? undefined
       : hiddenFileInput.current.click();
   };
 
