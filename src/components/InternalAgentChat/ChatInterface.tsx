@@ -15,6 +15,7 @@ import { EmojiIcon } from '@twilio-paste/icons/esm/EmojiIcon';
 import { Message, SelectedAgent } from '../utils/types';
 import LoadingConversations from './LoadingConversations';
 import AttachmentButton from './AttachmentButton';
+import { KeyboardEvent } from 'react';
 
 interface ChatInterfaceProps {
   selectedAgent: SelectedAgent;
@@ -37,15 +38,25 @@ const ChatInterface = ({ selectedAgent }: ChatInterfaceProps) => {
     isLoadingMessages,
   } = useConversationsClient(uniqueName, selectedAgent.contactUri);
 
-  const conversationHandler = async (
+  const conversationHandler = (
     event: React.ChangeEvent<HTMLTextAreaElement>
-  ) => {
+  ): void => {
     if (event.target.value === '') {
       setIsButtonDisabled(true);
       setNewMessage('');
     } else {
       setNewMessage(event.target.value);
       setIsButtonDisabled(false);
+    }
+  };
+
+  const enterKeyHandler = (event: KeyboardEvent<HTMLTextAreaElement>): void => {
+    if (
+      event.code === 'Enter' &&
+      !(event.getModifierState('Shift') && event.code === 'Enter')
+    ) {
+      event.preventDefault();
+      sendMessage();
     }
   };
 
@@ -119,6 +130,7 @@ const ChatInterface = ({ selectedAgent }: ChatInterfaceProps) => {
             onChange={conversationHandler}
             placeholder={`Message ${selectedAgent.fullName}`}
             value={newMessage}
+            onKeyDown={enterKeyHandler}
           />
           <Flex hAlignContent="between" vAlignContent="center" width="100%">
             <Stack orientation="horizontal" spacing="space0">
