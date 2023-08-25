@@ -19,6 +19,8 @@ export interface Message {
   dateCreated: Date;
   sid: string;
   type: string;
+  mediaUrl: string;
+  mediaType: string;
 }
 
 export interface SelectedAgent {

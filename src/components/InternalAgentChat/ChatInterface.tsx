@@ -1,11 +1,19 @@
-import { Box, Stack, Button, Flex, Text, TextArea } from '@twilio-paste/core';
+import {
+  Box,
+  Stack,
+  Button,
+  Flex,
+  Text,
+  TextArea,
+  Badge,
+} from '@twilio-paste/core';
 import {
   ChatLog,
   ChatBookend,
   ChatBookendItem,
 } from '@twilio-paste/core/chat-log';
 import NewConversationView from './NewConversationView';
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, KeyboardEvent } from 'react';
 import { conversationClient } from '../utils/conversationsClient';
 import { SendIcon } from '@twilio-paste/icons/esm/SendIcon';
 import useConversationsClient from '../utils/useConversationsClient';
@@ -15,7 +23,6 @@ import { EmojiIcon } from '@twilio-paste/icons/esm/EmojiIcon';
 import { Message, SelectedAgent } from '../utils/types';
 import LoadingConversations from './LoadingConversations';
 import AttachmentButton from './AttachmentButton';
-import { KeyboardEvent } from 'react';
 
 interface ChatInterfaceProps {
   selectedAgent: SelectedAgent;
@@ -24,6 +31,8 @@ interface ChatInterfaceProps {
 const ChatInterface = ({ selectedAgent }: ChatInterfaceProps) => {
   const [newMessage, setNewMessage] = useState('');
   const [isButtonDisabled, setIsButtonDisabled] = useState(true);
+  const [newMediaMessage, setNewMediaMessage] = useState('');
+  const [mediaMessages, setMediaMessages] = useState([]);
   const messagesEndRef = useRef<null | HTMLDivElement>(null);
   const uniqueName: string = [
     selectedAgent.contactUri,
@@ -63,9 +72,18 @@ const ChatInterface = ({ selectedAgent }: ChatInterfaceProps) => {
 
   const sendMessage = async (): Promise<void> => {
     try {
+      if (newMediaMessage !== '') {
+        await instantiatedConversation.sendMessage(newMediaMessage);
+        setNewMediaMessage('');
+        setMediaMessages([]);
+        return;
+      }
+
       await instantiatedConversation.sendMessage(newMessage);
       setNewMessage('');
       setIsButtonDisabled(true);
+      setNewMessage('');
+      setMediaMessages([]);
     } catch (error) {
       console.error(error);
     }
@@ -144,7 +162,10 @@ const ChatInterface = ({ selectedAgent }: ChatInterfaceProps) => {
               >
                 <EmojiIcon decorative={false} title="emoji" />
               </Button>
-              <AttachmentButton />
+              <AttachmentButton
+                setNewMediaMessage={setNewMediaMessage}
+                setMediaMessages={setMediaMessages}
+              />
             </Stack>
             <Button
               variant="primary_icon"

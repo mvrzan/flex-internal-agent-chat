@@ -2,7 +2,12 @@ import { useRef, useState } from 'react';
 import { Button } from '@twilio-paste/core';
 import { AttachIcon } from '@twilio-paste/icons/esm/AttachIcon';
 
-const AttachmentButton = () => {
+interface AttachmentButtonOwnProps {
+  setNewMediaMessage: React.Dispatch<React.SetStateAction<string>>;
+  setMediaMessages: React.Dispatch<React.SetStateAction<string>>;
+}
+
+const AttachmentButton = ({ setNewMediaMessage, setMediaMessages }: any) => {
   const hiddenFileInput = useRef<HTMLInputElement>(null);
   const [hovered, setHovered] = useState(false);
 
@@ -10,6 +15,15 @@ const AttachmentButton = () => {
     return hiddenFileInput.current === null
       ? undefined
       : hiddenFileInput.current.click();
+  };
+
+  const uploadFileHandler = (e: any) => {
+    const formData = new FormData();
+    Array.from(e.target.files).forEach((file: any) => {
+      formData.append('file', file);
+      setMediaMessages((prevState: any) => [...prevState, file.name]);
+    });
+    setNewMediaMessage(formData);
   };
 
   return (
@@ -41,6 +55,7 @@ const AttachmentButton = () => {
           id="file-upload"
           multiple
           style={{ display: 'none', border: 'none' }}
+          onChange={uploadFileHandler}
           ref={hiddenFileInput}
         />
       </label>

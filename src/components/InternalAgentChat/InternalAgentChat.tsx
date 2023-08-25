@@ -77,20 +77,6 @@ const InternalAgentChat = () => {
         Internal Agent Chat
       </Heading>
       <Separator orientation="horizontal" verticalSpacing="space50" />
-      {/* <Box width="15%" marginRight="space130">
-        <Stack orientation="vertical" spacing="space10">
-          {agents.map((agent: any) => (
-            <AgentCard
-              key={agent.workerSid}
-              fullName={agent.fullName}
-              firstName={agent.firstName}
-              lastName={agent.lastName}
-              imageUrl={agent.imageUrl}
-              activityName={agent.activityName}
-            />
-          ))}
-        </Stack>
-      </Box> */}
       <Flex
         vAlignContent="top"
         hAlignContent="left"

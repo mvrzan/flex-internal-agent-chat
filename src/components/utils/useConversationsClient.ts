@@ -101,16 +101,17 @@ const useConversationsClient = (
         // when the messages gets added, update the messageList state
         fetchedConversation.on('messageAdded', async (message: any) => {
           console.log('messageAdded');
-          // const mediaUrl =
-          // message.type === "media" ? await message.attachedMedia : "";
-          // const mediaType = message.type === "media" ? message.attachedMedia : "";
+          const mediaUrl =
+            message.type === 'media' ? await message.attachedMedia : '';
+          const mediaType =
+            message.type === 'media' ? message.attachedMedia : '';
           const author = message.author;
           const sid = message.sid;
           const body = message.body;
           const updatedMessage: ConversationMessage = {
             ...message,
-            // mediaUrl,
-            // mediaType,
+            mediaUrl,
+            mediaType,
             author,
             sid,
             body,
@@ -118,7 +119,6 @@ const useConversationsClient = (
             attributes: '',
             type: '',
           };
-          console.log('updatedMessage', updatedMessage);
           setConversationMessages(
             (prevState: ConversationMessage[] | undefined) => {
               if (prevState !== undefined) {
@@ -134,9 +134,9 @@ const useConversationsClient = (
         const paginator = await fetchedConversation.getMessages(1000);
         const messages = await Promise.all(
           paginator.items.map(async (s: any) => {
-            // const mediaUrl =
-            //   s.type === "media" ? await s.media.getContentTemporaryUrl() : "";
-            // const mediaType = s.type === "media" ? s.media.contentType : "";
+            const mediaUrl =
+              s.type === 'media' ? await s.media.getContentTemporaryUrl() : '';
+            const mediaType = s.type === 'media' ? s.media.contentType : '';
             return {
               author: s.author,
               sid: s.sid,
@@ -144,8 +144,8 @@ const useConversationsClient = (
               dateCreated: s.dateCreated,
               attributes: s.attributes,
               type: s.type,
-              // mediaUrl,
-              // mediaType,
+              mediaUrl,
+              mediaType,
             };
           })
         );

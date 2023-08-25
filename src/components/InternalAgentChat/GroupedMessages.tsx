@@ -8,6 +8,7 @@ import {
   ChatBookendItem,
 } from '@twilio-paste/core/chat-log';
 import { Message } from '../utils/types';
+import MediaMessage from '../MediaSupport/MediaMessage';
 
 interface GroupedMessagesProps {
   message: Message;
@@ -34,6 +35,16 @@ const GroupedMessages = ({
           <ChatMessage
             variant={message.author === identity ? 'outbound' : 'inbound'}
           >
+            {message.mediaType !== '' && message.mediaUrl !== '' ? (
+              <>
+                <MediaMessage
+                  mediaUrl={message.mediaUrl}
+                  mediaType={message.mediaType}
+                />
+              </>
+            ) : (
+              <></>
+            )}
             <ChatBubble key={message.sid}>{message.body}</ChatBubble>
             <ChatMessageMeta aria-label={`chat-message-${message.author}`}>
               <ChatMessageMetaItem>
@@ -47,6 +58,16 @@ const GroupedMessages = ({
         <ChatMessage
           variant={message.author === identity ? 'outbound' : 'inbound'}
         >
+          {message.mediaType !== '' && message.mediaUrl !== '' ? (
+            <>
+              <MediaMessage
+                mediaUrl={message.mediaUrl}
+                mediaType={message.mediaType}
+              />
+            </>
+          ) : (
+            <></>
+          )}
           <ChatBubble key={message.sid}>{message.body}</ChatBubble>
           <ChatMessageMeta aria-label={`chat-message-${message.author}`}>
             <ChatMessageMetaItem>
