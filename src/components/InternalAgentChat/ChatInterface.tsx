@@ -57,6 +57,7 @@ const ChatInterface = ({ selectedAgent }: ChatInterfaceProps) => {
     ) {
       event.preventDefault();
       sendMessage();
+      setIsButtonDisabled(true);
     }
   };
 
@@ -64,6 +65,7 @@ const ChatInterface = ({ selectedAgent }: ChatInterfaceProps) => {
     try {
       await instantiatedConversation.sendMessage(newMessage);
       setNewMessage('');
+      setIsButtonDisabled(true);
     } catch (error) {
       console.error(error);
     }
