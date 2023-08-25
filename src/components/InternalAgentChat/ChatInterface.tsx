@@ -42,6 +42,7 @@ const ChatInterface = ({ selectedAgent }: ChatInterfaceProps) => {
   ) => {
     if (event.target.value === '') {
       setIsButtonDisabled(true);
+      setNewMessage('');
     } else {
       setNewMessage(event.target.value);
       setIsButtonDisabled(false);
@@ -66,6 +67,7 @@ const ChatInterface = ({ selectedAgent }: ChatInterfaceProps) => {
 
   useEffect(() => {
     scrollToBottom();
+    setNewMessage('');
   }, [conversationMessages, isLoadingMessages]);
 
   return (
