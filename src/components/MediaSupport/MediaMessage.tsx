@@ -5,7 +5,12 @@ const MediaMessage = ({ mediaUrl = '', mediaType = '' }) => {
     () => (
       <div style={{ cursor: 'pointer' }}>
         <a href={mediaUrl} target="_blank" rel="noopener noreferrer">
-          <img src={mediaUrl} alt={mediaType} width="150px" />
+          <img
+            src={mediaUrl}
+            alt={mediaType}
+            width="450px"
+            style={{ borderRadius: '8px' }}
+          />
         </a>
       </div>
     ),
@@ -53,7 +58,7 @@ const MediaMessage = ({ mediaUrl = '', mediaType = '' }) => {
   );
 
   return (
-    <div className="flex m-1">
+    <div>
       {mediaType?.startsWith('image')
         ? imageViewer
         : mediaType?.startsWith('audio')
