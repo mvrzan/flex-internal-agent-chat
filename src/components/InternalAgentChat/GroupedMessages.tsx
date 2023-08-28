@@ -35,15 +35,21 @@ const GroupedMessages = ({
           <ChatMessage
             variant={message.author === identity ? 'outbound' : 'inbound'}
           >
-            {message.mediaType !== '' && message.mediaUrl !== '' ? (
-              <>
+            {message.mediaType !== '' && message.mediaUrl !== '' && (
+              <div
+                style={{
+                  alignItems: `${
+                    message.author === identity ? 'end' : 'start'
+                  }`,
+                  display: 'flex',
+                  flexDirection: 'column',
+                }}
+              >
                 <MediaMessage
                   mediaUrl={message.mediaUrl}
                   mediaType={message.mediaType}
                 />
-              </>
-            ) : (
-              <></>
+              </div>
             )}
             <ChatBubble key={message.sid}>{message.body}</ChatBubble>
             <ChatMessageMeta aria-label={`chat-message-${message.author}`}>
@@ -59,12 +65,18 @@ const GroupedMessages = ({
           variant={message.author === identity ? 'outbound' : 'inbound'}
         >
           {message.mediaType !== '' && message.mediaUrl !== '' ? (
-            <>
+            <div
+              style={{
+                alignItems: `${message.author === identity ? 'end' : 'start'}`,
+                display: 'flex',
+                flexDirection: 'column',
+              }}
+            >
               <MediaMessage
                 mediaUrl={message.mediaUrl}
                 mediaType={message.mediaType}
               />
-            </>
+            </div>
           ) : (
             <></>
           )}

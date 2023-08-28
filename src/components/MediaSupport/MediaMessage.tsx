@@ -58,7 +58,7 @@ const MediaMessage = ({ mediaUrl = '', mediaType = '' }) => {
   );
 
   return (
-    <div>
+    <>
       {mediaType?.startsWith('image')
         ? imageViewer
         : mediaType?.startsWith('audio')
@@ -68,7 +68,7 @@ const MediaMessage = ({ mediaUrl = '', mediaType = '' }) => {
         : mediaType?.startsWith('application')
         ? pdfViewer
         : ''}
-    </div>
+    </>
   );
 };
 
