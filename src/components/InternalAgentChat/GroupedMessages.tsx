@@ -16,6 +16,7 @@ interface GroupedMessagesProps {
   prevMessage: Message;
 }
 
+//TODO: Clean the logic here. There are some DRY patterns
 const GroupedMessages = ({
   message,
   identity,
@@ -49,24 +50,36 @@ const GroupedMessages = ({
                   mediaUrl={message.mediaUrl}
                   mediaType={message.mediaType}
                 />
+                <ChatMessageMeta aria-label={`chat-message-${message.author}`}>
+                  <ChatMessageMetaItem>
+                    {message.author} ・{' '}
+                    {moment(message.dateCreated).format(
+                      'MM/DD/YYYY, h:mm:ss a'
+                    )}
+                  </ChatMessageMetaItem>
+                </ChatMessageMeta>
               </div>
             )}
-            <ChatBubble key={message.sid}>
-              {message.body === '' ? <></> : message.body}
-            </ChatBubble>
-            <ChatMessageMeta aria-label={`chat-message-${message.author}`}>
-              <ChatMessageMetaItem>
-                {message.author} ・{' '}
-                {moment(message.dateCreated).format('MM/DD/YYYY, h:mm:ss a')}
-              </ChatMessageMetaItem>
-            </ChatMessageMeta>
+            {message.body !== '' && message.body !== null && (
+              <>
+                <ChatBubble key={message.sid}>{message.body}</ChatBubble>
+                <ChatMessageMeta aria-label={`chat-message-${message.author}`}>
+                  <ChatMessageMetaItem>
+                    {message.author} ・{' '}
+                    {moment(message.dateCreated).format(
+                      'MM/DD/YYYY, h:mm:ss a'
+                    )}
+                  </ChatMessageMetaItem>
+                </ChatMessageMeta>
+              </>
+            )}
           </ChatMessage>
         </>
       ) : (
         <ChatMessage
           variant={message.author === identity ? 'outbound' : 'inbound'}
         >
-          {message.mediaType !== '' && message.mediaUrl !== '' ? (
+          {message.mediaType !== '' && message.mediaUrl !== '' && (
             <div
               style={{
                 alignItems: `${message.author === identity ? 'end' : 'start'}`,
@@ -78,19 +91,17 @@ const GroupedMessages = ({
                 mediaUrl={message.mediaUrl}
                 mediaType={message.mediaType}
               />
+              <ChatMessageMeta aria-label={`chat-message-${message.author}`}>
+                <ChatMessageMetaItem>
+                  {message.author} ・{' '}
+                  {moment(message.dateCreated).format('MM/DD/YYYY, h:mm:ss a')}
+                </ChatMessageMetaItem>
+              </ChatMessageMeta>
             </div>
-          ) : (
-            <></>
           )}
-          {message.body !== '' && message.body !== null ? (
+          {message.body !== '' && message.body !== null && (
             <>
-              <ChatBubble key={message.sid}>
-                {message.body === '' && message.body === null ? (
-                  <></>
-                ) : (
-                  message.body
-                )}
-              </ChatBubble>
+              <ChatBubble key={message.sid}>{message.body}</ChatBubble>
               <ChatMessageMeta aria-label={`chat-message-${message.author}`}>
                 <ChatMessageMetaItem>
                   {message.author} ・{' '}
@@ -98,8 +109,6 @@ const GroupedMessages = ({
                 </ChatMessageMetaItem>
               </ChatMessageMeta>
             </>
-          ) : (
-            <></>
           )}
         </ChatMessage>
       )}
