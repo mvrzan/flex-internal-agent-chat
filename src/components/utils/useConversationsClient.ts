@@ -102,9 +102,11 @@ const useConversationsClient = (
         fetchedConversation.on('messageAdded', async (message: any) => {
           console.log('messageAdded');
           const mediaUrl =
-            message.type === 'media' ? await message.attachedMedia : '';
+            message.type === 'media'
+              ? await message.media.getContentTemporaryUrl()
+              : '';
           const mediaType =
-            message.type === 'media' ? message.attachedMedia : '';
+            message.type === 'media' ? message.media.contentType : '';
           const author = message.author;
           const sid = message.sid;
           const body = message.body;
@@ -119,6 +121,7 @@ const useConversationsClient = (
             attributes: '',
             type: '',
           };
+          console.log(updatedMessage);
           setConversationMessages(
             (prevState: ConversationMessage[] | undefined) => {
               if (prevState !== undefined) {

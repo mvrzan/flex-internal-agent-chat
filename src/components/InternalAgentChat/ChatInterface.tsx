@@ -50,6 +50,7 @@ const ChatInterface = ({ selectedAgent }: ChatInterfaceProps) => {
   const conversationHandler = (
     event: React.ChangeEvent<HTMLTextAreaElement>
   ): void => {
+    console.log(event);
     if (event.target.value === '') {
       setIsButtonDisabled(true);
       setNewMessage('');
@@ -101,6 +102,12 @@ const ChatInterface = ({ selectedAgent }: ChatInterfaceProps) => {
     scrollToBottom();
     setNewMessage('');
   }, [conversationMessages, isLoadingMessages]);
+
+  useEffect(() => {
+    if (newMediaMessage !== '') {
+      setIsButtonDisabled(false);
+    }
+  }, [newMediaMessage]);
 
   return (
     <Flex vertical width="100%" height="100%">
