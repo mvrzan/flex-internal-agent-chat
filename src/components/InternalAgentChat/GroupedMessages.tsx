@@ -51,7 +51,9 @@ const GroupedMessages = ({
                 />
               </div>
             )}
-            <ChatBubble key={message.sid}>{message.body}</ChatBubble>
+            <ChatBubble key={message.sid}>
+              {message.body === '' ? <></> : message.body}
+            </ChatBubble>
             <ChatMessageMeta aria-label={`chat-message-${message.author}`}>
               <ChatMessageMetaItem>
                 {message.author} ・{' '}
@@ -80,9 +82,15 @@ const GroupedMessages = ({
           ) : (
             <></>
           )}
-          {message.body !== '' ? (
+          {message.body !== '' && message.body !== null ? (
             <>
-              <ChatBubble key={message.sid}>{message.body}</ChatBubble>
+              <ChatBubble key={message.sid}>
+                {message.body === '' && message.body === null ? (
+                  <></>
+                ) : (
+                  message.body
+                )}
+              </ChatBubble>
               <ChatMessageMeta aria-label={`chat-message-${message.author}`}>
                 <ChatMessageMetaItem>
                   {message.author} ・{' '}
@@ -91,7 +99,7 @@ const GroupedMessages = ({
               </ChatMessageMeta>
             </>
           ) : (
-            ''
+            <></>
           )}
         </ChatMessage>
       )}
