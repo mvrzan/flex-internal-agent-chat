@@ -76,13 +76,13 @@ const ChatInterface = ({ selectedAgent }: ChatInterfaceProps) => {
         await instantiatedConversation.sendMessage(newMediaMessage);
         setNewMediaMessage('');
         setMediaMessages([]);
+        setIsButtonDisabled(true);
         return;
       }
       if (newMessage !== '') {
         await instantiatedConversation.sendMessage(newMessage);
         setNewMessage('');
         setIsButtonDisabled(true);
-        setNewMessage('');
         setMediaMessages([]);
       }
     } catch (error) {
