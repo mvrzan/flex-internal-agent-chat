@@ -80,13 +80,19 @@ const GroupedMessages = ({
           ) : (
             <></>
           )}
-          <ChatBubble key={message.sid}>{message.body}</ChatBubble>
-          <ChatMessageMeta aria-label={`chat-message-${message.author}`}>
-            <ChatMessageMetaItem>
-              {message.author} ・{' '}
-              {moment(message.dateCreated).format('MM/DD/YYYY, h:mm:ss a')}
-            </ChatMessageMetaItem>
-          </ChatMessageMeta>
+          {message.body !== '' ? (
+            <>
+              <ChatBubble key={message.sid}>{message.body}</ChatBubble>
+              <ChatMessageMeta aria-label={`chat-message-${message.author}`}>
+                <ChatMessageMetaItem>
+                  {message.author} ・{' '}
+                  {moment(message.dateCreated).format('MM/DD/YYYY, h:mm:ss a')}
+                </ChatMessageMetaItem>
+              </ChatMessageMeta>
+            </>
+          ) : (
+            ''
+          )}
         </ChatMessage>
       )}
     </>

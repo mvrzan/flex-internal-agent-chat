@@ -121,7 +121,6 @@ const useConversationsClient = (
             attributes: '',
             type: '',
           };
-          console.log(updatedMessage);
           setConversationMessages(
             (prevState: ConversationMessage[] | undefined) => {
               if (prevState !== undefined) {

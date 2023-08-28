@@ -1,6 +1,13 @@
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
+import { SkeletonLoader } from '@twilio-paste/core';
 
 const MediaMessage = ({ mediaUrl = '', mediaType = '' }) => {
+  const [imageLoaded, setImageLoaded] = useState(false);
+
+  const imageLoadHandler = () => {
+    setImageLoaded(true);
+  };
+
   const imageViewer = useMemo(
     () => (
       <div style={{ cursor: 'pointer' }}>
@@ -10,6 +17,7 @@ const MediaMessage = ({ mediaUrl = '', mediaType = '' }) => {
             alt={mediaType}
             width="450px"
             style={{ borderRadius: '8px' }}
+            onLoad={imageLoadHandler}
           />
         </a>
       </div>
@@ -59,6 +67,7 @@ const MediaMessage = ({ mediaUrl = '', mediaType = '' }) => {
 
   return (
     <>
+      {!imageLoaded && <SkeletonLoader width="300px" height="300px" />}
       {mediaType?.startsWith('image')
         ? imageViewer
         : mediaType?.startsWith('audio')

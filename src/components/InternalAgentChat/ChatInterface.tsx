@@ -50,7 +50,6 @@ const ChatInterface = ({ selectedAgent }: ChatInterfaceProps) => {
   const conversationHandler = (
     event: React.ChangeEvent<HTMLTextAreaElement>
   ): void => {
-    console.log(event);
     if (event.target.value === '') {
       setIsButtonDisabled(true);
       setNewMessage('');
@@ -92,8 +91,12 @@ const ChatInterface = ({ selectedAgent }: ChatInterfaceProps) => {
   };
 
   const scrollToBottom = () => {
+    // setTimeout(() => {
+    //   messagesEndRef.current?.scrollIntoView({
+    //     block: 'end',
+    //   });
+    // }, 2000);
     messagesEndRef.current?.scrollIntoView({
-      behavior: 'smooth',
       block: 'end',
     });
   };
