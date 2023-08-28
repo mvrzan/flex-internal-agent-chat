@@ -67,7 +67,7 @@ const MediaMessage = ({ mediaUrl = '', mediaType = '' }) => {
 
   return (
     <>
-      {!imageLoaded && <SkeletonLoader width="300px" height="300px" />}
+      {!imageLoaded && <SkeletonLoader width="350px" height="350px" />}
       {mediaType?.startsWith('image')
         ? imageViewer
         : mediaType?.startsWith('audio')
