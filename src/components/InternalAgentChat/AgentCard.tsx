@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { StatusBadge } from '@twilio-paste/core/status';
 import { Stack, Avatar, Text, Flex, Tooltip, Button } from '@twilio-paste/core';
+import { SelectedAgent } from '../utils/types';
 
 interface AgentCardProps {
   fullName: string;
@@ -11,7 +12,7 @@ interface AgentCardProps {
   email: string;
   contactUri: string;
   isAgentSelected: boolean;
-  selectedAgent: any;
+  selectedAgent: SelectedAgent;
   setIsAgentSelected: React.Dispatch<React.SetStateAction<boolean>>;
   setSelectedAgent: React.Dispatch<React.SetStateAction<{}>>;
 }
