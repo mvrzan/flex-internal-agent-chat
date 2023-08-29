@@ -178,6 +178,12 @@ const useConversationsClient = (
     init(uniqueName);
   }, [uniqueName]);
 
+  useEffect(() => {
+    if (instantiatedConversation !== undefined) {
+      setIsLoadingMessages(false);
+    }
+  }, [instantiatedConversation]);
+
   return conversationMessages.length === 0
     ? {
         conversationMessages,
