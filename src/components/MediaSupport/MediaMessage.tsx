@@ -1,28 +1,42 @@
 import { useMemo, useState } from 'react';
 import { SkeletonLoader } from '@twilio-paste/core';
 
-const MediaMessage = ({ mediaUrl = '', mediaType = '' }) => {
-  const [imageLoaded, setImageLoaded] = useState(false);
+interface MediaMessageOwnProps {
+  mediaUrl: string;
+  mediaType: string;
+}
 
-  const imageLoadHandler = () => {
-    setImageLoaded(true);
+const MediaMessage = ({
+  mediaUrl = '',
+  mediaType = '',
+}: MediaMessageOwnProps) => {
+  const [loading, setLoading] = useState<boolean>(true);
+
+  const imageLoadingHandler = () => {
+    if (loading) {
+      setLoading(false);
+    }
   };
 
   const imageViewer = useMemo(
     () => (
       <div style={{ cursor: 'pointer' }}>
         <a href={mediaUrl} target="_blank" rel="noopener noreferrer">
+          {loading && <SkeletonLoader width="300px" height="300px" />}
           <img
+            onLoad={imageLoadingHandler}
             src={mediaUrl}
             alt={mediaType}
             width="450px"
-            style={{ borderRadius: '8px' }}
-            onLoad={imageLoadHandler}
+            style={{
+              borderRadius: '8px',
+            }}
+            loading="lazy"
           />
         </a>
       </div>
     ),
-    [mediaUrl, mediaType]
+    [mediaUrl, mediaType, loading]
   );
 
   const audioPlayer = useMemo(
@@ -67,7 +81,6 @@ const MediaMessage = ({ mediaUrl = '', mediaType = '' }) => {
 
   return (
     <>
-      {!imageLoaded && <SkeletonLoader width="350px" height="350px" />}
       {mediaType?.startsWith('image')
         ? imageViewer
         : mediaType?.startsWith('audio')
