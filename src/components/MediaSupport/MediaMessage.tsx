@@ -1,5 +1,6 @@
 import { useMemo, useState } from 'react';
 import { SkeletonLoader } from '@twilio-paste/core';
+import ImageModal from './ImageModal';
 
 interface MediaMessageOwnProps {
   mediaUrl: string;
@@ -11,6 +12,7 @@ const MediaMessage = ({
   mediaType = '',
 }: MediaMessageOwnProps) => {
   const [loading, setLoading] = useState<boolean>(true);
+  const [modalOpen, setModalOpen] = useState<boolean>(false);
 
   const imageLoadingHandler = () => {
     if (loading) {
@@ -18,22 +20,26 @@ const MediaMessage = ({
     }
   };
 
+  const openModalHandler = () => {
+    console.log('openModalHandler');
+    setModalOpen(!modalOpen);
+  };
+
   const imageViewer = useMemo(
     () => (
       <div style={{ cursor: 'pointer' }}>
-        <a href={mediaUrl} target="_blank" rel="noopener noreferrer">
-          {loading && <SkeletonLoader width="300px" height="300px" />}
-          <img
-            onLoad={imageLoadingHandler}
-            src={mediaUrl}
-            alt={mediaType}
-            width="450px"
-            style={{
-              borderRadius: '8px',
-            }}
-            loading="lazy"
-          />
-        </a>
+        {loading && <SkeletonLoader width="300px" height="300px" />}
+        <img
+          onLoad={imageLoadingHandler}
+          src={mediaUrl}
+          alt={mediaType}
+          width="450px"
+          style={{
+            borderRadius: '8px',
+          }}
+          loading="lazy"
+          onClick={openModalHandler}
+        />
       </div>
     ),
     [mediaUrl, mediaType, loading]
@@ -90,6 +96,11 @@ const MediaMessage = ({
         : mediaType?.startsWith('application')
         ? pdfViewer
         : ''}
+      <ImageModal
+        url={mediaUrl}
+        modalOpen={modalOpen}
+        setModalOpen={setModalOpen}
+      />
     </>
   );
 };
