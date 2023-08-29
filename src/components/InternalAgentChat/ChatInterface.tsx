@@ -91,11 +91,14 @@ const ChatInterface = ({ selectedAgent }: ChatInterfaceProps) => {
   };
 
   const scrollToBottom = () => {
-    setTimeout(() => {
-      messagesEndRef.current?.scrollIntoView({
-        block: 'end',
-      });
-    }, 500);
+    // setTimeout(() => {
+    //   messagesEndRef.current?.scrollIntoView({
+    //     block: 'end',
+    //   });
+    // }, 500);
+    messagesEndRef.current?.scrollIntoView({
+      block: 'end',
+    });
   };
 
   useEffect(() => {

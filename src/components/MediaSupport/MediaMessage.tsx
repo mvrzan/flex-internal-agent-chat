@@ -21,7 +21,6 @@ const MediaMessage = ({
   };
 
   const openModalHandler = () => {
-    console.log('openModalHandler');
     setModalOpen(!modalOpen);
   };
 
