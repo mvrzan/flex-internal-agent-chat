@@ -1,21 +1,36 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { EmojiIcon } from '@twilio-paste/icons/esm/EmojiIcon';
-import { createPopup } from '@picmo/popup-picker';
+import {
+  PopupPickerController,
+  Position,
+  createPopup,
+} from '@picmo/popup-picker';
 import { Button } from '@twilio-paste/core';
+import { PopupEvent } from '@picmo/popup-picker/dist/PopupEvents';
 
-let picker: any = null;
+interface EmojiInputActionOwnProps {
+  setNewMessage: React.Dispatch<React.SetStateAction<string>>;
+}
+
+interface PopupOptions {
+  referenceElement: HTMLElement | undefined;
+  triggerElement: HTMLElement | undefined;
+  position: Position | undefined;
+}
+
+let picker: PopupPickerController;
 
 /** This component uses PicMo, Copyright (c) 2019 Joe Attardi
  *  See license text at https://github.com/joeattardi/picmo/blob/main/LICENSE
  */
 
-const EmojiInputAction = ({ setNewMessage }: any) => {
+const EmojiInputAction = ({ setNewMessage }: EmojiInputActionOwnProps) => {
   const [selectedEmoji, setSelectedEmoji] = useState(null);
-  const [hovered, setHovered] = useState(false);
-  const buttonRef = useRef(null);
+  const [hovered, setHovered] = useState<boolean>(false);
+  const buttonRef = useRef<HTMLButtonElement>(null);
 
-  const addEmoji = (selectedEmoji: any) => {
-    setNewMessage((prevMessage: any) => `${prevMessage} ${selectedEmoji}`);
+  const addEmoji = (selectedEmoji: string) => {
+    setNewMessage((prevMessage: string) => `${prevMessage} ${selectedEmoji}`);
   };
 
   const togglePicker = () => {
@@ -24,19 +39,15 @@ const EmojiInputAction = ({ setNewMessage }: any) => {
   };
 
   useEffect(() => {
-    let pickerOptions = {
-      showPreview: false,
-      emojiSize: '1.7rem',
-    };
-    let popupOptions = {
-      referenceElement: buttonRef.current,
-      triggerElement: buttonRef.current,
+    let popupOptions: PopupOptions = {
+      referenceElement: buttonRef.current as HTMLButtonElement | undefined,
+      triggerElement: buttonRef.current as HTMLButtonElement | undefined,
       position: 'bottom-start',
     };
-    // @ts-ignore
-    picker = createPopup(pickerOptions, popupOptions);
 
-    picker.addEventListener('emoji:select', (event: any) => {
+    picker = createPopup({}, popupOptions);
+
+    picker.addEventListener('emoji:select', event => {
       setSelectedEmoji(event.emoji);
     });
 
@@ -45,7 +56,9 @@ const EmojiInputAction = ({ setNewMessage }: any) => {
 
       try {
         picker.destroy();
-      } catch {}
+      } catch (error) {
+        console.error(error);
+      }
     };
   }, []);
 
