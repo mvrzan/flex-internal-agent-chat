@@ -170,14 +170,19 @@ const MediaMessage = ({
         borderRadius="borderRadius30"
         backgroundColor="colorBackgroundPrimaryWeaker"
         padding="space30"
-        width="50%"
+        width="40%"
       >
         <Flex
           vAlignContent="center"
           hAlignContent="center"
           marginBottom="space30"
         >
-          <iframe title="PDF Preview" src={mediaUrl} width="100%" />
+          <iframe
+            title="PDF Preview"
+            src={mediaUrl}
+            width="100%"
+            height="250px"
+          />
         </Flex>
         <Flex vAlignContent="center" hAlignContent="center">
           <Stack orientation="horizontal" spacing="space30">
