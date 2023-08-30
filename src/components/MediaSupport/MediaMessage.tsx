@@ -1,6 +1,15 @@
 import { useMemo, useState } from 'react';
-import { SkeletonLoader } from '@twilio-paste/core';
+import {
+  SkeletonLoader,
+  Box,
+  Stack,
+  Button,
+  Text,
+  Flex,
+} from '@twilio-paste/core';
 import ImageModal from './ImageModal';
+import { DownloadIcon } from '@twilio-paste/icons/esm/DownloadIcon';
+import { LinkExternalIcon } from '@twilio-paste/icons/esm/LinkExternalIcon';
 
 interface MediaMessageOwnProps {
   mediaUrl: string;
@@ -22,6 +31,26 @@ const MediaMessage = ({
 
   const openModalHandler = () => {
     setModalOpen(!modalOpen);
+  };
+
+  const fetchFile = async (url: string) => {
+    const response = await fetch(url);
+    const blob = await response.blob();
+
+    return blob;
+  };
+
+  const downloadFileHandler = async (url: string) => {
+    const fileBlob = await fetchFile(url);
+    const imageBase64 = URL.createObjectURL(fileBlob);
+    const link = document.createElement('a');
+
+    link.style.setProperty('display', 'none');
+    document.body.appendChild(link);
+    link.download = 'chat_file';
+    link.href = imageBase64;
+    link.click();
+    link.remove();
   };
 
   const imageViewer = useMemo(
@@ -46,14 +75,44 @@ const MediaMessage = ({
 
   const audioPlayer = useMemo(
     () => (
-      <div>
-        <audio controls>
-          <source src={mediaUrl} type={mediaType} />
-        </audio>
-        <a href={mediaUrl} target="_blank" rel="noopener noreferrer">
-          <div className="mt-2 align-middle ">Open in new tab</div>
-        </a>
-      </div>
+      <Box
+        borderRadius="borderRadius30"
+        backgroundColor="colorBackgroundPrimaryWeaker"
+        padding="space30"
+      >
+        <Flex
+          vAlignContent="center"
+          hAlignContent="center"
+          marginBottom="space30"
+        >
+          <audio controls>
+            <source src={mediaUrl} type={mediaType} />
+          </audio>
+        </Flex>
+        <Stack orientation="horizontal" spacing="space30">
+          <Stack orientation="horizontal" spacing="spaceNegative30">
+            <Button
+              variant="secondary"
+              onClick={() => {
+                downloadFileHandler(mediaUrl);
+              }}
+            >
+              <DownloadIcon decorative />
+              <Text as="span" fontWeight="fontWeightBold">
+                Download file
+              </Text>
+            </Button>
+          </Stack>
+          <Stack orientation="horizontal" spacing="spaceNegative30">
+            <Button as="a" variant="secondary" href={mediaUrl}>
+              <LinkExternalIcon decorative />
+              <Text as="span" fontWeight="fontWeightBold">
+                Open in new tab
+              </Text>
+            </Button>
+          </Stack>
+        </Stack>
+      </Box>
     ),
     [mediaUrl, mediaType]
   );
