@@ -166,12 +166,45 @@ const MediaMessage = ({
 
   const pdfViewer = useMemo(
     () => (
-      <div>
-        <iframe title="PDF Preview" src={mediaUrl} width="100%" />
-        <a href={mediaUrl} target="_blank" rel="noopener noreferrer">
-          <div className="mt-2 align-middle ">Open in new tab</div>
-        </a>
-      </div>
+      <Box
+        borderRadius="borderRadius30"
+        backgroundColor="colorBackgroundPrimaryWeaker"
+        padding="space30"
+        width="50%"
+      >
+        <Flex
+          vAlignContent="center"
+          hAlignContent="center"
+          marginBottom="space30"
+        >
+          <iframe title="PDF Preview" src={mediaUrl} width="100%" />
+        </Flex>
+        <Flex vAlignContent="center" hAlignContent="center">
+          <Stack orientation="horizontal" spacing="space30">
+            <Stack orientation="horizontal" spacing="spaceNegative30">
+              <Button
+                variant="secondary"
+                onClick={() => {
+                  downloadFileHandler(mediaUrl);
+                }}
+              >
+                <DownloadIcon decorative />
+                <Text as="span" fontWeight="fontWeightBold">
+                  Download file
+                </Text>
+              </Button>
+            </Stack>
+            <Stack orientation="horizontal" spacing="spaceNegative30">
+              <Button as="a" variant="secondary" href={mediaUrl}>
+                <LinkExternalIcon decorative />
+                <Text as="span" fontWeight="fontWeightBold">
+                  Open in new tab
+                </Text>
+              </Button>
+            </Stack>
+          </Stack>
+        </Flex>
+      </Box>
     ),
     [mediaUrl]
   );
