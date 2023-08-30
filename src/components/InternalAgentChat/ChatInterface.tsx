@@ -23,6 +23,7 @@ import { EmojiIcon } from '@twilio-paste/icons/esm/EmojiIcon';
 import { Message, SelectedAgent } from '../utils/types';
 import LoadingConversations from './LoadingConversations';
 import AttachmentButton from './AttachmentButton';
+import EmojiInputAction from '../EmojiSupport/EmojiPicker';
 
 interface ChatInterfaceProps {
   selectedAgent: SelectedAgent;
@@ -105,7 +106,10 @@ const ChatInterface = ({ selectedAgent }: ChatInterfaceProps) => {
     if (newMediaMessage !== '') {
       setIsButtonDisabled(false);
     }
-  }, [newMediaMessage]);
+    if (newMessage !== '') {
+      setIsButtonDisabled(false);
+    }
+  }, [newMediaMessage, newMessage]);
 
   return (
     <Flex vertical width="100%" height="100%">
@@ -160,19 +164,13 @@ const ChatInterface = ({ selectedAgent }: ChatInterfaceProps) => {
           />
           <Flex hAlignContent="between" vAlignContent="center" width="100%">
             <Stack orientation="horizontal" spacing="space0">
-              <Button
-                variant="secondary_icon"
-                onClick={() => {
-                  console.log('The button does nothing at the moment!');
-                }}
-              >
-                <EmojiIcon decorative={false} title="emoji" />
-              </Button>
+              <EmojiInputAction setNewMessage={setNewMessage} />
               <AttachmentButton
                 setNewMediaMessage={setNewMediaMessage}
                 setMediaMessages={setMediaMessages}
               />
             </Stack>
+
             <Button
               variant="primary_icon"
               onClick={sendMessage}
