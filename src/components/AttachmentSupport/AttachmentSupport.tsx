@@ -21,58 +21,81 @@ interface File {
 }
 
 interface AttachmentButtonOwnProps {
-  setNewMediaMessage: React.Dispatch<React.SetStateAction<any>>;
   setMediaMessages: React.Dispatch<React.SetStateAction<any>>;
+  setIsModalButtonDisabled: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 const AttachmentSupport = ({
-  setNewMediaMessage,
   setMediaMessages,
+  setIsModalButtonDisabled,
 }: AttachmentButtonOwnProps) => {
   const [screenReaderText, setScreenReaderText] = useState<string>('');
   const [files, setFiles] = useState<File[]>([]);
+  const [uploadedFiles, setUploadedFiles] = useState<any>();
+
+  const formatBytes = (bytes: number, decimals = 2) => {
+    if (!+bytes) return '0 Bytes';
+
+    const k = 1024;
+    const dm = decimals < 0 ? 0 : decimals;
+    const sizes = [
+      'Bytes',
+      'KiB',
+      'MiB',
+      'GiB',
+      'TiB',
+      'PiB',
+      'EiB',
+      'ZiB',
+      'YiB',
+    ];
+
+    const i = Math.floor(Math.log(bytes) / Math.log(k));
+
+    return `${parseFloat((bytes / Math.pow(k, i)).toFixed(dm))} ${sizes[i]}`;
+  };
 
   useEffect(() => {
-    const timer = setTimeout(() => {
-      let finishedFiles = '';
+    let finishedFiles = '';
 
-      setFiles(prev => {
-        const updatedFiles: any = [];
-        prev.forEach(file => {
-          if (file.variant === 'loading') {
-            file.variant = 'default';
-            const size = Math.floor(Math.random() * (50 - 1 + 1) + 1);
-            file.description = size + ' ' + 'MB';
-            finishedFiles = finishedFiles + ' ' + file.title;
-          }
-          updatedFiles.push(file);
-        });
-        return updatedFiles;
+    setFiles(prev => {
+      const updatedFiles: any = [];
+      prev.forEach((file: any) => {
+        if (file.variant === 'loading') {
+          file.variant = 'default';
+          file.description = formatBytes(file.size);
+          finishedFiles = finishedFiles + ' ' + file.title;
+        }
+        updatedFiles.push(file);
       });
-      if (finishedFiles.length > 0) {
-        setScreenReaderText('Finished uploading: ' + finishedFiles);
-      }
-    }, 3000);
+      return updatedFiles;
+    });
+    if (files.length > 0) {
+      setScreenReaderText('Finished uploading: ' + finishedFiles);
+    }
+  }, [uploadedFiles]);
 
-    return () => clearTimeout(timer);
-  }, [files, setFiles]);
+  useEffect(() => {
+    files.length === 0
+      ? setIsModalButtonDisabled(true)
+      : setIsModalButtonDisabled(false);
+  }, [files]);
 
+  //  TODO: same file input validation and user feedback
   const handleInputChange = (event: any) => {
     const { files: newFiles } = event.target;
+    setUploadedFiles(newFiles);
     let newFilesNames = '';
 
-    const formDataArray: any = new FormData();
-    const formData = new FormData();
-    Array.from(event.target.files).forEach((file: any) => {
-      formData.append('file', file);
+    const formDataArray: FormData = new FormData();
 
+    Array.from(newFiles).forEach((file: any) => {
       formDataArray.append('arr[]', file);
     });
-    setNewMediaMessage(formData);
     setMediaMessages(formDataArray);
 
     if (newFiles !== null) {
-      Array.from(newFiles).forEach(({ name }: any) => {
+      Array.from(newFiles).forEach(({ name, size }: any) => {
         newFilesNames = newFilesNames + ' ' + name;
         setFiles(prev => {
           return [
@@ -82,6 +105,7 @@ const AttachmentSupport = ({
               description: 'Uploading...',
               variant: 'loading',
               id: name,
+              size,
             },
           ];
         });
@@ -124,6 +148,12 @@ const AttachmentSupport = ({
     }
   };
 
+  const handleRemovedItem = (id: string) => {
+    setFiles(prev => {
+      return prev.filter(file => file.id !== id);
+    });
+  };
+
   return (
     <>
       <FileUploader name="Default File Uploader">
@@ -155,9 +185,7 @@ const AttachmentSupport = ({
               key={id}
               fileIcon={<DownloadIcon decorative />}
               onButtonClick={() => {
-                setFiles(prev => {
-                  return prev.filter(file => file.id !== id);
-                });
+                handleRemovedItem(id);
               }}
             >
               <FileUploaderItemTitle>{title}</FileUploaderItemTitle>

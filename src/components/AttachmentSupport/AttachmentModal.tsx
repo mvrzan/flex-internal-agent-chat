@@ -8,12 +8,14 @@ import {
   Button,
 } from '@twilio-paste/core';
 import AttachmentSupport from './AttachmentSupport';
+import { useState } from 'react';
 
 interface ImageModalOwnProps {
   modalOpen: boolean;
   setModalOpen: React.Dispatch<React.SetStateAction<boolean>>;
-  setNewMediaMessage: React.Dispatch<React.SetStateAction<string>>;
   setMediaMessages: React.Dispatch<React.SetStateAction<string>>;
+  setIsButtonDisabled: React.Dispatch<React.SetStateAction<boolean>>;
+  sendMessage: () => Promise<void>;
 }
 
 const modalHeadingID: string = 'attachment-modal-heading';
@@ -21,13 +23,22 @@ const modalHeadingID: string = 'attachment-modal-heading';
 const AttachmentModal = ({
   modalOpen,
   setModalOpen,
-  setNewMediaMessage,
   setMediaMessages,
+  setIsButtonDisabled,
+  sendMessage,
 }: ImageModalOwnProps): React.JSX.Element => {
+  const [isModalButtonDisabled, setIsModalButtonDisabled] =
+    useState<boolean>(true);
+
   const closeHandler = (): void => {
     setModalOpen(!modalOpen);
-    setNewMediaMessage('');
     setMediaMessages('');
+    setIsButtonDisabled(true);
+  };
+
+  const sendHandler = (): void => {
+    setModalOpen(!modalOpen);
+    sendMessage();
   };
 
   return (
@@ -44,8 +55,8 @@ const AttachmentModal = ({
       </ModalHeader>
       <ModalBody>
         <AttachmentSupport
-          setNewMediaMessage={setNewMediaMessage}
           setMediaMessages={setMediaMessages}
+          setIsModalButtonDisabled={setIsModalButtonDisabled}
         />
       </ModalBody>
       <ModalFooter>
@@ -53,7 +64,13 @@ const AttachmentModal = ({
           <Button variant="secondary" onClick={closeHandler}>
             Cancel
           </Button>
-          <Button variant="primary">Send</Button>
+          <Button
+            variant="primary"
+            onClick={sendHandler}
+            disabled={isModalButtonDisabled}
+          >
+            Send
+          </Button>
         </ModalFooterActions>
       </ModalFooter>
     </Modal>

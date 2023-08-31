@@ -4,13 +4,15 @@ import { AttachIcon } from '@twilio-paste/icons/esm/AttachIcon';
 import AttachmentModal from './AttachmentModal';
 
 interface AttachmentButtonOwnProps {
-  setNewMediaMessage: React.Dispatch<React.SetStateAction<string>>;
   setMediaMessages: React.Dispatch<React.SetStateAction<string>>;
+  setIsButtonDisabled: React.Dispatch<React.SetStateAction<boolean>>;
+  sendMessage: () => Promise<void>;
 }
 
-const AttachmentButton2 = ({
-  setNewMediaMessage,
+const AttachmentButton = ({
   setMediaMessages,
+  setIsButtonDisabled,
+  sendMessage,
 }: AttachmentButtonOwnProps): React.JSX.Element => {
   const [hovered, setHovered] = useState<boolean>(false);
   const [modalOpen, setModalOpen] = useState<boolean>(false);
@@ -48,12 +50,13 @@ const AttachmentButton2 = ({
         <AttachmentModal
           modalOpen={modalOpen}
           setModalOpen={setModalOpen}
-          setNewMediaMessage={setNewMediaMessage}
           setMediaMessages={setMediaMessages}
+          setIsButtonDisabled={setIsButtonDisabled}
+          sendMessage={sendMessage}
         />
       )}
     </>
   );
 };
 
-export default AttachmentButton2;
+export default AttachmentButton;

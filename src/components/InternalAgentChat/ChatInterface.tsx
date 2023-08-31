@@ -1,12 +1,4 @@
-import {
-  Box,
-  Stack,
-  Button,
-  Flex,
-  Text,
-  TextArea,
-  Badge,
-} from '@twilio-paste/core';
+import { Box, Stack, Button, Flex, Text, TextArea } from '@twilio-paste/core';
 import {
   ChatLog,
   ChatBookend,
@@ -21,9 +13,8 @@ import moment from 'moment';
 import GroupedMessages from './GroupedMessages';
 import { Message, SelectedAgent } from '../utils/types';
 import LoadingConversations from './LoadingConversations';
-import AttachmentButton from './AttachmentButton';
 import EmojiInputAction from '../EmojiSupport/EmojiPicker';
-import AttachmentButton2 from '../AttachmentSupport/AttachmentButton';
+import AttachmentButton from '../AttachmentSupport/AttachmentButton';
 
 interface ChatInterfaceProps {
   selectedAgent: SelectedAgent;
@@ -32,7 +23,6 @@ interface ChatInterfaceProps {
 const ChatInterface = ({ selectedAgent }: ChatInterfaceProps) => {
   const [newMessage, setNewMessage] = useState('');
   const [isButtonDisabled, setIsButtonDisabled] = useState(true);
-  const [newMediaMessage, setNewMediaMessage] = useState('');
   const [mediaMessages, setMediaMessages] = useState<any>([]);
   const messagesEndRef = useRef<null | HTMLDivElement>(null);
   const uniqueName: string = [
@@ -79,20 +69,11 @@ const ChatInterface = ({ selectedAgent }: ChatInterfaceProps) => {
           newFormattedMessage.append('file', message);
           await instantiatedConversation.sendMessage(newFormattedMessage);
         });
-        setNewMediaMessage('');
         setMediaMessages([]);
         setIsButtonDisabled(true);
         return;
       }
 
-      if (newMediaMessage !== '') {
-        console.log('newMediaMessage', newMediaMessage);
-        await instantiatedConversation.sendMessage(newMediaMessage);
-        setNewMediaMessage('');
-        setMediaMessages([]);
-        setIsButtonDisabled(true);
-        return;
-      }
       if (newMessage !== '') {
         await instantiatedConversation.sendMessage(newMessage);
         setNewMessage('');
@@ -116,13 +97,10 @@ const ChatInterface = ({ selectedAgent }: ChatInterfaceProps) => {
   }, [conversationMessages, isLoadingMessages]);
 
   useEffect(() => {
-    if (newMediaMessage !== '') {
-      setIsButtonDisabled(false);
-    }
     if (newMessage !== '') {
       setIsButtonDisabled(false);
     }
-  }, [newMediaMessage, newMessage]);
+  }, [newMessage]);
 
   return (
     <Flex vertical width="100%" height="100%">
@@ -178,13 +156,10 @@ const ChatInterface = ({ selectedAgent }: ChatInterfaceProps) => {
           <Flex hAlignContent="between" vAlignContent="center" width="100%">
             <Stack orientation="horizontal" spacing="space0">
               <EmojiInputAction setNewMessage={setNewMessage} />
-              {/* <AttachmentButton
-                setNewMediaMessage={setNewMediaMessage}
+              <AttachmentButton
                 setMediaMessages={setMediaMessages}
-              /> */}
-              <AttachmentButton2
-                setNewMediaMessage={setNewMediaMessage}
-                setMediaMessages={setMediaMessages}
+                setIsButtonDisabled={setIsButtonDisabled}
+                sendMessage={sendMessage}
               />
             </Stack>
             <Button
