@@ -3,6 +3,9 @@ import {
   ModalBody,
   ModalHeader,
   ModalHeading,
+  ModalFooter,
+  ModalFooterActions,
+  Button,
 } from '@twilio-paste/core';
 import AttachmentSupport from './AttachmentSupport';
 
@@ -23,6 +26,8 @@ const AttachmentModal = ({
 }: ImageModalOwnProps): React.JSX.Element => {
   const closeHandler = (): void => {
     setModalOpen(!modalOpen);
+    setNewMediaMessage('');
+    setMediaMessages('');
   };
 
   return (
@@ -43,6 +48,14 @@ const AttachmentModal = ({
           setMediaMessages={setMediaMessages}
         />
       </ModalBody>
+      <ModalFooter>
+        <ModalFooterActions>
+          <Button variant="secondary" onClick={closeHandler}>
+            Cancel
+          </Button>
+          <Button variant="primary">Send</Button>
+        </ModalFooterActions>
+      </ModalFooter>
     </Modal>
   );
 };
