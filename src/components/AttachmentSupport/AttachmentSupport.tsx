@@ -18,10 +18,11 @@ interface File {
   title: string;
   description: string;
   id: string;
+  size: number;
 }
 
 interface AttachmentButtonOwnProps {
-  setMediaMessages: React.Dispatch<React.SetStateAction<any>>;
+  setMediaMessages: React.Dispatch<React.SetStateAction<FormData | undefined>>;
   setIsModalButtonDisabled: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
@@ -31,7 +32,7 @@ const AttachmentSupport = ({
 }: AttachmentButtonOwnProps) => {
   const [screenReaderText, setScreenReaderText] = useState<string>('');
   const [files, setFiles] = useState<File[]>([]);
-  const [uploadedFiles, setUploadedFiles] = useState<any>();
+  const [uploadedFiles, setUploadedFiles] = useState<FileList | null>();
 
   const formatBytes = (bytes: number, decimals = 2) => {
     if (!+bytes) return '0 Bytes';
@@ -59,8 +60,8 @@ const AttachmentSupport = ({
     let finishedFiles = '';
 
     setFiles(prev => {
-      const updatedFiles: any = [];
-      prev.forEach((file: any) => {
+      const updatedFiles: File[] = [];
+      prev.forEach(file => {
         if (file.variant === 'loading') {
           file.variant = 'default';
           file.description = formatBytes(file.size);
@@ -82,20 +83,21 @@ const AttachmentSupport = ({
   }, [files]);
 
   //  TODO: same file input validation and user feedback
-  const handleInputChange = (event: any) => {
+
+  const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { files: newFiles } = event.target;
     setUploadedFiles(newFiles);
     let newFilesNames = '';
 
     const formDataArray: FormData = new FormData();
 
-    Array.from(newFiles).forEach((file: any) => {
+    Array.from(newFiles!).forEach(file => {
       formDataArray.append('arr[]', file);
     });
     setMediaMessages(formDataArray);
 
     if (newFiles !== null) {
-      Array.from(newFiles).forEach(({ name, size }: any) => {
+      Array.from(newFiles).forEach(({ name, size }) => {
         newFilesNames = newFilesNames + ' ' + name;
         setFiles(prev => {
           return [
@@ -117,22 +119,22 @@ const AttachmentSupport = ({
     }
   };
 
-  const handleDragEnter = (event: any) => {
+  const handleDragEnter = (event: React.DragEvent<HTMLLabelElement>) => {
     const { items } = event.dataTransfer;
     setScreenReaderText('Dragging ' + items.length + ' files');
   };
 
-  const handleDragLeave = (event: any) => {
+  const handleDragLeave = (event: React.DragEvent<HTMLLabelElement>) => {
     const { items } = event.dataTransfer;
     setScreenReaderText('Cancelled dragging ' + items.length + ' files');
   };
 
-  const handleDrop = (event: any) => {
+  const handleDrop = (event: React.DragEvent<HTMLLabelElement>) => {
     const { files: newFiles } = event.dataTransfer;
     setScreenReaderText('Dropped ' + newFiles.length + ' files');
 
     if (newFiles !== null) {
-      Array.from(newFiles).forEach(({ name }: any) => {
+      Array.from(newFiles).forEach(({ name }) => {
         setFiles(prev => {
           return [
             ...prev,
@@ -141,6 +143,7 @@ const AttachmentSupport = ({
               description: 'Uploading...',
               variant: 'loading',
               id: name,
+              size: 0,
             },
           ];
         });
@@ -148,7 +151,7 @@ const AttachmentSupport = ({
     }
   };
 
-  const handleRemovedItem = (id: string) => {
+  const handleRemovedItem = (id: string): void => {
     setFiles(prev => {
       return prev.filter(file => file.id !== id);
     });

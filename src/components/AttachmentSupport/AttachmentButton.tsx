@@ -4,7 +4,7 @@ import { AttachIcon } from '@twilio-paste/icons/esm/AttachIcon';
 import AttachmentModal from './AttachmentModal';
 
 interface AttachmentButtonOwnProps {
-  setMediaMessages: React.Dispatch<React.SetStateAction<string>>;
+  setMediaMessages: React.Dispatch<React.SetStateAction<FormData | undefined>>;
   setIsButtonDisabled: React.Dispatch<React.SetStateAction<boolean>>;
   sendMessage: () => Promise<void>;
 }

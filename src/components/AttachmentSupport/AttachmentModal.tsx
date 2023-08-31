@@ -13,7 +13,7 @@ import { useState } from 'react';
 interface ImageModalOwnProps {
   modalOpen: boolean;
   setModalOpen: React.Dispatch<React.SetStateAction<boolean>>;
-  setMediaMessages: React.Dispatch<React.SetStateAction<string>>;
+  setMediaMessages: React.Dispatch<React.SetStateAction<FormData | undefined>>;
   setIsButtonDisabled: React.Dispatch<React.SetStateAction<boolean>>;
   sendMessage: () => Promise<void>;
 }
@@ -32,7 +32,7 @@ const AttachmentModal = ({
 
   const closeHandler = (): void => {
     setModalOpen(!modalOpen);
-    setMediaMessages('');
+    setMediaMessages(undefined);
     setIsButtonDisabled(true);
   };
 
