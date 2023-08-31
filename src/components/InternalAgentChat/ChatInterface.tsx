@@ -19,11 +19,11 @@ import { SendIcon } from '@twilio-paste/icons/esm/SendIcon';
 import useConversationsClient from '../utils/useConversationsClient';
 import moment from 'moment';
 import GroupedMessages from './GroupedMessages';
-import { EmojiIcon } from '@twilio-paste/icons/esm/EmojiIcon';
 import { Message, SelectedAgent } from '../utils/types';
 import LoadingConversations from './LoadingConversations';
 import AttachmentButton from './AttachmentButton';
 import EmojiInputAction from '../EmojiSupport/EmojiPicker';
+import AttachmentButton2 from '../AttachmentSupport/AttachmentButton';
 
 interface ChatInterfaceProps {
   selectedAgent: SelectedAgent;
@@ -33,7 +33,7 @@ const ChatInterface = ({ selectedAgent }: ChatInterfaceProps) => {
   const [newMessage, setNewMessage] = useState('');
   const [isButtonDisabled, setIsButtonDisabled] = useState(true);
   const [newMediaMessage, setNewMediaMessage] = useState('');
-  const [mediaMessages, setMediaMessages] = useState([]);
+  const [mediaMessages, setMediaMessages] = useState<any>([]);
   const messagesEndRef = useRef<null | HTMLDivElement>(null);
   const uniqueName: string = [
     selectedAgent.contactUri,
@@ -73,7 +73,20 @@ const ChatInterface = ({ selectedAgent }: ChatInterfaceProps) => {
 
   const sendMessage = async (): Promise<void> => {
     try {
+      if (mediaMessages.length !== 0) {
+        mediaMessages.forEach(async (message: any) => {
+          const newFormattedMessage = new FormData();
+          newFormattedMessage.append('file', message);
+          await instantiatedConversation.sendMessage(newFormattedMessage);
+        });
+        setNewMediaMessage('');
+        setMediaMessages([]);
+        setIsButtonDisabled(true);
+        return;
+      }
+
       if (newMediaMessage !== '') {
+        console.log('newMediaMessage', newMediaMessage);
         await instantiatedConversation.sendMessage(newMediaMessage);
         setNewMediaMessage('');
         setMediaMessages([]);
@@ -165,12 +178,15 @@ const ChatInterface = ({ selectedAgent }: ChatInterfaceProps) => {
           <Flex hAlignContent="between" vAlignContent="center" width="100%">
             <Stack orientation="horizontal" spacing="space0">
               <EmojiInputAction setNewMessage={setNewMessage} />
-              <AttachmentButton
+              {/* <AttachmentButton
+                setNewMediaMessage={setNewMediaMessage}
+                setMediaMessages={setMediaMessages}
+              /> */}
+              <AttachmentButton2
                 setNewMediaMessage={setNewMediaMessage}
                 setMediaMessages={setMediaMessages}
               />
             </Stack>
-
             <Button
               variant="primary_icon"
               onClick={sendMessage}

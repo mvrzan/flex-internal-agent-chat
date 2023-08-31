@@ -9,6 +9,8 @@ import AttachmentSupport from './AttachmentSupport';
 interface ImageModalOwnProps {
   modalOpen: boolean;
   setModalOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  setNewMediaMessage: React.Dispatch<React.SetStateAction<string>>;
+  setMediaMessages: React.Dispatch<React.SetStateAction<string>>;
 }
 
 const modalHeadingID: string = 'attachment-modal-heading';
@@ -16,6 +18,8 @@ const modalHeadingID: string = 'attachment-modal-heading';
 const AttachmentModal = ({
   modalOpen,
   setModalOpen,
+  setNewMediaMessage,
+  setMediaMessages,
 }: ImageModalOwnProps): React.JSX.Element => {
   const closeHandler = (): void => {
     setModalOpen(!modalOpen);
@@ -34,7 +38,10 @@ const AttachmentModal = ({
         </ModalHeading>
       </ModalHeader>
       <ModalBody>
-        <AttachmentSupport />
+        <AttachmentSupport
+          setNewMediaMessage={setNewMediaMessage}
+          setMediaMessages={setMediaMessages}
+        />
       </ModalBody>
     </Modal>
   );

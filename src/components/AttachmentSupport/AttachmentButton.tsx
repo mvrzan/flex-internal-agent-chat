@@ -3,7 +3,15 @@ import { Button } from '@twilio-paste/core';
 import { AttachIcon } from '@twilio-paste/icons/esm/AttachIcon';
 import AttachmentModal from './AttachmentModal';
 
-const AttachmentButton2 = (): React.JSX.Element => {
+interface AttachmentButtonOwnProps {
+  setNewMediaMessage: React.Dispatch<React.SetStateAction<string>>;
+  setMediaMessages: React.Dispatch<React.SetStateAction<string>>;
+}
+
+const AttachmentButton2 = ({
+  setNewMediaMessage,
+  setMediaMessages,
+}: AttachmentButtonOwnProps): React.JSX.Element => {
   const [hovered, setHovered] = useState<boolean>(false);
   const [modalOpen, setModalOpen] = useState<boolean>(false);
 
@@ -37,7 +45,12 @@ const AttachmentButton2 = (): React.JSX.Element => {
         />
       </Button>
       {modalOpen && (
-        <AttachmentModal modalOpen={modalOpen} setModalOpen={setModalOpen} />
+        <AttachmentModal
+          modalOpen={modalOpen}
+          setModalOpen={setModalOpen}
+          setNewMediaMessage={setNewMediaMessage}
+          setMediaMessages={setMediaMessages}
+        />
       )}
     </>
   );

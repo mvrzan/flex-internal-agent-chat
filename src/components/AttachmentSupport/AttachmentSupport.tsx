@@ -13,24 +13,24 @@ import {
 import { useState, useEffect } from 'react';
 import { DownloadIcon } from '@twilio-paste/icons/esm/DownloadIcon';
 
-const sampleFiles = [
-  {
-    variant: 'default',
-    title: 'File1.png',
-    description: '9.2 MB',
-    id: 'initial-file-0',
-  },
-  {
-    variant: 'loading',
-    title: 'File2.png',
-    description: 'Uploading...',
-    id: 'initial-file-1',
-  },
-];
+interface File {
+  variant: string;
+  title: string;
+  description: string;
+  id: string;
+}
 
-const AttachmentSupport = () => {
-  const [screenReaderText, setScreenReaderText] = useState('');
-  const [files, setFiles] = useState(sampleFiles);
+interface AttachmentButtonOwnProps {
+  setNewMediaMessage: React.Dispatch<React.SetStateAction<any>>;
+  setMediaMessages: React.Dispatch<React.SetStateAction<any>>;
+}
+
+const AttachmentSupport = ({
+  setNewMediaMessage,
+  setMediaMessages,
+}: AttachmentButtonOwnProps) => {
+  const [screenReaderText, setScreenReaderText] = useState<string>('');
+  const [files, setFiles] = useState<File[]>([]);
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -49,7 +49,6 @@ const AttachmentSupport = () => {
         });
         return updatedFiles;
       });
-
       if (finishedFiles.length > 0) {
         setScreenReaderText('Finished uploading: ' + finishedFiles);
       }
@@ -61,6 +60,16 @@ const AttachmentSupport = () => {
   const handleInputChange = (event: any) => {
     const { files: newFiles } = event.target;
     let newFilesNames = '';
+
+    const formDataArray: any = new FormData();
+    const formData = new FormData();
+    Array.from(event.target.files).forEach((file: any) => {
+      formData.append('file', file);
+
+      formDataArray.append('arr[]', file);
+    });
+    setNewMediaMessage(formData);
+    setMediaMessages(formDataArray);
 
     if (newFiles !== null) {
       Array.from(newFiles).forEach(({ name }: any) => {
