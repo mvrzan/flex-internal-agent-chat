@@ -14,7 +14,7 @@ import ChatInterface from './ChatInterface';
 import LandingScreen from './LandingScreen';
 import liveQuerySearch from '../utils/liveQuerySearch';
 import { LiveQuery } from 'twilio-sync/lib/livequery';
-import { WorkerData } from '../utils/types';
+import { WorkerData, SelectedAgent } from '../utils/types';
 
 const InternalAgentChat = () => {
   // TODO: Fix state types
