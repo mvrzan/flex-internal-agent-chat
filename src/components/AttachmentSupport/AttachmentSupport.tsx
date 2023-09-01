@@ -1,6 +1,5 @@
 import {
   FileUploader,
-  FileUploaderLabel,
   FileUploaderHelpText,
   FileUploaderDropzoneText,
   FileUploaderDropzone,
