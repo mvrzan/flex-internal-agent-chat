@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { ChangeEvent, useEffect, useState } from 'react';
 import {
   Heading,
   Stack,
@@ -8,11 +8,13 @@ import {
   Input,
 } from '@twilio-paste/core';
 import AgentCard from './AgentCard';
-import { Manager } from '@twilio/flex-ui';
 import { SearchIcon } from '@twilio-paste/icons/esm/SearchIcon';
 import SelectedAgentView from './SelectedAgentView';
 import ChatInterface from './ChatInterface';
 import LandingScreen from './LandingScreen';
+import liveQuerySearch from '../utils/liveQuerySearch';
+import { LiveQuery } from 'twilio-sync/lib/livequery';
+import { WorkerData } from '../utils/types';
 
 const InternalAgentChat = () => {
   // TODO: Fix state types
@@ -21,49 +23,39 @@ const InternalAgentChat = () => {
   const [isAgentSelected, setIsAgentSelected] = useState<boolean>(false);
 
   useEffect(() => {
-    const liveQuerySearch = async (index: string, query: string) => {
-      const liveQueryClient =
-        await Manager.getInstance().insightsClient.liveQuery(index, query);
-
-      const items = liveQueryClient.getItems();
-      const workerdata = Object.values(items).map((worker: any) => {
-        return {
-          firstName: worker.attributes.full_name.split(' ')[0],
-          lastName: worker.attributes.full_name.split(' ')[1],
-          contactUri: worker.attributes.contact_uri.split(':')[1],
-          fullName: worker.attributes.full_name,
-          imageUrl: worker.attributes.image_url,
-          value: worker.attributes.contact_uri,
-          workerSid: worker.worker_sid,
-          email: worker.attributes.email,
-          activityName: worker.activity_name,
-        };
-      });
-
-      liveQueryClient.on('itemRemoved', args => {
-        console.log('Worker ' + args.key + ' is no longer "Available"');
-      });
-
-      liveQueryClient.on('itemUpdated', args => {
-        const updatedWorkerdata = workerdata.map(worker =>
-          worker.fullName === args.value.attributes.full_name
-            ? { ...worker, activityName: args.value.activity_name }
-            : worker
-        );
-        setAgents(updatedWorkerdata);
-      });
-
-      setAgents(workerdata);
-      return liveQueryClient;
-    };
-    const liveQueryClient = liveQuerySearch('tr-worker', '');
+    const getLiveQueryClient = getAgents();
 
     return () => {
-      liveQueryClient.then(liveQueryClient => liveQueryClient.close());
+      const disconnectLiveQueryClient = async () => {
+        const liveQueryClient: LiveQuery | undefined = await getLiveQueryClient;
+        liveQueryClient?.close();
+        console.log('Disconnecting liveQueryClient!');
+      };
+      disconnectLiveQueryClient();
     };
   }, []);
 
-  // TODO: Fix agent:any type
+  const getAgents = async (
+    query: string = ''
+  ): Promise<LiveQuery | undefined> => {
+    try {
+      const [liveQueryClient, workerData] = await liveQuerySearch(
+        'tr-worker',
+        `${query !== '' ? `${query}` : ''}`
+      );
+
+      setAgents(workerData);
+      //@ts-ignore
+      return liveQueryClient;
+    } catch (error) {
+      console.log('ERROR', error);
+    }
+  };
+
+  const inputHandler = (event: ChangeEvent<HTMLInputElement>) => {
+    getAgents(`data.attributes.full_name CONTAINS "${event.target.value}"`);
+  };
+
   return (
     <Box
       width="100%"
@@ -91,9 +83,10 @@ const InternalAgentChat = () => {
               type="text"
               placeholder="Search for agents..."
               insertBefore={<SearchIcon decorative />}
+              onChange={inputHandler}
             />
           </Box>
-          {agents.map((agent: any) => (
+          {agents.map((agent: WorkerData) => (
             <AgentCard
               key={agent.workerSid}
               fullName={agent.fullName}

@@ -6,12 +6,13 @@ const liveQuerySearch = async (index: string, query: string) => {
     query
   );
 
-  const items = liveQueryClient.getItems();
+  const workers = liveQueryClient.getItems();
 
-  const workerdata = Object.values(items).map((worker: any) => {
+  const workerdata = Object.values(workers).map((worker: WorkerAttributes) => {
     return {
       firstName: worker.attributes.full_name.split(' ')[0],
       lastName: worker.attributes.full_name.split(' ')[1],
+      contactUri: worker.attributes.contact_uri.split(':')[1],
       fullName: worker.attributes.full_name,
       imageUrl: worker.attributes.image_url,
       value: worker.attributes.contact_uri,
@@ -21,17 +22,16 @@ const liveQuerySearch = async (index: string, query: string) => {
     };
   });
 
-  let testData = { ...workerdata };
   liveQueryClient.on('itemRemoved', function (args) {
     console.log('Worker ' + args.key + ' is no longer "Available"');
   });
+
   liveQueryClient.on('itemUpdated', function (args) {
     console.log(args);
     console.log('Worker ' + args.key + ' is now ' + args.value.activity_name);
-    testData[0].activityName = 'test';
   });
 
-  return workerdata;
+  return [liveQueryClient, workerdata];
 };
 
 export default liveQuerySearch;

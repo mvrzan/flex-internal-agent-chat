@@ -32,3 +32,15 @@ export interface SelectedAgent {
   fullName: string;
   imageUrl: string;
 }
+
+export interface WorkerData {
+  firstName: string;
+  lastName: string;
+  contactUri: string;
+  fullName: string;
+  imageUrl: string;
+  value: string;
+  workerSid: string;
+  email: string;
+  activityName: string;
+}
