@@ -44,20 +44,21 @@ const useConversationsClient = (
               const createNewConversation = async () => {
                 const newConversation =
                   await conversationClient.createConversation({
-                    attributes: { testAttribute: 'testAttribute' },
+                    attributes: { internalChat: 'internalChat' },
                     friendlyName: 'internal-chat',
                     uniqueName,
                   });
                 console.log('Conversation successfully created');
                 setInstantiatedConversation(newConversation);
 
-                await newConversation.add(selectedAgentIdentity);
-                console.log(
-                  `${selectedAgentIdentity} successfully added to the conversation!`
-                );
                 await newConversation.add(workerInitiatingConversation);
                 console.log(
                   `${workerInitiatingConversation} successfully added to the conversation!`
+                );
+
+                await newConversation.add(selectedAgentIdentity);
+                console.log(
+                  `${selectedAgentIdentity} successfully added to the conversation!`
                 );
                 return newConversation;
               };
