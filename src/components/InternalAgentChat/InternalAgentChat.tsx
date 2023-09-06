@@ -12,18 +12,49 @@ import { SearchIcon } from '@twilio-paste/icons/esm/SearchIcon';
 import SelectedAgentView from './SelectedAgentView';
 import ChatInterface from './ChatInterface';
 import LandingScreen from './LandingScreen';
-import liveQuerySearch from '../utils/liveQuerySearch';
+import { liveQuerySearch } from '../utils/liveQuerySearch';
 import { LiveQuery } from 'twilio-sync/lib/livequery';
 import { WorkerData, SelectedAgent } from '../utils/types';
+import ActiveConversations from './ActiveConversations';
 
 const InternalAgentChat = () => {
-  // TODO: Fix state types
-  const [agents, setAgents] = useState<any>([]);
-  const [selectedAgent, setSelectedAgent] = useState<any>({});
+  const [agents, setAgents] = useState<WorkerData[] | undefined>([]);
+  const [selectedAgent, setSelectedAgent] = useState<SelectedAgent>(Object);
   const [isAgentSelected, setIsAgentSelected] = useState<boolean>(false);
 
   useEffect(() => {
     const getLiveQueryClient = getAgents();
+    const useLiveQueryClient = async () => {
+      const liveQueryClient = await getLiveQueryClient;
+      liveQueryClient?.on('itemUpdated', args => {
+        const updatedWorkerData = {
+          firstName: args.value.attributes.full_name.split(' ')[0],
+          lastName: args.value.attributes.full_name.split(' ')[1],
+          contactUri: args.value.attributes.contact_uri.split(':')[1],
+          fullName: args.value.attributes.full_name,
+          imageUrl: args.value.attributes.image_url,
+          value: args.value.attributes.contact_uri,
+          workerSid: args.value.worker_sid,
+          email: args.value.attributes.email,
+          activityName: args.value.activity_name,
+        };
+
+        setAgents((prevWorkerData: WorkerData[] | undefined) => {
+          if (prevWorkerData !== undefined) {
+            const newWorkerData = prevWorkerData?.map(
+              (workerData: WorkerData) => {
+                if (workerData.contactUri === updatedWorkerData.contactUri) {
+                  workerData.activityName = updatedWorkerData.activityName;
+                }
+                return workerData;
+              }
+            );
+            return newWorkerData;
+          }
+        });
+      });
+    };
+    useLiveQueryClient();
 
     return () => {
       const disconnectLiveQueryClient = async () => {
@@ -33,7 +64,7 @@ const InternalAgentChat = () => {
       };
       disconnectLiveQueryClient();
     };
-  }, []);
+  }, [selectedAgent]);
 
   const getAgents = async (
     query: string = ''
@@ -45,7 +76,7 @@ const InternalAgentChat = () => {
       );
 
       setAgents(workerData);
-      //@ts-ignore
+
       return liveQueryClient;
     } catch (error) {
       console.log('ERROR', error);
@@ -78,6 +109,7 @@ const InternalAgentChat = () => {
         paddingBottom="space0"
       >
         <Stack orientation="vertical" spacing="space10">
+          <ActiveConversations />
           <Box marginBottom="space40" width="250px">
             <Input
               type="text"
@@ -86,7 +118,7 @@ const InternalAgentChat = () => {
               onChange={inputHandler}
             />
           </Box>
-          {agents.map((agent: WorkerData) => (
+          {agents?.map((agent: WorkerData) => (
             <AgentCard
               key={agent.workerSid}
               fullName={agent.fullName}
