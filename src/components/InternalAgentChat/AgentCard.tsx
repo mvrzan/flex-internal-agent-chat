@@ -14,7 +14,7 @@ interface AgentCardProps {
   isAgentSelected: boolean;
   selectedAgent: SelectedAgent;
   setIsAgentSelected: React.Dispatch<React.SetStateAction<boolean>>;
-  setSelectedAgent: React.Dispatch<React.SetStateAction<{}>>;
+  setSelectedAgent: React.Dispatch<React.SetStateAction<SelectedAgent>>;
 }
 
 // TODO: Randomly change the color of avatars: https://paste.twilio.design/components/avatar#changing-the-color-of-an-avatar
