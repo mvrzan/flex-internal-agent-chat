@@ -1,6 +1,6 @@
 import { Manager, WorkerAttributes } from '@twilio/flex-ui';
 
-const liveQuerySearch = async (index: string, query: string) => {
+export const liveQuerySearch = async (index: string, query: string) => {
   const liveQueryClient = await Manager.getInstance().insightsClient.liveQuery(
     index,
     query
@@ -22,16 +22,5 @@ const liveQuerySearch = async (index: string, query: string) => {
     };
   });
 
-  liveQueryClient.on('itemRemoved', function (args) {
-    console.log('Worker ' + args.key + ' is no longer "Available"');
-  });
-
-  liveQueryClient.on('itemUpdated', function (args) {
-    console.log(args);
-    console.log('Worker ' + args.key + ' is now ' + args.value.activity_name);
-  });
-
-  return [liveQueryClient, workerdata];
+  return [liveQueryClient, workerdata] as const;
 };
-
-export default liveQuerySearch;
