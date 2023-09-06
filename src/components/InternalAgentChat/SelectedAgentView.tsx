@@ -8,10 +8,53 @@ import {
   UserDialogList,
   UserDialogListItem,
 } from '@twilio-paste/core/user-dialog';
-import { Stack, Text, Separator } from '@twilio-paste/core';
+import { Stack, Text, StatusBadge } from '@twilio-paste/core';
+import { useCallback } from 'react';
+import { useLiveQueryClient } from '../utils/useLiveQuery';
+import { SelectedAgent } from '../utils/types';
 
-const SelectedAgentView = ({ selectedAgent }: any) => {
+interface SelectedAgentViewProps {
+  selectedAgent: SelectedAgent;
+}
+
+const SelectedAgentView = ({ selectedAgent }: SelectedAgentViewProps) => {
   const userDialogList = useUserDialogListState();
+  const [agentActivity] = useLiveQueryClient(selectedAgent.fullName);
+
+  const NewStatusBadge = useCallback(() => {
+    if (agentActivity === '') {
+      return (
+        <StatusBadge
+          as="span"
+          variant={
+            selectedAgent.activityName === 'Available'
+              ? 'ConnectivityAvailable'
+              : selectedAgent.activityName === 'Offline'
+              ? 'ConnectivityOffline'
+              : 'ConnectivityBusy'
+          }
+        >
+          {selectedAgent.activityName}
+        </StatusBadge>
+      );
+    } else {
+      return (
+        <StatusBadge
+          as="span"
+          variant={
+            agentActivity === 'Available'
+              ? 'ConnectivityAvailable'
+              : agentActivity === 'Offline'
+              ? 'ConnectivityOffline'
+              : 'ConnectivityBusy'
+          }
+        >
+          {agentActivity}
+        </StatusBadge>
+      );
+    }
+  }, [agentActivity]);
+
   return (
     <Stack orientation="horizontal" spacing="space40">
       <UserDialogContainer
@@ -36,6 +79,7 @@ const SelectedAgentView = ({ selectedAgent }: any) => {
       <Text as="span" fontWeight="fontWeightSemibold" fontSize="fontSize50">
         {selectedAgent.fullName}
       </Text>
+      <NewStatusBadge />
     </Stack>
   );
 };
