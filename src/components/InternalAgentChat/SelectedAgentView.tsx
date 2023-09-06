@@ -19,7 +19,7 @@ interface SelectedAgentViewProps {
 
 const SelectedAgentView = ({ selectedAgent }: SelectedAgentViewProps) => {
   const userDialogList = useUserDialogListState();
-  const [agentActivity] = useLiveQueryClient(selectedAgent.fullName);
+  const agentActivity = useLiveQueryClient(selectedAgent.fullName);
 
   const NewStatusBadge = useCallback(() => {
     if (agentActivity === '') {
