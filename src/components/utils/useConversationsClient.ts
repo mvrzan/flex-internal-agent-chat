@@ -1,6 +1,6 @@
 import * as Flex from '@twilio/flex-ui';
 import { Conversation } from '@twilio/conversations';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { SetStateAction } from 'react';
 
 interface ConversationMessage {
@@ -24,6 +24,8 @@ const useConversationsClient = (
   const workerInitiatingConversation = conversationClient.user.identity;
 
   useEffect(() => {
+    let hookInvoked = true;
+
     const getInstantiatedConversation = async (
       uniqueName: string
     ): Promise<Conversation | undefined> => {
@@ -81,6 +83,7 @@ const useConversationsClient = (
       try {
         fetchedConversation.setAllMessagesRead();
         fetchedConversation.removeAllListeners();
+        setConversationMessages([]);
 
         // when the messages gets updated, update the messageList state
         fetchedConversation.on('messageUpdated', (updatedMessage: any) => {
@@ -152,6 +155,7 @@ const useConversationsClient = (
             };
           })
         );
+        if (!hookInvoked) return;
 
         setConversationMessages(messages);
       } catch (error) {
@@ -165,13 +169,18 @@ const useConversationsClient = (
     const init = async (uniqueName: string) => {
       try {
         setIsLoadingMessages(true);
+
         const fetchedConversation = await getInstantiatedConversation(
           uniqueName
         );
+
         if (fetchedConversation === undefined) {
+          setIsLoadingMessages(false);
           return;
         }
+
         await getConversation(fetchedConversation);
+
         setIsLoadingMessages(false);
       } catch (error) {
         setIsLoadingMessages(false);
@@ -179,6 +188,10 @@ const useConversationsClient = (
       }
     };
     init(uniqueName);
+
+    return () => {
+      hookInvoked = false;
+    };
   }, [uniqueName]);
 
   return conversationMessages.length === 0
