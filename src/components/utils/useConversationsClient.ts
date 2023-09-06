@@ -154,7 +154,6 @@ const useConversationsClient = (
         );
 
         setConversationMessages(messages);
-        setIsLoadingMessages(false);
       } catch (error) {
         console.error(
           'an error has happened when updating conversation messages',
@@ -165,6 +164,7 @@ const useConversationsClient = (
 
     const init = async (uniqueName: string) => {
       try {
+        setIsLoadingMessages(true);
         const fetchedConversation = await getInstantiatedConversation(
           uniqueName
         );
@@ -172,18 +172,14 @@ const useConversationsClient = (
           return;
         }
         await getConversation(fetchedConversation);
+        setIsLoadingMessages(false);
       } catch (error) {
+        setIsLoadingMessages(false);
         console.error(error);
       }
     };
     init(uniqueName);
   }, [uniqueName]);
-
-  useEffect(() => {
-    if (instantiatedConversation !== undefined) {
-      setIsLoadingMessages(false);
-    }
-  }, [instantiatedConversation]);
 
   return conversationMessages.length === 0
     ? {
