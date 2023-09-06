@@ -15,7 +15,7 @@ import LandingScreen from './LandingScreen';
 import { liveQuerySearch } from '../utils/liveQuerySearch';
 import { LiveQuery } from 'twilio-sync/lib/livequery';
 import { WorkerData, SelectedAgent } from '../utils/types';
-import ActiveConversations from './ActiveConversations';
+// import ActiveConversations from './ActiveConversations';
 
 const InternalAgentChat = () => {
   const [agents, setAgents] = useState<WorkerData[] | undefined>([]);
@@ -109,7 +109,7 @@ const InternalAgentChat = () => {
         paddingBottom="space0"
       >
         <Stack orientation="vertical" spacing="space10">
-          <ActiveConversations />
+          {/* <ActiveConversations /> */}
           <Box marginBottom="space40" width="250px">
             <Input
               type="text"
