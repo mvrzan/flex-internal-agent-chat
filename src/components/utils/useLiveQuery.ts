@@ -1,6 +1,6 @@
 import { Manager, WorkerAttributes } from '@twilio/flex-ui';
 import { useEffect, useState } from 'react';
-import { SelectedAgent } from './types';
+import { LiveQuery } from 'twilio-sync/lib/livequery';
 
 export const liveQuerySearch = async (index: string, query: string) => {
   const liveQueryClient = await Manager.getInstance().insightsClient.liveQuery(
@@ -24,18 +24,26 @@ export const liveQuerySearch = async (index: string, query: string) => {
     };
   });
 
-  return [liveQueryClient, workerdata];
+  return [liveQueryClient, workerdata] as const;
 };
 
 export const useLiveQueryClient = (selectedAgent: string) => {
   const [agentActivity, setAgentActivity] = useState<string>('');
-  const [agentContactUri, setAgentContactUri] = useState<string>('');
+  const [liveQueryClient, setLiveQueryClient] = useState<LiveQuery | null>(
+    null
+  );
 
   useEffect(() => {
     const getAgentActivity = async () => {
       agentActivityFunction(selectedAgent);
     };
     getAgentActivity();
+
+    const disconnectLiveQueryClient = async () => {
+      liveQueryClient?.close();
+      setAgentActivity('');
+    };
+    disconnectLiveQueryClient();
   }, [selectedAgent]);
 
   const agentActivityFunction = async (
@@ -46,25 +54,15 @@ export const useLiveQueryClient = (selectedAgent: string) => {
       `data.attributes.full_name CONTAINS "${selectedAgent}"`
     );
 
-    // @ts-ignore
     setAgentActivity(workerData[0]?.activityName);
+    setLiveQueryClient(liveQueryClient);
 
-    // @ts-ignore
-    setAgentContactUri(workerData[0]?.contactUri);
-
-    // @ts-ignore
-    liveQueryClient.on('itemUpdated', (args: any) => {
+    liveQueryClient.on('itemUpdated', args => {
       if (args.value.attributes.full_name === selectedAgent) {
         setAgentActivity(args.value.activity_name);
-        setAgentContactUri(args.value.attributes.contact_uri.split(':')[1]);
-        console.log('itemUpdated', args.value.activity_name);
-        console.log(
-          'itemUpdated',
-          args.value.attributes.contact_uri.split(':')[1]
-        );
       }
     });
   };
 
-  return [agentActivity, agentContactUri];
+  return agentActivity;
 };
