@@ -61,6 +61,8 @@ const SelectedAgentView = ({
       readFromLocalStorage('PinnedChats') as string
     );
 
+    if (pinnedChats === null) return;
+
     const filteredChats = pinnedChats.filter(item => item !== uniqueName);
     if (filteredChats.length === 0) {
       writeToLocalStorage('PinnedChats', [...filteredChats]);
