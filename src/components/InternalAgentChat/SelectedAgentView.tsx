@@ -12,6 +12,12 @@ import { Stack, Text, StatusBadge } from '@twilio-paste/core';
 import { useCallback } from 'react';
 import { useLiveQueryClient } from '../utils/useLiveQuery';
 import { SelectedAgent } from '../utils/types';
+import { PinIcon } from '@twilio-paste/icons/esm/PinIcon';
+import {
+  writeToLocalStorage,
+  readFromLocalStorage,
+} from '../utils/localStorageUtil';
+import { conversationClient } from '../utils/conversationsClient';
 
 interface SelectedAgentViewProps {
   selectedAgent: SelectedAgent;
@@ -20,6 +26,28 @@ interface SelectedAgentViewProps {
 const SelectedAgentView = ({ selectedAgent }: SelectedAgentViewProps) => {
   const userDialogList = useUserDialogListState();
   const agentActivity = useLiveQueryClient(selectedAgent.fullName);
+  const uniqueName: string = [
+    selectedAgent.contactUri,
+    conversationClient.user.identity,
+  ]
+    .sort()
+    .join('+');
+
+  const pinnedChatHandler = () => {
+    const chatIdentifier: string = uniqueName;
+    const previousValues: string[] = JSON.parse(
+      readFromLocalStorage('PinnedChats') as string
+    );
+
+    if (previousValues?.includes(chatIdentifier)) return;
+
+    if (Array.isArray(previousValues)) {
+      const updatedValue = [...previousValues, chatIdentifier];
+      writeToLocalStorage('PinnedChats', updatedValue);
+    } else {
+      writeToLocalStorage('PinnedChats', [chatIdentifier]);
+    }
+  };
 
   const NewStatusBadge = useCallback(() => {
     if (agentActivity === '') {
@@ -67,8 +95,11 @@ const SelectedAgentView = ({ selectedAgent }: SelectedAgentViewProps) => {
             <UserDialogUserEmail>{selectedAgent.email}</UserDialogUserEmail>
           </UserDialogUserInfo>
           <UserDialogList {...userDialogList} aria-label="User menu actions">
-            <UserDialogListItem {...userDialogList} onSelect={() => {}}>
-              Copy Agent email
+            <UserDialogListItem
+              {...userDialogList}
+              onSelect={pinnedChatHandler}
+            >
+              Pin chat <PinIcon decorative />
             </UserDialogListItem>
             <UserDialogListItem {...userDialogList} onSelect={() => {}}>
               Start the chat
