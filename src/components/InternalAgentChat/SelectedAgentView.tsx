@@ -13,6 +13,7 @@ import { useCallback } from 'react';
 import { useLiveQueryClient } from '../utils/useLiveQuery';
 import { SelectedAgent } from '../utils/types';
 import { PinIcon } from '@twilio-paste/icons/esm/PinIcon';
+import { DeleteIcon } from '@twilio-paste/icons/esm/DeleteIcon';
 import {
   writeToLocalStorage,
   readFromLocalStorage,
@@ -21,9 +22,13 @@ import { conversationClient } from '../utils/conversationsClient';
 
 interface SelectedAgentViewProps {
   selectedAgent: SelectedAgent;
+  setPinnedChats: React.Dispatch<React.SetStateAction<string[] | undefined>>;
 }
 
-const SelectedAgentView = ({ selectedAgent }: SelectedAgentViewProps) => {
+const SelectedAgentView = ({
+  selectedAgent,
+  setPinnedChats,
+}: SelectedAgentViewProps) => {
   const userDialogList = useUserDialogListState();
   const agentActivity = useLiveQueryClient(selectedAgent.fullName);
   const uniqueName: string = [
@@ -44,9 +49,24 @@ const SelectedAgentView = ({ selectedAgent }: SelectedAgentViewProps) => {
     if (Array.isArray(previousValues)) {
       const updatedValue = [...previousValues, chatIdentifier];
       writeToLocalStorage('PinnedChats', updatedValue);
+      setPinnedChats(updatedValue);
     } else {
       writeToLocalStorage('PinnedChats', [chatIdentifier]);
+      setPinnedChats([chatIdentifier]);
     }
+  };
+
+  const deletePinnedChatHandler = () => {
+    const pinnedChats: string[] = JSON.parse(
+      readFromLocalStorage('PinnedChats') as string
+    );
+
+    const filteredChats = pinnedChats.filter(item => item !== uniqueName);
+    if (filteredChats.length === 0) {
+      writeToLocalStorage('PinnedChats', [...filteredChats]);
+    }
+    setPinnedChats(filteredChats);
+    writeToLocalStorage('PinnedChats', [...filteredChats]);
   };
 
   const NewStatusBadge = useCallback(() => {
@@ -99,10 +119,13 @@ const SelectedAgentView = ({ selectedAgent }: SelectedAgentViewProps) => {
               {...userDialogList}
               onSelect={pinnedChatHandler}
             >
-              Pin chat <PinIcon decorative />
+              <PinIcon decorative /> Pin chat
             </UserDialogListItem>
-            <UserDialogListItem {...userDialogList} onSelect={() => {}}>
-              Start the chat
+            <UserDialogListItem
+              {...userDialogList}
+              onSelect={deletePinnedChatHandler}
+            >
+              <DeleteIcon decorative /> Unpin chat
             </UserDialogListItem>
           </UserDialogList>
         </UserDialog>

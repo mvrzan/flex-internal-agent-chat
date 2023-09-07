@@ -15,12 +15,21 @@ import LandingScreen from './LandingScreen';
 import { liveQuerySearch } from '../utils/liveQuerySearch';
 import { LiveQuery } from 'twilio-sync/lib/livequery';
 import { WorkerData, SelectedAgent } from '../utils/types';
-// import ActiveConversations from './ActiveConversations';
+import PinnedChats from './PinnedChats';
+import { readFromLocalStorage } from '../utils/localStorageUtil';
+import { Conversation } from '@twilio/conversations';
+import * as FlexManager from '@twilio/flex-ui';
+import getWorkers from '../utils/instantQueryUtil';
 
 const InternalAgentChat = () => {
   const [agents, setAgents] = useState<WorkerData[] | undefined>([]);
   const [selectedAgent, setSelectedAgent] = useState<SelectedAgent>(Object);
   const [isAgentSelected, setIsAgentSelected] = useState<boolean>(false);
+  const [pinnedChats, setPinnedChats] = useState<string[]>();
+  const [pinnedConversations, setPinnedConversations] =
+    useState<Conversation[]>();
+  const conversationClient =
+    FlexManager.Manager.getInstance().conversationsClient;
 
   useEffect(() => {
     const getLiveQueryClient = getAgents();
@@ -66,6 +75,43 @@ const InternalAgentChat = () => {
     };
   }, [selectedAgent]);
 
+  useEffect(() => {
+    const getPinnedChats = async () => {
+      const pinnedChatsFromLocalStorage: string[] = JSON.parse(
+        readFromLocalStorage('PinnedChats') as string
+      );
+
+      const filteredPinnedChats = pinnedChatsFromLocalStorage.map(
+        async (pinnedChat: string) => {
+          const fetchedConversation =
+            await conversationClient.getConversationByUniqueName(pinnedChat);
+
+          const participants = [...fetchedConversation._participants].map(
+            participant => participant[1].identity
+          );
+
+          const [queryResponse] = await getWorkers(
+            `data.attributes.contact_uri CONTAINS "${participants[0]}"`
+          );
+
+          const formatConversationData = {
+            uniqueName: fetchedConversation.uniqueName,
+            participant: participants[0],
+            imageUrl: queryResponse[0],
+            participantFullName: queryResponse[1],
+          };
+          return formatConversationData;
+        }
+      );
+
+      const awaitedFilteredPinnedChats = await Promise.all(filteredPinnedChats);
+
+      // @ts-ignore
+      setPinnedConversations(awaitedFilteredPinnedChats);
+    };
+    getPinnedChats();
+  }, [pinnedChats]);
+
   const getAgents = async (
     query: string = ''
   ): Promise<LiveQuery | undefined> => {
@@ -108,8 +154,8 @@ const InternalAgentChat = () => {
         marginBottom="space0"
         paddingBottom="space0"
       >
+        <PinnedChats pinnedConversations={pinnedConversations} />
         <Stack orientation="vertical" spacing="space10">
-          {/* <ActiveConversations /> */}
           <Box marginBottom="space40" width="250px">
             <Input
               type="text"
@@ -135,7 +181,6 @@ const InternalAgentChat = () => {
             />
           ))}
         </Stack>
-
         {!isAgentSelected ? (
           <LandingScreen />
         ) : (
@@ -150,7 +195,10 @@ const InternalAgentChat = () => {
             borderRadius="borderRadius30"
             backgroundColor="colorBackgroundPrimaryWeakest"
           >
-            <SelectedAgentView selectedAgent={selectedAgent} />
+            <SelectedAgentView
+              selectedAgent={selectedAgent}
+              setPinnedChats={setPinnedChats}
+            />
             <Separator orientation="horizontal" verticalSpacing="space50" />
             <Flex vAlignContent="bottom" height="90%" paddingBottom="space40">
               <ChatInterface selectedAgent={selectedAgent} />
