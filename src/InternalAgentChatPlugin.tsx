@@ -41,6 +41,15 @@ export default class InternalAgentChatPlugin extends FlexPlugin {
             FLEX_PINNED_CHATS: {
               marginLeft: 'spaceNegative50',
               overflowY: 'auto',
+              minWidth: '45px',
+            },
+            BUTTON_PINNED_CHATS: {
+              width: '40px',
+              height: '40px',
+              padding: 'space0',
+              borderRadius: 'borderRadiusCircle',
+              boxShadow: 'none',
+              marginTop: 'space10',
             },
           },
         };

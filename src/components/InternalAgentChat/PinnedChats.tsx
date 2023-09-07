@@ -1,4 +1,4 @@
-import { Button, Flex, Avatar, Tooltip } from '@twilio-paste/core';
+import { Button, Flex, Avatar, Tooltip, Stack } from '@twilio-paste/core';
 
 interface PinnedChatsProps {
   pinnedConversations: any;
@@ -14,24 +14,26 @@ const PinnedChats = ({ pinnedConversations }: PinnedChatsProps) => {
       element="FLEX_PINNED_CHATS"
       height="100%"
     >
-      {pinnedConversations?.map((conversation: any) => (
-        <Button
-          variant="secondary"
-          fullWidth
-          onClick={() => {
-            console.log('click');
-          }}
-          key={conversation.uniqueName}
-          element="BUTTON_WITHOUT_BORDERS"
-        >
-          <Tooltip text={conversation.participantFullName}>
-            <Avatar
-              name={conversation.participant}
-              src={conversation.imageUrl}
-            />
-          </Tooltip>
-        </Button>
-      ))}
+      <Stack orientation="vertical" spacing="space10">
+        {pinnedConversations?.map((conversation: any) => (
+          <Button
+            variant="secondary"
+            fullWidth
+            onClick={() => {
+              console.log('click');
+            }}
+            key={conversation.uniqueName}
+            element="BUTTON_PINNED_CHATS"
+          >
+            <Tooltip text={conversation.participantFullName}>
+              <Avatar
+                name={conversation.participant}
+                src={conversation.imageUrl}
+              />
+            </Tooltip>
+          </Button>
+        ))}
+      </Stack>
     </Flex>
   );
 };
