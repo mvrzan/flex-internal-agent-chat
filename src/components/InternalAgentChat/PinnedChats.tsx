@@ -13,6 +13,8 @@ const PinnedChats = ({ pinnedConversations }: PinnedChatsProps) => {
       vAlignContent="top"
       element="FLEX_PINNED_CHATS"
       height="100%"
+      minWidth="fit-content"
+      padding="space10"
     >
       <Stack orientation="vertical" spacing="space10">
         {pinnedConversations?.map((conversation: any) => (
