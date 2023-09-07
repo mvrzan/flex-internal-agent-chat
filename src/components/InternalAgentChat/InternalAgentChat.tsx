@@ -81,6 +81,8 @@ const InternalAgentChat = () => {
         readFromLocalStorage('PinnedChats') as string
       );
 
+      if (pinnedChatsFromLocalStorage === null) return;
+
       const filteredPinnedChats = pinnedChatsFromLocalStorage.map(
         async (pinnedChat: string) => {
           const fetchedConversation =
