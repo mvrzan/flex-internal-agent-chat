@@ -21,7 +21,7 @@ import { Conversation } from '@twilio/conversations';
 import * as FlexManager from '@twilio/flex-ui';
 import getWorkers from '../utils/instantQueryUtil';
 
-const InternalAgentChat = () => {
+const MainAgentChatView = () => {
   const [agents, setAgents] = useState<WorkerData[] | undefined>([]);
   const [selectedAgent, setSelectedAgent] = useState<SelectedAgent>(Object);
   const [isAgentSelected, setIsAgentSelected] = useState<boolean>(false);
@@ -215,4 +215,4 @@ const InternalAgentChat = () => {
   );
 };
 
-export default InternalAgentChat;
+export default MainAgentChatView;

@@ -3,7 +3,7 @@ import * as Flex from '@twilio/flex-ui';
 import { FlexPlugin } from '@twilio/flex-plugin';
 import SideNavigationIcon from '../src/components/SideNavigation/SideNavigationIcon';
 import { View } from '@twilio/flex-ui';
-import InternalAgentChat from '../src/components/InternalAgentChat/InternalAgentChat';
+import MainAgentChatView from '../src/components/InternalAgentChat/MainAgentChatView';
 import ChatDialog from '../src/components/ChatDialog/ChatDialog';
 import {
   CustomizationProvider,
@@ -76,7 +76,7 @@ export default class InternalAgentChatPlugin extends FlexPlugin {
 
     flex.ViewCollection.Content.add(
       <View name="internal-agent-chat" key="internal-agent-chat-view">
-        <InternalAgentChat key="internal-agent-chat-content" />
+        <MainAgentChatView key="internal-agent-chat-content" />
       </View>
     );
   }
