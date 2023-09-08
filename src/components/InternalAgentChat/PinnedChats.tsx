@@ -1,10 +1,22 @@
 import { Button, Flex, Avatar, Tooltip, Stack } from '@twilio-paste/core';
+import { SelectedAgent } from '../utils/types';
 
 interface PinnedChatsProps {
   pinnedConversations: any;
+  setIsAgentSelected: React.Dispatch<React.SetStateAction<boolean>>;
+  setSelectedAgent: React.Dispatch<React.SetStateAction<SelectedAgent>>;
 }
 
-const PinnedChats = ({ pinnedConversations }: PinnedChatsProps) => {
+const PinnedChats = ({
+  pinnedConversations,
+  setIsAgentSelected,
+  setSelectedAgent,
+}: PinnedChatsProps) => {
+  const openPinnedChatHandler = (conversation: any) => {
+    setIsAgentSelected(true);
+    setSelectedAgent(conversation);
+  };
+
   return (
     <Flex
       vertical
@@ -22,12 +34,12 @@ const PinnedChats = ({ pinnedConversations }: PinnedChatsProps) => {
             variant="secondary"
             fullWidth
             onClick={() => {
-              console.log('click');
+              openPinnedChatHandler(conversation);
             }}
             key={conversation.uniqueName}
             element="BUTTON_PINNED_CHATS"
           >
-            <Tooltip text={conversation.participantFullName}>
+            <Tooltip text={conversation.fullName}>
               <Avatar
                 name={conversation.participant}
                 src={conversation.imageUrl}
