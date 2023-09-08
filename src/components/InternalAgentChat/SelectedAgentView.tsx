@@ -10,7 +10,7 @@ import {
 } from '@twilio-paste/core/user-dialog';
 import { Stack, Text, StatusBadge } from '@twilio-paste/core';
 import { useCallback } from 'react';
-import { useLiveQueryClient } from '../utils/useLiveQuery';
+import { useLiveQueryClient } from '../utils/useLiveQueryClient';
 import { SelectedAgent } from '../utils/types';
 import { PinIcon } from '@twilio-paste/icons/esm/PinIcon';
 import { DeleteIcon } from '@twilio-paste/icons/esm/DeleteIcon';
