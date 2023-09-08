@@ -1,3 +1,5 @@
+import * as FlexManager from '@twilio/flex-ui';
+import { Conversation } from '@twilio/conversations';
 import { ChangeEvent, useEffect, useState } from 'react';
 import {
   Heading,
@@ -7,22 +9,18 @@ import {
   Box,
   Input,
 } from '@twilio-paste/core';
-import AgentCard from './AgentCard';
 import { SearchIcon } from '@twilio-paste/icons/esm/SearchIcon';
-import SelectedAgentView from './SelectedAgentView';
+import AgentCard from './AgentCard';
+import PinnedChats from './PinnedChats';
 import ChatInterface from './ChatInterface';
 import LandingScreen from './LandingScreen';
-import { liveQuerySearch } from '../utils/liveQuerySearch';
-import { LiveQuery } from 'twilio-sync/lib/livequery';
+import SelectedAgentView from './SelectedAgentView';
 import { WorkerData, SelectedAgent } from '../utils/types';
-import PinnedChats from './PinnedChats';
-import { readFromLocalStorage } from '../utils/localStorageUtil';
-import { Conversation } from '@twilio/conversations';
-import * as FlexManager from '@twilio/flex-ui';
 import getWorkers from '../utils/instantQueryUtil';
+import { readFromLocalStorage } from '../utils/localStorageUtil';
+import { useLiveQueryClient } from '../utils/useLiveQueryNewClient';
 
 const MainAgentChatView = () => {
-  const [agents, setAgents] = useState<WorkerData[] | undefined>([]);
   const [selectedAgent, setSelectedAgent] = useState<SelectedAgent>(Object);
   const [isAgentSelected, setIsAgentSelected] = useState<boolean>(false);
   const [pinnedChats, setPinnedChats] = useState<string[]>();
@@ -30,50 +28,7 @@ const MainAgentChatView = () => {
     useState<Conversation[]>();
   const conversationClient =
     FlexManager.Manager.getInstance().conversationsClient;
-
-  useEffect(() => {
-    const getLiveQueryClient = getAgents();
-    const useLiveQueryClient = async () => {
-      const liveQueryClient = await getLiveQueryClient;
-      liveQueryClient?.on('itemUpdated', args => {
-        const updatedWorkerData = {
-          firstName: args.value.attributes.full_name.split(' ')[0],
-          lastName: args.value.attributes.full_name.split(' ')[1],
-          contactUri: args.value.attributes.contact_uri.split(':')[1],
-          fullName: args.value.attributes.full_name,
-          imageUrl: args.value.attributes.image_url,
-          value: args.value.attributes.contact_uri,
-          workerSid: args.value.worker_sid,
-          email: args.value.attributes.email,
-          activityName: args.value.activity_name,
-        };
-
-        setAgents((prevWorkerData: WorkerData[] | undefined) => {
-          if (prevWorkerData !== undefined) {
-            const newWorkerData = prevWorkerData?.map(
-              (workerData: WorkerData) => {
-                if (workerData.contactUri === updatedWorkerData.contactUri) {
-                  workerData.activityName = updatedWorkerData.activityName;
-                }
-                return workerData;
-              }
-            );
-            return newWorkerData;
-          }
-        });
-      });
-    };
-    useLiveQueryClient();
-
-    return () => {
-      const disconnectLiveQueryClient = async () => {
-        const liveQueryClient: LiveQuery | undefined = await getLiveQueryClient;
-        liveQueryClient?.close();
-        console.log('Disconnecting liveQueryClient!');
-      };
-      disconnectLiveQueryClient();
-    };
-  }, [selectedAgent]);
+  const [workerData, setAgentName] = useLiveQueryClient();
 
   useEffect(() => {
     const getPinnedChats = async () => {
@@ -114,25 +69,8 @@ const MainAgentChatView = () => {
     getPinnedChats();
   }, [pinnedChats]);
 
-  const getAgents = async (
-    query: string = ''
-  ): Promise<LiveQuery | undefined> => {
-    try {
-      const [liveQueryClient, workerData] = await liveQuerySearch(
-        'tr-worker',
-        `${query !== '' ? `${query}` : ''}`
-      );
-
-      setAgents(workerData);
-
-      return liveQueryClient;
-    } catch (error) {
-      console.log('ERROR', error);
-    }
-  };
-
-  const inputHandler = (event: ChangeEvent<HTMLInputElement>) => {
-    getAgents(`data.attributes.full_name CONTAINS "${event.target.value}"`);
+  const inputHandler = async (event: ChangeEvent<HTMLInputElement>) => {
+    setAgentName(event.target.value);
   };
 
   return (
@@ -170,7 +108,7 @@ const MainAgentChatView = () => {
               onChange={inputHandler}
             />
           </Box>
-          {agents?.map((agent: WorkerData) => (
+          {workerData?.map((agent: WorkerData) => (
             <AgentCard
               key={agent.workerSid}
               fullName={agent.fullName}
