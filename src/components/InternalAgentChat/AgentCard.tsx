@@ -11,7 +11,6 @@ interface AgentCardProps {
   activityName: string;
   email: string;
   contactUri: string;
-  isAgentSelected: boolean;
   selectedAgent: SelectedAgent;
   setIsAgentSelected: React.Dispatch<React.SetStateAction<boolean>>;
   setSelectedAgent: React.Dispatch<React.SetStateAction<SelectedAgent>>;
@@ -26,7 +25,6 @@ const AgentCard = ({
   activityName,
   email,
   contactUri,
-  isAgentSelected,
   selectedAgent,
   setIsAgentSelected,
   setSelectedAgent,

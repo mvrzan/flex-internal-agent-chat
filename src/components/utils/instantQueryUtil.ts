@@ -24,8 +24,17 @@ const getWorkers = async (query = '') => {
   const responseWorkers = Object.keys(queryItems)
     .map(workerSid => queryItems[workerSid])
     .map(worker => {
-      const { image_url, full_name } = worker.attributes;
-      return [image_url, full_name];
+      return {
+        firstName: worker.attributes.full_name.split(' ')[0],
+        lastName: worker.attributes.full_name.split(' ')[1],
+        contactUri: worker.attributes.contact_uri.split(':')[1],
+        fullName: worker.attributes.full_name,
+        imageUrl: worker.attributes.image_url,
+        value: worker.attributes.contact_uri,
+        workerSid: worker.worker_sid,
+        email: worker.attributes.email,
+        activityName: worker.activity_name,
+      };
     });
 
   return responseWorkers;

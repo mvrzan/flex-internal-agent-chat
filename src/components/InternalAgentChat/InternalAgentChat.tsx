@@ -97,11 +97,11 @@ const InternalAgentChat = () => {
           );
 
           const formatConversationData = {
+            ...queryResponse,
             uniqueName: fetchedConversation.uniqueName,
             participant: participants[0],
-            imageUrl: queryResponse[0],
-            participantFullName: queryResponse[1],
           };
+
           return formatConversationData;
         }
       );
@@ -156,7 +156,11 @@ const InternalAgentChat = () => {
         marginBottom="space0"
         paddingBottom="space0"
       >
-        <PinnedChats pinnedConversations={pinnedConversations} />
+        <PinnedChats
+          pinnedConversations={pinnedConversations}
+          setIsAgentSelected={setIsAgentSelected}
+          setSelectedAgent={setSelectedAgent}
+        />
         <Stack orientation="vertical" spacing="space10">
           <Box marginBottom="space40" width="250px">
             <Input
@@ -176,7 +180,6 @@ const InternalAgentChat = () => {
               activityName={agent.activityName}
               email={agent.email}
               contactUri={agent.contactUri}
-              isAgentSelected={isAgentSelected}
               setIsAgentSelected={setIsAgentSelected}
               setSelectedAgent={setSelectedAgent}
               selectedAgent={selectedAgent}
