@@ -85,7 +85,7 @@ const useConversationsClient = (
         fetchedConversation.removeAllListeners();
         setConversationMessages([]);
 
-        // when the messages gets updated, update the messageList state
+        // when the messages gets updated, update the conversationMessages state
         fetchedConversation.on('messageUpdated', (updatedMessage: any) => {
           console.log('messageUpdated');
           setConversationMessages(
@@ -102,7 +102,7 @@ const useConversationsClient = (
           );
         });
 
-        // when the messages gets added, update the messageList state
+        // when the messages gets added, update the conversationMessages state
         fetchedConversation.on('messageAdded', async (message: any) => {
           console.log('messageAdded');
           const mediaUrl =
