@@ -1,7 +1,6 @@
 import React from 'react';
 import * as Flex from '@twilio/flex-ui';
 import { FlexPlugin } from '@twilio/flex-plugin';
-// import { CustomizationProvider } from '@twilio-paste/core/customization';
 import SideNavigationIcon from '../src/components/SideNavigation/SideNavigationIcon';
 import { View } from '@twilio/flex-ui';
 import InternalAgentChat from '../src/components/InternalAgentChat/InternalAgentChat';
@@ -19,7 +18,7 @@ export default class InternalAgentChatPlugin extends FlexPlugin {
     super(PLUGIN_NAME);
   }
 
-  async init(flex: typeof Flex, manager: Flex.Manager): Promise<void> {
+  async init(flex: typeof Flex): Promise<void> {
     flex.setProviders({
       CustomProvider: RootComponent => props => {
         const pasteProviderProps: CustomizationProviderProps & {
@@ -41,7 +40,6 @@ export default class InternalAgentChatPlugin extends FlexPlugin {
             FLEX_PINNED_CHATS: {
               marginLeft: 'spaceNegative40',
               overflowY: 'auto',
-              // minWidth: '45px',
             },
             BUTTON_PINNED_CHATS: {
               width: '40px',
