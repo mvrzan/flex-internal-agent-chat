@@ -25,6 +25,7 @@ const ChatInterface = ({ selectedAgent }: ChatInterfaceProps) => {
   const [isButtonDisabled, setIsButtonDisabled] = useState(true);
   const [mediaMessages, setMediaMessages] = useState<any>([]);
   const messagesEndRef = useRef<null | HTMLDivElement>(null);
+  const inputRef = useRef<null | HTMLTextAreaElement>(null);
   const uniqueName: string = [
     selectedAgent.contactUri,
     conversationClient.user.identity,
@@ -94,6 +95,7 @@ const ChatInterface = ({ selectedAgent }: ChatInterfaceProps) => {
   useEffect(() => {
     scrollToBottom();
     setNewMessage('');
+    inputRef.current?.focus();
   }, [conversationMessages, isLoadingMessages]);
 
   useEffect(() => {
@@ -148,6 +150,7 @@ const ChatInterface = ({ selectedAgent }: ChatInterfaceProps) => {
           marginBottom="space30"
         >
           <TextArea
+            ref={inputRef}
             onChange={conversationHandler}
             placeholder={`Message ${selectedAgent.fullName}`}
             value={newMessage}
@@ -160,6 +163,7 @@ const ChatInterface = ({ selectedAgent }: ChatInterfaceProps) => {
                 setMediaMessages={setMediaMessages}
                 setIsButtonDisabled={setIsButtonDisabled}
                 sendMessage={sendMessage}
+                inputRef={inputRef}
               />
             </Stack>
             <Button

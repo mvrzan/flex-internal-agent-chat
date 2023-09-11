@@ -7,18 +7,21 @@ interface AttachmentButtonOwnProps {
   setMediaMessages: React.Dispatch<React.SetStateAction<FormData | undefined>>;
   setIsButtonDisabled: React.Dispatch<React.SetStateAction<boolean>>;
   sendMessage: () => Promise<void>;
+  inputRef: React.MutableRefObject<HTMLTextAreaElement | null>;
 }
 
 const AttachmentButton = ({
   setMediaMessages,
   setIsButtonDisabled,
   sendMessage,
+  inputRef,
 }: AttachmentButtonOwnProps): React.JSX.Element => {
   const [hovered, setHovered] = useState<boolean>(false);
   const [modalOpen, setModalOpen] = useState<boolean>(false);
 
   const clickHandler = (): void => {
     setModalOpen(!modalOpen);
+    inputRef?.current?.focus();
   };
 
   return (
