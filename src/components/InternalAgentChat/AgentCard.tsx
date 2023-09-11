@@ -29,8 +29,8 @@ const AgentCard = ({
   setIsAgentSelected,
   setSelectedAgent,
 }: AgentCardProps) => {
-  const [isPressed, setIsPressed] = useState(false);
-  const [onHover, setOnHover] = useState(false);
+  const [isPressed, setIsPressed] = useState<boolean>(false);
+  const [onHover, setOnHover] = useState<boolean>(false);
 
   useEffect(() => {
     if (selectedAgent.email !== email) {
@@ -45,7 +45,6 @@ const AgentCard = ({
       pressed={onHover || isPressed ? true : false}
       onClick={() => {
         setSelectedAgent({
-          ...selectedAgent,
           fullName,
           firstName,
           lastName,
