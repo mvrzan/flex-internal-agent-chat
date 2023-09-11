@@ -14,7 +14,7 @@ import ChatInterface from './ChatInterface';
 import LandingScreen from './LandingScreen';
 import SelectedAgentView from './SelectedAgentView';
 import { WorkerData, SelectedAgent, FilteredWorkerInfo } from '../utils/types';
-import { useLiveQueryClient } from '../utils/useLiveQueryNewClient';
+import { useLiveQueryClient } from '../utils/useLiveQueryClient';
 import usePinnedChats from '../utils/usePinnedChats';
 
 const MainAgentChatView = () => {

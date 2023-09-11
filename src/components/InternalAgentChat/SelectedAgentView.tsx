@@ -1,3 +1,5 @@
+import { useCallback, useEffect } from 'react';
+import * as Flex from '@twilio/flex-ui';
 import {
   UserDialog,
   useUserDialogListState,
@@ -9,16 +11,14 @@ import {
   UserDialogListItem,
 } from '@twilio-paste/core/user-dialog';
 import { Stack, Text, StatusBadge } from '@twilio-paste/core';
-import { useCallback } from 'react';
-import { useLiveQueryClient } from '../utils/useLiveQueryClient';
 import { SelectedAgent } from '../utils/types';
 import { PinIcon } from '@twilio-paste/icons/esm/PinIcon';
 import { DeleteIcon } from '@twilio-paste/icons/esm/DeleteIcon';
+import { useLiveQueryClient } from '../utils/useLiveQueryClient';
 import {
   writeToLocalStorage,
   readFromLocalStorage,
 } from '../utils/localStorageUtil';
-import { conversationClient } from '../utils/conversationsClient';
 
 interface SelectedAgentViewProps {
   selectedAgent: SelectedAgent;
@@ -30,13 +30,18 @@ const SelectedAgentView = ({
   setPinnedChats,
 }: SelectedAgentViewProps) => {
   const userDialogList = useUserDialogListState();
-  const agentActivity = useLiveQueryClient(selectedAgent.fullName);
+  const [_, setWorkerName, agentActivity] = useLiveQueryClient();
+  const conversationClient = Flex.Manager.getInstance().conversationsClient;
   const uniqueName: string = [
     selectedAgent.contactUri,
     conversationClient.user.identity,
   ]
     .sort()
     .join('+');
+
+  useEffect(() => {
+    setWorkerName(selectedAgent.fullName);
+  }, [selectedAgent, agentActivity]);
 
   const pinnedChatHandler = () => {
     const chatIdentifier: string = uniqueName;
