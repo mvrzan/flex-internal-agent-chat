@@ -130,10 +130,21 @@ const AttachmentSupport = ({
 
   const handleDrop = (event: React.DragEvent<HTMLLabelElement>) => {
     const { files: newFiles } = event.dataTransfer;
+    setUploadedFiles(newFiles);
     setScreenReaderText('Dropped ' + newFiles.length + ' files');
 
+    let newFilesNames = '';
+
+    const formDataArray: FormData = new FormData();
+
+    Array.from(newFiles!).forEach(file => {
+      formDataArray.append('arr[]', file);
+    });
+    setMediaMessages(formDataArray);
+
     if (newFiles !== null) {
-      Array.from(newFiles).forEach(({ name }) => {
+      Array.from(newFiles).forEach(({ name, size }) => {
+        newFilesNames = newFilesNames + ' ' + name;
         setFiles(prev => {
           return [
             ...prev,
@@ -142,7 +153,7 @@ const AttachmentSupport = ({
               description: 'Uploading...',
               variant: 'loading',
               id: name,
-              size: 0,
+              size,
             },
           ];
         });
