@@ -227,6 +227,7 @@ const MediaMessage = ({
         : ''}
       <ImageModal
         url={mediaUrl}
+        mediaType={mediaType}
         modalOpen={modalOpen}
         setModalOpen={setModalOpen}
       />

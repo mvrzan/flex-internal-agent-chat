@@ -13,13 +13,19 @@ import { LinkExternalIcon } from '@twilio-paste/icons/esm/LinkExternalIcon';
 
 interface ImageModalOwnProps {
   url: string;
+  mediaType: string;
   modalOpen: boolean;
   setModalOpen: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 const modalHeadingID = 'modal-heading';
 
-const ImageModal = ({ url, modalOpen, setModalOpen }: ImageModalOwnProps) => {
+const ImageModal = ({
+  url,
+  mediaType,
+  modalOpen,
+  setModalOpen,
+}: ImageModalOwnProps) => {
   const closeHandler = () => {
     setModalOpen(!modalOpen);
   };
@@ -77,7 +83,7 @@ const ImageModal = ({ url, modalOpen, setModalOpen }: ImageModalOwnProps) => {
             >
               <DownloadIcon decorative />
               <Text as="span" fontWeight="fontWeightBold">
-                Download image
+                {mediaType === 'image/gif' ? 'Download GIF' : 'Download image'}
               </Text>
             </Button>
           </Stack>
