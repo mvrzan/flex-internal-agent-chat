@@ -28,7 +28,7 @@ const MainAgentChatView = () => {
     useState<Conversation[]>();
   const conversationClient =
     FlexManager.Manager.getInstance().conversationsClient;
-  const [workerData, setAgentName] = useLiveQueryClient();
+  const [workerData, setWorkerName] = useLiveQueryClient();
 
   useEffect(() => {
     const getPinnedChats = async () => {
@@ -70,7 +70,7 @@ const MainAgentChatView = () => {
   }, [pinnedChats]);
 
   const inputHandler = async (event: ChangeEvent<HTMLInputElement>) => {
-    setAgentName(event.target.value);
+    setWorkerName(event.target.value);
   };
 
   return (

@@ -4,7 +4,7 @@ import { LiveQuery } from 'twilio-sync/lib/livequery';
 import { WorkerData } from './types';
 
 export const useLiveQueryClient = () => {
-  const [agentName, setAgentName] = useState<string>('');
+  const [workerName, setWorkerName] = useState<string>('');
   const [workerData, setWorkerData] = useState<WorkerAttributes>();
   const [liveQueryClient, setLiveQueryClient] = useState<LiveQuery | null>();
 
@@ -13,7 +13,7 @@ export const useLiveQueryClient = () => {
     const initLiveQueryClient = async () => {
       const liveQuery = await Manager.getInstance().insightsClient.liveQuery(
         'tr-worker',
-        `data.attributes.full_name CONTAINS "${agentName}"`
+        `data.attributes.full_name CONTAINS "${workerName}"`
       );
 
       setLiveQueryClient(liveQuery);
@@ -74,7 +74,7 @@ export const useLiveQueryClient = () => {
       liveQueryClient?.close();
       console.log('Disconnecting liveQueryClient!');
     };
-  }, [agentName]);
+  }, [workerName]);
 
-  return [workerData, setAgentName] as const;
+  return [workerData, setWorkerName] as const;
 };
