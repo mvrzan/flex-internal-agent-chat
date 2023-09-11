@@ -30,3 +30,17 @@ export interface WorkerData {
   email: string;
   activityName: string;
 }
+
+export interface FilteredWorkerInfo {
+  firstName: string;
+  lastName: string;
+  contactUri: string;
+  fullName: string;
+  imageUrl: string;
+  value: string;
+  workerSid: string;
+  email: string;
+  activityName: string;
+  uniqueName: string | null;
+  participant: string | null;
+}
