@@ -16,6 +16,7 @@ const useConversationsClient = (
   uniqueName: string,
   selectedAgentIdentity: string
 ) => {
+  const [typingIndicator, setTypingIndicator] = useState<boolean>(false);
   const [conversationMessages, setConversationMessages] = useState<any>([]);
   const [isLoadingMessages, setIsLoadingMessages] = useState(true);
   const [instantiatedConversation, setInstantiatedConversation] =
@@ -136,6 +137,14 @@ const useConversationsClient = (
           );
         });
 
+        fetchedConversation.on('typingStarted', () => {
+          setTypingIndicator(true);
+        });
+
+        fetchedConversation.on('typingEnded', () => {
+          setTypingIndicator(false);
+        });
+
         //3. Load messages
         const paginator = await fetchedConversation.getMessages(1000);
         const messages = await Promise.all(
@@ -200,12 +209,14 @@ const useConversationsClient = (
         instantiatedConversation,
         isEmpty: true,
         isLoadingMessages,
+        typingIndicator,
       }
     : {
         conversationMessages,
         instantiatedConversation,
         isEmpty: false,
         isLoadingMessages,
+        typingIndicator,
       };
 };
 

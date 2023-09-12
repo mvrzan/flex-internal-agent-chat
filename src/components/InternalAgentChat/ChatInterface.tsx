@@ -37,6 +37,7 @@ const ChatInterface = ({ selectedAgent }: ChatInterfaceProps) => {
     instantiatedConversation,
     isEmpty,
     isLoadingMessages,
+    typingIndicator,
   } = useConversationsClient(uniqueName, selectedAgent.contactUri);
 
   const conversationHandler = (
@@ -46,6 +47,7 @@ const ChatInterface = ({ selectedAgent }: ChatInterfaceProps) => {
       setIsButtonDisabled(true);
       setNewMessage('');
     } else {
+      instantiatedConversation.typing();
       setNewMessage(event.target.value);
       setIsButtonDisabled(false);
     }
@@ -94,6 +96,10 @@ const ChatInterface = ({ selectedAgent }: ChatInterfaceProps) => {
 
   useEffect(() => {
     scrollToBottom();
+  }, [typingIndicator]);
+
+  useEffect(() => {
+    scrollToBottom();
     setNewMessage('');
     inputRef.current?.focus();
   }, [conversationMessages, isLoadingMessages]);
@@ -136,6 +142,9 @@ const ChatInterface = ({ selectedAgent }: ChatInterfaceProps) => {
                   />
                 );
               })}
+              {typingIndicator && (
+                <div>{selectedAgent.fullName} is typing...</div>
+              )}
             </ChatLog>
           )}
         </Box>
