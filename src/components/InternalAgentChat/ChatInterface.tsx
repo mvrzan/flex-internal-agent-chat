@@ -140,7 +140,7 @@ const ChatInterface = ({ selectedAgent }: ChatInterfaceProps) => {
           )}
         </Box>
       </Flex>
-      <Flex grow width="100%" height="100%" vAlignContent="bottom">
+      <Flex grow width="100%" height="150px" vAlignContent="bottom">
         <Box
           borderRadius="borderRadius20"
           objectPosition="bottom"
@@ -155,6 +155,7 @@ const ChatInterface = ({ selectedAgent }: ChatInterfaceProps) => {
             placeholder={`Message ${selectedAgent.fullName}`}
             value={newMessage}
             onKeyDown={enterKeyHandler}
+            element="TEXT_AREA_SIZE"
           />
           <Flex hAlignContent="between" vAlignContent="center" width="100%">
             <Stack orientation="horizontal" spacing="space0">

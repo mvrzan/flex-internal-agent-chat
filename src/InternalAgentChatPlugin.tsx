@@ -49,6 +49,10 @@ export default class InternalAgentChatPlugin extends FlexPlugin {
               boxShadow: 'none',
               marginTop: 'space10',
             },
+            TEXT_AREA_SIZE_ELEMENT: {
+              maxHeight: '76px',
+              overflowX: 'hidden',
+            },
           },
         };
         return (
