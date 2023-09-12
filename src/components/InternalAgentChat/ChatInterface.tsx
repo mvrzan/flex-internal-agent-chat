@@ -11,6 +11,7 @@ import moment from 'moment';
 import { Message, SelectedAgent } from '../utils/types';
 import useConversationsClient from '../utils/useConversationsClient';
 import GroupedMessages from './GroupedMessages';
+import TypingIndicator from './TypingIndicator';
 import NewConversationView from './NewConversationView';
 import LoadingConversations from './LoadingConversations';
 import EmojiInputAction from '../EmojiSupport/EmojiPicker';
@@ -144,7 +145,7 @@ const ChatInterface = ({ selectedAgent }: ChatInterfaceProps) => {
                 );
               })}
               {typingIndicator && (
-                <div>{selectedAgent.fullName} is typing...</div>
+                <TypingIndicator agentName={selectedAgent.fullName} />
               )}
             </ChatLog>
           )}
