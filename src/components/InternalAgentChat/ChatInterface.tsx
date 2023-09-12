@@ -1,17 +1,17 @@
+import { useState, useEffect, useRef, KeyboardEvent } from 'react';
+import { Manager } from '@twilio/flex-ui';
 import { Box, Stack, Button, Flex, Text, TextArea } from '@twilio-paste/core';
 import {
   ChatLog,
   ChatBookend,
   ChatBookendItem,
 } from '@twilio-paste/core/chat-log';
-import NewConversationView from './NewConversationView';
-import { useState, useEffect, useRef, KeyboardEvent } from 'react';
-import { conversationClient } from '../utils/conversationsClient';
 import { SendIcon } from '@twilio-paste/icons/esm/SendIcon';
-import useConversationsClient from '../utils/useConversationsClient';
 import moment from 'moment';
-import GroupedMessages from './GroupedMessages';
 import { Message, SelectedAgent } from '../utils/types';
+import useConversationsClient from '../utils/useConversationsClient';
+import GroupedMessages from './GroupedMessages';
+import NewConversationView from './NewConversationView';
 import LoadingConversations from './LoadingConversations';
 import EmojiInputAction from '../EmojiSupport/EmojiPicker';
 import AttachmentButton from '../AttachmentSupport/AttachmentButton';
@@ -26,6 +26,7 @@ const ChatInterface = ({ selectedAgent }: ChatInterfaceProps) => {
   const [mediaMessages, setMediaMessages] = useState<any>([]);
   const messagesEndRef = useRef<null | HTMLDivElement>(null);
   const inputRef = useRef<null | HTMLTextAreaElement>(null);
+  const conversationClient = Manager.getInstance().conversationsClient;
   const uniqueName: string = [
     selectedAgent.contactUri,
     conversationClient.user.identity,
