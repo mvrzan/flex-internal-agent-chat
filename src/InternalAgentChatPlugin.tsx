@@ -40,6 +40,7 @@ export default class InternalAgentChatPlugin extends FlexPlugin {
             FLEX_PINNED_CHATS: {
               marginLeft: 'spaceNegative40',
               overflowY: 'auto',
+              overflowX: 'hidden',
             },
             BUTTON_PINNED_CHATS: {
               width: '40px',
@@ -52,6 +53,11 @@ export default class InternalAgentChatPlugin extends FlexPlugin {
             TEXT_AREA_SIZE_ELEMENT: {
               maxHeight: '76px',
               overflowX: 'hidden',
+            },
+            BADGE_PINNED_CHATS: {
+              boxShadow: 'none',
+              marginLeft: 'spaceNegative60',
+              marginBottom: 'space60',
             },
           },
         };

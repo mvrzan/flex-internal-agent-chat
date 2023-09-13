@@ -48,10 +48,16 @@ const usePinnedChats = (newPinnedChats: string[] | undefined) => {
   };
 
   useEffect(() => {
+    console.log('mounting pinned chat hook');
+    let hookInvoked = true;
     const getPinnedChats = async () => {
       const pinnedChatsFromLocalStorage: string[] = JSON.parse(
         readFromLocalStorage('PinnedChats') as string
       );
+
+      if (!hookInvoked) {
+        console.log('hookInvoked');
+      }
 
       if (pinnedChatsFromLocalStorage === null) return;
 
@@ -59,6 +65,27 @@ const usePinnedChats = (newPinnedChats: string[] | undefined) => {
         async (pinnedChat: string) => {
           const fetchedConversation =
             await conversationClient.getConversationByUniqueName(pinnedChat);
+          fetchedConversation.removeAllListeners();
+
+          const unreadMessages =
+            await fetchedConversation.getUnreadMessagesCount();
+
+          fetchedConversation.on('messageAdded', async (message: any) => {
+            console.log('pinnedChats hook messageAdded');
+            const unreadMessages =
+              await fetchedConversation.getUnreadMessagesCount();
+
+            setPinnedChats((prevState: any) => {
+              if (prevState !== undefined) {
+                // @ts-ignore
+                return prevState.map((prevMessage: any) =>
+                  prevMessage.uniqueName === message.conversation.uniqueName
+                    ? { ...prevMessage, unreadMessages }
+                    : prevMessage
+                );
+              }
+            });
+          });
 
           const participants = [...fetchedConversation._participants].map(
             participant => participant[1].identity
@@ -72,6 +99,7 @@ const usePinnedChats = (newPinnedChats: string[] | undefined) => {
             ...queryResponse,
             uniqueName: fetchedConversation.uniqueName,
             participant: participants[0],
+            unreadMessages,
           };
 
           return formatConversationData;
@@ -83,9 +111,14 @@ const usePinnedChats = (newPinnedChats: string[] | undefined) => {
       setPinnedChats(awaitedFilteredPinnedChats);
     };
     getPinnedChats();
+
+    return () => {
+      hookInvoked = false;
+      console.log('removing pinnedChat hook');
+    };
   }, [newPinnedChats]);
 
-  return pinnedChats;
+  return [pinnedChats, setPinnedChats];
 };
 
 export default usePinnedChats;

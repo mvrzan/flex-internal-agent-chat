@@ -1,4 +1,11 @@
-import { Button, Flex, Avatar, Tooltip, Stack } from '@twilio-paste/core';
+import {
+  Button,
+  Flex,
+  Avatar,
+  Tooltip,
+  Stack,
+  Badge,
+} from '@twilio-paste/core';
 import { SelectedAgent } from '../utils/types';
 
 interface PinnedChatsProps {
@@ -45,6 +52,19 @@ const PinnedChats = ({
                 src={conversation.imageUrl}
               />
             </Tooltip>
+            {conversation.unreadMessages !== null &&
+              conversation.unreadMessages !== undefined &&
+              conversation.unreadMessages !== 0 && (
+                <Badge
+                  as="span"
+                  variant="neutral_counter"
+                  element="BADGE_PINNED_CHATS"
+                >
+                  {conversation.unreadMessages >= 99
+                    ? '99+'
+                    : conversation.unreadMessages}
+                </Badge>
+              )}
           </Button>
         ))}
       </Stack>

@@ -19,9 +19,13 @@ import AttachmentButton from '../AttachmentSupport/AttachmentButton';
 
 interface ChatInterfaceProps {
   selectedAgent: SelectedAgent;
+  setPinnedChats: any;
 }
 
-const ChatInterface = ({ selectedAgent }: ChatInterfaceProps) => {
+const ChatInterface = ({
+  selectedAgent,
+  setPinnedChats,
+}: ChatInterfaceProps) => {
   const [newMessage, setNewMessage] = useState('');
   const [isButtonDisabled, setIsButtonDisabled] = useState(true);
   const [mediaMessages, setMediaMessages] = useState<any>([]);
@@ -111,6 +115,19 @@ const ChatInterface = ({ selectedAgent }: ChatInterfaceProps) => {
       setIsButtonDisabled(false);
     }
   }, [newMessage]);
+
+  useEffect(() => {
+    setPinnedChats((prevState: any) => {
+      if (prevState !== undefined) {
+        // @ts-ignore
+        return prevState.map((prevMessage: any) =>
+          prevMessage.uniqueName === uniqueName
+            ? { ...prevMessage, unreadMessages: 0 }
+            : prevMessage
+        );
+      }
+    });
+  }, [selectedAgent]);
 
   return (
     <Flex vertical width="100%" height="100%">

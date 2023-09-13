@@ -26,6 +26,7 @@ const useConversationsClient = (
 
   useEffect(() => {
     let hookInvoked = true;
+    let conversationReference: Conversation | undefined;
 
     const getInstantiatedConversation = async (
       uniqueName: string
@@ -34,6 +35,7 @@ const useConversationsClient = (
         const fetchedConversation: Conversation =
           await conversationClient.getConversationByUniqueName(uniqueName);
         setInstantiatedConversation(fetchedConversation);
+
         return fetchedConversation;
       } catch (error) {
         if (error instanceof Error) {
@@ -135,6 +137,7 @@ const useConversationsClient = (
               }
             }
           );
+          fetchedConversation.setAllMessagesRead();
         });
 
         fetchedConversation.on('typingStarted', () => {
@@ -183,6 +186,8 @@ const useConversationsClient = (
           uniqueName
         );
 
+        conversationReference = fetchedConversation;
+
         if (fetchedConversation === undefined) {
           setIsLoadingMessages(false);
           return;
@@ -200,8 +205,9 @@ const useConversationsClient = (
 
     return () => {
       hookInvoked = false;
+      conversationReference?.removeAllListeners();
     };
-  }, [uniqueName]);
+  }, [uniqueName, selectedAgentIdentity]);
 
   return conversationMessages.length === 0
     ? {

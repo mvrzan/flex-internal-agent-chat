@@ -1,4 +1,4 @@
-import { ChangeEvent, useEffect, useState } from 'react';
+import { ChangeEvent, useState } from 'react';
 import {
   Heading,
   Stack,
@@ -13,7 +13,7 @@ import PinnedChats from './PinnedChats';
 import ChatInterface from './ChatInterface';
 import LandingScreen from './LandingScreen';
 import SelectedAgentView from './SelectedAgentView';
-import { WorkerData, SelectedAgent, FilteredWorkerInfo } from '../utils/types';
+import { WorkerData, SelectedAgent } from '../utils/types';
 import { useLiveQueryClient } from '../utils/useLiveQueryClient';
 import usePinnedChats from '../utils/usePinnedChats';
 
@@ -21,14 +21,8 @@ const MainAgentChatView = () => {
   const [selectedAgent, setSelectedAgent] = useState<SelectedAgent>(Object);
   const [isAgentSelected, setIsAgentSelected] = useState<boolean>(false);
   const [newPinnedChats, setNewPinnedChats] = useState<string[]>();
-  const [pinnedConversations, setPinnedConversations] =
-    useState<FilteredWorkerInfo[]>();
   const [workerData, setWorkerName] = useLiveQueryClient();
-  const pinnedChats = usePinnedChats(newPinnedChats);
-
-  useEffect(() => {
-    setPinnedConversations(pinnedChats);
-  }, [pinnedChats]);
+  const [pinnedChats, setPinnedChats] = usePinnedChats(newPinnedChats);
 
   const inputHandler = async (event: ChangeEvent<HTMLInputElement>) => {
     setWorkerName(event.target.value);
@@ -56,7 +50,7 @@ const MainAgentChatView = () => {
         paddingBottom="space0"
       >
         <PinnedChats
-          pinnedConversations={pinnedConversations}
+          pinnedConversations={pinnedChats}
           setIsAgentSelected={setIsAgentSelected}
           setSelectedAgent={setSelectedAgent}
         />
@@ -105,7 +99,10 @@ const MainAgentChatView = () => {
             />
             <Separator orientation="horizontal" verticalSpacing="space50" />
             <Flex vAlignContent="bottom" height="90%" paddingBottom="space40">
-              <ChatInterface selectedAgent={selectedAgent} />
+              <ChatInterface
+                selectedAgent={selectedAgent}
+                setPinnedChats={setPinnedChats}
+              />
             </Flex>
           </Box>
         )}
