@@ -48,18 +48,13 @@ const usePinnedChats = (newPinnedChats: string[] | undefined) => {
   };
 
   useEffect(() => {
-    console.log('mounting pinned chat hook');
     let hookInvoked = true;
     const getPinnedChats = async () => {
       const pinnedChatsFromLocalStorage: string[] = JSON.parse(
         readFromLocalStorage('PinnedChats') as string
       );
 
-      if (!hookInvoked) {
-        console.log('hookInvoked');
-      }
-
-      if (pinnedChatsFromLocalStorage === null) return;
+      if (pinnedChatsFromLocalStorage === null || !hookInvoked) return;
 
       const filteredPinnedChats = pinnedChatsFromLocalStorage.map(
         async (pinnedChat: string) => {
@@ -71,7 +66,6 @@ const usePinnedChats = (newPinnedChats: string[] | undefined) => {
             await fetchedConversation.getUnreadMessagesCount();
 
           fetchedConversation.on('messageAdded', async (message: any) => {
-            console.log('pinnedChats hook messageAdded');
             const unreadMessages =
               await fetchedConversation.getUnreadMessagesCount();
 
@@ -114,7 +108,6 @@ const usePinnedChats = (newPinnedChats: string[] | undefined) => {
 
     return () => {
       hookInvoked = false;
-      console.log('removing pinnedChat hook');
     };
   }, [newPinnedChats]);
 
