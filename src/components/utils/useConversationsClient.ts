@@ -1,15 +1,27 @@
 import * as Flex from '@twilio/flex-ui';
 import { Conversation } from '@twilio/conversations';
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect } from 'react';
 import { SetStateAction } from 'react';
+import { Message } from './types';
 
 interface ConversationMessage {
   author: string | null;
   sid: string | undefined;
   body: string | null;
-  dateCreated: string | undefined;
+  dateCreated: Date | undefined;
   attributes: string | undefined;
   type: string | undefined;
+}
+
+interface Test extends ConversationMessage {
+  attributes: string;
+  author: string;
+  body: string;
+  dateCreated: Date;
+  sid: string;
+  type: string;
+  mediaUrl: string;
+  mediaType: string;
 }
 
 const useConversationsClient = (
@@ -17,10 +29,12 @@ const useConversationsClient = (
   selectedAgentIdentity: string
 ) => {
   const [typingIndicator, setTypingIndicator] = useState<boolean>(false);
-  const [conversationMessages, setConversationMessages] = useState<any>([]);
+  const [conversationMessages, setConversationMessages] = useState<Message[]>(
+    []
+  );
   const [isLoadingMessages, setIsLoadingMessages] = useState(true);
   const [instantiatedConversation, setInstantiatedConversation] =
-    useState<any>();
+    useState<Conversation>();
   const conversationClient = Flex.Manager.getInstance().conversationsClient;
   const workerInitiatingConversation = conversationClient.user.identity;
 
@@ -89,10 +103,10 @@ const useConversationsClient = (
         setConversationMessages([]);
 
         // when the messages gets updated, update the conversationMessages state
-        fetchedConversation.on('messageUpdated', (updatedMessage: any) => {
+        fetchedConversation.on('messageUpdated', updatedMessage => {
           console.log('messageUpdated');
           setConversationMessages(
-            (prevState: SetStateAction<ConversationMessage[] | undefined>) => {
+            (prevState: SetStateAction<Message[] | undefined>) => {
               if (prevState !== undefined) {
                 // @ts-ignore
                 return prevState.map((prevMessage: ConversationMessage) =>
@@ -128,15 +142,14 @@ const useConversationsClient = (
             attributes: '',
             type: '',
           };
-          setConversationMessages(
-            (prevState: ConversationMessage[] | undefined) => {
-              if (prevState !== undefined) {
-                return [...prevState, updatedMessage];
-              } else {
-                return [updatedMessage];
-              }
+          setConversationMessages((prevState: SetStateAction<Message[]>) => {
+            if (prevState !== undefined) {
+              // @ts-ignore
+              return [...prevState, updatedMessage];
+            } else {
+              return [updatedMessage];
             }
-          );
+          });
           fetchedConversation.setAllMessagesRead();
         });
 
