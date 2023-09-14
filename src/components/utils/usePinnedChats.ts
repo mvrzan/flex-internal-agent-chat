@@ -3,9 +3,18 @@ import * as Flex from '@twilio/flex-ui';
 import { readFromLocalStorage } from '../utils/localStorageUtil';
 import { FilteredWorkerInfo } from './types';
 
-const usePinnedChats = (newPinnedChats: string[] | undefined) => {
+const usePinnedChats = (
+  newPinnedChats: string[] | undefined,
+  selectedAgentContactUri?: string
+) => {
   const [pinnedChats, setPinnedChats] = useState<FilteredWorkerInfo[]>();
   const conversationClient = Flex.Manager.getInstance().conversationsClient;
+  const uniqueName: string = [
+    selectedAgentContactUri,
+    conversationClient.user.identity,
+  ]
+    .sort()
+    .join('+');
 
   const instantQuerySearch = async (index: string, query: string) => {
     const instantQueryClient =
@@ -50,7 +59,6 @@ const usePinnedChats = (newPinnedChats: string[] | undefined) => {
   useEffect(() => {
     let hookInvoked = true;
 
-    console.log('invoking hook');
     const getPinnedChats = async () => {
       const pinnedChatsFromLocalStorage: string[] = JSON.parse(
         readFromLocalStorage('PinnedChats') as string
@@ -70,8 +78,6 @@ const usePinnedChats = (newPinnedChats: string[] | undefined) => {
           fetchedConversation.on('messageAdded', async (message: any) => {
             const unreadMessages =
               await fetchedConversation.getUnreadMessagesCount();
-
-            console.log('messageAdded from hook', unreadMessages);
 
             setPinnedChats((prevState: any) => {
               if (prevState !== undefined) {
@@ -116,7 +122,58 @@ const usePinnedChats = (newPinnedChats: string[] | undefined) => {
     };
   }, [newPinnedChats]);
 
-  return [pinnedChats, setPinnedChats] as const;
+  useEffect(() => {
+    if (selectedAgentContactUri === undefined) return;
+    pinnedChats?.forEach((chat: any) => {
+      if (chat !== undefined) {
+        if (chat.uniqueName === uniqueName) {
+          chat.fetchedConversation.setAllMessagesRead();
+
+          setPinnedChats(prevState => {
+            if (prevState !== undefined) {
+              return prevState.map(prevMessage => {
+                return { ...prevMessage, unreadMessages: 0 };
+              });
+            }
+          });
+
+          chat.fetchedConversation.on('messageAdded', async (message: any) => {
+            const unreadMessages =
+              await chat.fetchedConversation.getUnreadMessagesCount();
+
+            setPinnedChats((prevState: any) => {
+              if (prevState !== undefined) {
+                // @ts-ignore
+                return prevState.map((prevMessage: any) =>
+                  prevMessage.uniqueName === message.conversation.uniqueName
+                    ? { ...prevMessage, unreadMessages }
+                    : prevMessage
+                );
+              }
+            });
+          });
+        } else {
+          chat.fetchedConversation.on('messageAdded', async (message: any) => {
+            const unreadMessages =
+              await chat.fetchedConversation.getUnreadMessagesCount();
+
+            setPinnedChats((prevState: any) => {
+              if (prevState !== undefined) {
+                // @ts-ignore
+                return prevState.map((prevMessage: any) =>
+                  prevMessage.uniqueName === message.conversation.uniqueName
+                    ? { ...prevMessage, unreadMessages }
+                    : prevMessage
+                );
+              }
+            });
+          });
+        }
+      }
+    });
+  }, [selectedAgentContactUri]);
+
+  return pinnedChats;
 };
 
 export default usePinnedChats;

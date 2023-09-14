@@ -1,4 +1,4 @@
-import { ChangeEvent, useEffect, useState } from 'react';
+import { ChangeEvent, useState } from 'react';
 import {
   Heading,
   Stack,
@@ -13,75 +13,16 @@ import PinnedChats from './PinnedChats';
 import ChatInterface from './ChatInterface';
 import LandingScreen from './LandingScreen';
 import SelectedAgentView from './SelectedAgentView';
+import usePinnedChats from '../utils/usePinnedChats';
 import { WorkerData, SelectedAgent } from '../utils/types';
 import { useLiveQueryClient } from '../utils/useLiveQueryClient';
-import usePinnedChats from '../utils/usePinnedChats';
-import { Manager } from '@twilio/flex-ui';
 
 const MainAgentChatView = () => {
   const [selectedAgent, setSelectedAgent] = useState<SelectedAgent>(Object);
   const [isAgentSelected, setIsAgentSelected] = useState<boolean>(false);
   const [newPinnedChats, setNewPinnedChats] = useState<string[]>();
   const [workerData, setWorkerName] = useLiveQueryClient();
-  const [pinnedChats, setPinnedChats] = usePinnedChats(newPinnedChats);
-
-  const conversationClient = Manager.getInstance().conversationsClient;
-  const uniqueName: string = [
-    selectedAgent.contactUri,
-    conversationClient.user.identity,
-  ]
-    .sort()
-    .join('+');
-
-  useEffect(() => {
-    pinnedChats?.forEach((chat: any) => {
-      if (chat !== undefined) {
-        if (chat.uniqueName === uniqueName) {
-          chat.fetchedConversation.setAllMessagesRead();
-
-          setPinnedChats(prevState => {
-            if (prevState !== undefined) {
-              return prevState.map(prevMessage => {
-                return { ...prevMessage, unreadMessages: 0 };
-              });
-            }
-          });
-
-          chat.fetchedConversation.on('messageAdded', async (message: any) => {
-            const unreadMessages =
-              await chat.fetchedConversation.getUnreadMessagesCount();
-
-            setPinnedChats((prevState: any) => {
-              if (prevState !== undefined) {
-                // @ts-ignore
-                return prevState.map((prevMessage: any) =>
-                  prevMessage.uniqueName === message.conversation.uniqueName
-                    ? { ...prevMessage, unreadMessages }
-                    : prevMessage
-                );
-              }
-            });
-          });
-        } else {
-          chat.fetchedConversation.on('messageAdded', async (message: any) => {
-            const unreadMessages =
-              await chat.fetchedConversation.getUnreadMessagesCount();
-
-            setPinnedChats((prevState: any) => {
-              if (prevState !== undefined) {
-                // @ts-ignore
-                return prevState.map((prevMessage: any) =>
-                  prevMessage.uniqueName === message.conversation.uniqueName
-                    ? { ...prevMessage, unreadMessages }
-                    : prevMessage
-                );
-              }
-            });
-          });
-        }
-      }
-    });
-  }, [selectedAgent]);
+  const pinnedChats = usePinnedChats(newPinnedChats, selectedAgent.contactUri);
 
   const inputHandler = async (event: ChangeEvent<HTMLInputElement>) => {
     setWorkerName(event.target.value);
