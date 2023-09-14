@@ -13,17 +13,6 @@ interface ConversationMessage {
   type: string | undefined;
 }
 
-interface Test extends ConversationMessage {
-  attributes: string;
-  author: string;
-  body: string;
-  dateCreated: Date;
-  sid: string;
-  type: string;
-  mediaUrl: string;
-  mediaType: string;
-}
-
 const useConversationsClient = (
   uniqueName: string,
   selectedAgentIdentity: string
