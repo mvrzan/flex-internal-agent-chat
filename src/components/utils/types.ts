@@ -1,3 +1,5 @@
+import { Conversation } from '@twilio/conversations';
+
 export interface Message {
   attributes: Object;
   author: string;
@@ -43,4 +45,5 @@ export interface FilteredWorkerInfo {
   activityName: string;
   uniqueName: string | null;
   participant: string | null;
+  fetchedConversation: Conversation;
 }
