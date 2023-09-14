@@ -49,6 +49,8 @@ const usePinnedChats = (newPinnedChats: string[] | undefined) => {
 
   useEffect(() => {
     let hookInvoked = true;
+
+    console.log('invoking hook');
     const getPinnedChats = async () => {
       const pinnedChatsFromLocalStorage: string[] = JSON.parse(
         readFromLocalStorage('PinnedChats') as string
@@ -68,6 +70,8 @@ const usePinnedChats = (newPinnedChats: string[] | undefined) => {
           fetchedConversation.on('messageAdded', async (message: any) => {
             const unreadMessages =
               await fetchedConversation.getUnreadMessagesCount();
+
+            console.log('messageAdded from hook', unreadMessages);
 
             setPinnedChats((prevState: any) => {
               if (prevState !== undefined) {
@@ -94,6 +98,7 @@ const usePinnedChats = (newPinnedChats: string[] | undefined) => {
             uniqueName: fetchedConversation.uniqueName,
             participant: participants[0],
             unreadMessages,
+            fetchedConversation,
           };
 
           return formatConversationData;
@@ -111,7 +116,7 @@ const usePinnedChats = (newPinnedChats: string[] | undefined) => {
     };
   }, [newPinnedChats]);
 
-  return [pinnedChats, setPinnedChats];
+  return [pinnedChats, setPinnedChats] as const;
 };
 
 export default usePinnedChats;

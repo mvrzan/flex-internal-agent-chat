@@ -1,4 +1,4 @@
-import { ChangeEvent, useState } from 'react';
+import { ChangeEvent, useEffect, useState } from 'react';
 import {
   Heading,
   Stack,
@@ -16,6 +16,7 @@ import SelectedAgentView from './SelectedAgentView';
 import { WorkerData, SelectedAgent } from '../utils/types';
 import { useLiveQueryClient } from '../utils/useLiveQueryClient';
 import usePinnedChats from '../utils/usePinnedChats';
+import { Manager } from '@twilio/flex-ui';
 
 const MainAgentChatView = () => {
   const [selectedAgent, setSelectedAgent] = useState<SelectedAgent>(Object);
@@ -23,6 +24,64 @@ const MainAgentChatView = () => {
   const [newPinnedChats, setNewPinnedChats] = useState<string[]>();
   const [workerData, setWorkerName] = useLiveQueryClient();
   const [pinnedChats, setPinnedChats] = usePinnedChats(newPinnedChats);
+
+  const conversationClient = Manager.getInstance().conversationsClient;
+  const uniqueName: string = [
+    selectedAgent.contactUri,
+    conversationClient.user.identity,
+  ]
+    .sort()
+    .join('+');
+
+  useEffect(() => {
+    pinnedChats?.forEach((chat: any) => {
+      if (chat !== undefined) {
+        if (chat.uniqueName === uniqueName) {
+          chat.fetchedConversation.setAllMessagesRead();
+
+          setPinnedChats(prevState => {
+            if (prevState !== undefined) {
+              return prevState.map(prevMessage => {
+                return { ...prevMessage, unreadMessages: 0 };
+              });
+            }
+          });
+
+          chat.fetchedConversation.on('messageAdded', async (message: any) => {
+            const unreadMessages =
+              await chat.fetchedConversation.getUnreadMessagesCount();
+
+            setPinnedChats((prevState: any) => {
+              if (prevState !== undefined) {
+                // @ts-ignore
+                return prevState.map((prevMessage: any) =>
+                  prevMessage.uniqueName === message.conversation.uniqueName
+                    ? { ...prevMessage, unreadMessages }
+                    : prevMessage
+                );
+              }
+            });
+          });
+        } else {
+          chat.fetchedConversation.on('messageAdded', async (message: any) => {
+            const unreadMessages =
+              await chat.fetchedConversation.getUnreadMessagesCount();
+
+            setPinnedChats((prevState: any) => {
+              if (prevState !== undefined) {
+                // @ts-ignore
+                return prevState.map((prevMessage: any) =>
+                  prevMessage.uniqueName === message.conversation.uniqueName
+                    ? { ...prevMessage, unreadMessages }
+                    : prevMessage
+                );
+              }
+            });
+          });
+        }
+      }
+    });
+  }, [selectedAgent]);
 
   const inputHandler = async (event: ChangeEvent<HTMLInputElement>) => {
     setWorkerName(event.target.value);
@@ -99,10 +158,7 @@ const MainAgentChatView = () => {
             />
             <Separator orientation="horizontal" verticalSpacing="space50" />
             <Flex vAlignContent="bottom" height="90%" paddingBottom="space40">
-              <ChatInterface
-                selectedAgent={selectedAgent}
-                setPinnedChats={setPinnedChats}
-              />
+              <ChatInterface selectedAgent={selectedAgent} />
             </Flex>
           </Box>
         )}
