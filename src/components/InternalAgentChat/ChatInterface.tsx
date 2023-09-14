@@ -19,13 +19,9 @@ import AttachmentButton from '../AttachmentSupport/AttachmentButton';
 
 interface ChatInterfaceProps {
   selectedAgent: SelectedAgent;
-  setPinnedChats: any;
 }
 
-const ChatInterface = ({
-  selectedAgent,
-  setPinnedChats,
-}: ChatInterfaceProps) => {
+const ChatInterface = ({ selectedAgent }: ChatInterfaceProps) => {
   const [newMessage, setNewMessage] = useState('');
   const [isButtonDisabled, setIsButtonDisabled] = useState(true);
   const [mediaMessages, setMediaMessages] = useState<any>([]);
@@ -53,7 +49,7 @@ const ChatInterface = ({
       setIsButtonDisabled(true);
       setNewMessage('');
     } else {
-      instantiatedConversation.typing();
+      instantiatedConversation?.typing();
       setNewMessage(event.target.value);
       setIsButtonDisabled(false);
     }
@@ -76,7 +72,7 @@ const ChatInterface = ({
         mediaMessages.forEach(async (message: any) => {
           const newFormattedMessage = new FormData();
           newFormattedMessage.append('file', message);
-          await instantiatedConversation.sendMessage(newFormattedMessage);
+          await instantiatedConversation?.sendMessage(newFormattedMessage);
         });
         setMediaMessages([]);
         setIsButtonDisabled(true);
@@ -84,7 +80,7 @@ const ChatInterface = ({
       }
 
       if (newMessage !== '') {
-        await instantiatedConversation.sendMessage(newMessage);
+        await instantiatedConversation?.sendMessage(newMessage);
         setNewMessage('');
         setIsButtonDisabled(true);
         setMediaMessages([]);
@@ -115,19 +111,6 @@ const ChatInterface = ({
       setIsButtonDisabled(false);
     }
   }, [newMessage]);
-
-  useEffect(() => {
-    setPinnedChats((prevState: any) => {
-      if (prevState !== undefined) {
-        // @ts-ignore
-        return prevState.map((prevMessage: any) =>
-          prevMessage.uniqueName === uniqueName
-            ? { ...prevMessage, unreadMessages: 0 }
-            : prevMessage
-        );
-      }
-    });
-  }, [selectedAgent]);
 
   return (
     <Flex vertical width="100%" height="100%">
