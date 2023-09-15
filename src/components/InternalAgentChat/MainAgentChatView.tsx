@@ -6,12 +6,13 @@ import {
   Separator,
   Box,
   Input,
+  Text,
 } from '@twilio-paste/core';
 import { SearchIcon } from '@twilio-paste/icons/esm/SearchIcon';
 import AgentCard from './AgentCard';
-import PinnedChats from './PinnedChats';
 import ChatInterface from './ChatInterface';
 import LandingScreen from './LandingScreen';
+import NewPinnedChats from './NewPinnedChats';
 import SelectedAgentView from './SelectedAgentView';
 import usePinnedChats from '../utils/usePinnedChats';
 import { WorkerData, SelectedAgent } from '../utils/types';
@@ -49,12 +50,7 @@ const MainAgentChatView = () => {
         marginBottom="space0"
         paddingBottom="space0"
       >
-        <PinnedChats
-          pinnedConversations={pinnedChats}
-          setIsAgentSelected={setIsAgentSelected}
-          setSelectedAgent={setSelectedAgent}
-        />
-        <Stack orientation="vertical" spacing="space10">
+        <Stack orientation="vertical" spacing="space20">
           <Box marginBottom="space40" width="250px">
             <Input
               type="text"
@@ -63,6 +59,15 @@ const MainAgentChatView = () => {
               onChange={inputHandler}
             />
           </Box>
+          <NewPinnedChats
+            pinnedChats={pinnedChats}
+            setIsAgentSelected={setIsAgentSelected}
+            setSelectedAgent={setSelectedAgent}
+            selectedAgent={selectedAgent}
+          />
+          <Text as="span" fontSize="fontSize20" fontWeight="fontWeightSemibold">
+            Contact Center Agents
+          </Text>
           {workerData?.map((agent: WorkerData) => (
             <AgentCard
               key={agent.workerSid}

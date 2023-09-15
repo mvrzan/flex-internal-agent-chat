@@ -1,7 +1,15 @@
 import { useState, useEffect } from 'react';
 import { StatusBadge } from '@twilio-paste/core/status';
-import { Stack, Avatar, Text, Flex, Tooltip, Button } from '@twilio-paste/core';
-import { SelectedAgent } from '../utils/types';
+import {
+  Stack,
+  Avatar,
+  Text,
+  Flex,
+  Tooltip,
+  Button,
+  Badge,
+} from '@twilio-paste/core';
+import { SelectedAgent, FilteredWorkerInfo } from '../utils/types';
 
 interface AgentCardProps {
   fullName: string;
@@ -14,6 +22,7 @@ interface AgentCardProps {
   selectedAgent: SelectedAgent;
   setIsAgentSelected: React.Dispatch<React.SetStateAction<boolean>>;
   setSelectedAgent: React.Dispatch<React.SetStateAction<SelectedAgent>>;
+  pinnedChat?: any;
 }
 
 // TODO: Randomly change the color of avatars: https://paste.twilio.design/components/avatar#changing-the-color-of-an-avatar
@@ -28,6 +37,7 @@ const AgentCard = ({
   selectedAgent,
   setIsAgentSelected,
   setSelectedAgent,
+  pinnedChat,
 }: AgentCardProps) => {
   const [isPressed, setIsPressed] = useState<boolean>(false);
   const [onHover, setOnHover] = useState<boolean>(false);
@@ -70,6 +80,15 @@ const AgentCard = ({
             {fullName}
           </Text>
         </Stack>
+        {pinnedChat?.unreadMessages !== null &&
+          pinnedChat?.unreadMessages !== undefined &&
+          pinnedChat?.unreadMessages !== 0 && (
+            <Badge as="span" variant="neutral_counter">
+              {pinnedChat?.unreadMessages >= 99
+                ? '99+'
+                : pinnedChat?.unreadMessages}
+            </Badge>
+          )}
         <Tooltip text={activityName}>
           <StatusBadge
             as="span"
