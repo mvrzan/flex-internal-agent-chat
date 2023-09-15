@@ -75,14 +75,13 @@ const usePinnedChats = (
           const unreadMessages =
             await fetchedConversation.getUnreadMessagesCount();
 
-          fetchedConversation.on('messageAdded', async (message: any) => {
+          fetchedConversation.on('messageAdded', async message => {
             const unreadMessages =
               await fetchedConversation.getUnreadMessagesCount();
 
-            setPinnedChats((prevState: any) => {
+            setPinnedChats(prevState => {
               if (prevState !== undefined) {
-                // @ts-ignore
-                return prevState.map((prevMessage: any) =>
+                return prevState.map(prevMessage =>
                   prevMessage.uniqueName === message.conversation.uniqueName
                     ? { ...prevMessage, unreadMessages }
                     : prevMessage
@@ -124,51 +123,49 @@ const usePinnedChats = (
 
   useEffect(() => {
     if (selectedAgentContactUri === undefined) return;
-    pinnedChats?.forEach((chat: any) => {
-      if (chat !== undefined) {
-        if (chat.uniqueName === uniqueName) {
-          chat.fetchedConversation.setAllMessagesRead();
+    pinnedChats?.forEach((chat: FilteredWorkerInfo) => {
+      if (chat === undefined) return;
+
+      if (chat.uniqueName === uniqueName) {
+        chat.fetchedConversation.setAllMessagesRead();
+
+        setPinnedChats(prevState => {
+          if (prevState !== undefined) {
+            return prevState.map(prevMessage => {
+              return { ...prevMessage, unreadMessages: 0 };
+            });
+          }
+        });
+
+        chat.fetchedConversation.on('messageAdded', async message => {
+          const unreadMessages =
+            await chat.fetchedConversation.getUnreadMessagesCount();
 
           setPinnedChats(prevState => {
             if (prevState !== undefined) {
-              return prevState.map(prevMessage => {
-                return { ...prevMessage, unreadMessages: 0 };
-              });
+              return prevState.map(prevMessage =>
+                prevMessage.uniqueName === message.conversation.uniqueName
+                  ? { ...prevMessage, unreadMessages }
+                  : prevMessage
+              );
             }
           });
+        });
+      } else {
+        chat.fetchedConversation.on('messageAdded', async message => {
+          const unreadMessages =
+            await chat.fetchedConversation.getUnreadMessagesCount();
 
-          chat.fetchedConversation.on('messageAdded', async (message: any) => {
-            const unreadMessages =
-              await chat.fetchedConversation.getUnreadMessagesCount();
-
-            setPinnedChats((prevState: any) => {
-              if (prevState !== undefined) {
-                // @ts-ignore
-                return prevState.map((prevMessage: any) =>
-                  prevMessage.uniqueName === message.conversation.uniqueName
-                    ? { ...prevMessage, unreadMessages }
-                    : prevMessage
-                );
-              }
-            });
+          setPinnedChats(prevState => {
+            if (prevState !== undefined) {
+              return prevState.map(prevMessage =>
+                prevMessage.uniqueName === message.conversation.uniqueName
+                  ? { ...prevMessage, unreadMessages }
+                  : prevMessage
+              );
+            }
           });
-        } else {
-          chat.fetchedConversation.on('messageAdded', async (message: any) => {
-            const unreadMessages =
-              await chat.fetchedConversation.getUnreadMessagesCount();
-
-            setPinnedChats((prevState: any) => {
-              if (prevState !== undefined) {
-                // @ts-ignore
-                return prevState.map((prevMessage: any) =>
-                  prevMessage.uniqueName === message.conversation.uniqueName
-                    ? { ...prevMessage, unreadMessages }
-                    : prevMessage
-                );
-              }
-            });
-          });
-        }
+        });
       }
     });
   }, [selectedAgentContactUri]);
