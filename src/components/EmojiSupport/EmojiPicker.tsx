@@ -10,6 +10,7 @@ import { PopupEvent } from '@picmo/popup-picker/dist/PopupEvents';
 
 interface EmojiInputActionOwnProps {
   setNewMessage: React.Dispatch<React.SetStateAction<string>>;
+  inputRef?: React.MutableRefObject<HTMLTextAreaElement | null>;
 }
 
 interface PopupOptions {
@@ -24,7 +25,10 @@ let picker: PopupPickerController;
  *  See license text at https://github.com/joeattardi/picmo/blob/main/LICENSE
  */
 
-const EmojiInputAction = ({ setNewMessage }: EmojiInputActionOwnProps) => {
+const EmojiInputAction = ({
+  setNewMessage,
+  inputRef,
+}: EmojiInputActionOwnProps) => {
   const [selectedEmoji, setSelectedEmoji] = useState(null);
   const [hovered, setHovered] = useState<boolean>(false);
   const buttonRef = useRef<HTMLButtonElement>(null);
@@ -66,7 +70,7 @@ const EmojiInputAction = ({ setNewMessage }: EmojiInputActionOwnProps) => {
     if (!selectedEmoji) return;
 
     addEmoji(selectedEmoji);
-
+    inputRef?.current?.focus();
     // reset in case user selects same emoji twice
     setSelectedEmoji(null);
   }, [selectedEmoji]);

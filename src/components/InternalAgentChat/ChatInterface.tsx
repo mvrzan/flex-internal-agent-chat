@@ -170,7 +170,10 @@ const ChatInterface = ({ selectedAgent }: ChatInterfaceProps) => {
           />
           <Flex hAlignContent="between" vAlignContent="center" width="100%">
             <Stack orientation="horizontal" spacing="space0">
-              <EmojiInputAction setNewMessage={setNewMessage} />
+              <EmojiInputAction
+                setNewMessage={setNewMessage}
+                inputRef={inputRef}
+              />
               <AttachmentButton
                 setMediaMessages={setMediaMessages}
                 setIsButtonDisabled={setIsButtonDisabled}
