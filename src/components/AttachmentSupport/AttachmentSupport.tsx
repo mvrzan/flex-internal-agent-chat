@@ -193,8 +193,7 @@ const AttachmentSupport = ({
         <FileUploaderItemsList>
           {files.map(({ variant, title, description, id }) => (
             <FileUploaderItem
-              //@ts-ignore
-              variant={variant}
+              variant={variant as 'loading' | 'default' | 'error' | undefined}
               key={Math.random()}
               fileIcon={<DownloadIcon decorative />}
               onButtonClick={() => {
