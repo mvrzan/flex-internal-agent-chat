@@ -10,7 +10,6 @@ import {
   ScreenReaderOnly,
 } from '@twilio-paste/core';
 import { useState, useEffect } from 'react';
-import { useUIDSeed } from '@twilio-paste/core/uid-library';
 import { DownloadIcon } from '@twilio-paste/icons/esm/DownloadIcon';
 
 interface File {
@@ -33,7 +32,6 @@ const AttachmentSupport = ({
   const [screenReaderText, setScreenReaderText] = useState<string>('');
   const [files, setFiles] = useState<File[]>([]);
   const [uploadedFiles, setUploadedFiles] = useState<FileList | null>();
-  const randomId = useUIDSeed();
 
   const formatBytes = (bytes: number, decimals = 2) => {
     if (!+bytes) return '0 Bytes';
