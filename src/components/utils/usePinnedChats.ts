@@ -94,19 +94,36 @@ const usePinnedChats = (
             participant => participant[1].identity
           );
 
-          const [queryResponse] = await getWorkers(
-            `data.attributes.contact_uri CONTAINS "${participants[0]}"`
-          );
+          // check if the participant is the logged in agent
+          if (participants[0] !== conversationClient.user.identity) {
+            const [queryResponse] = await getWorkers(
+              `data.attributes.contact_uri CONTAINS "${participants[0]}"`
+            );
 
-          const formatConversationData = {
-            ...queryResponse,
-            uniqueName: fetchedConversation.uniqueName,
-            participant: participants[0],
-            unreadMessages,
-            fetchedConversation,
-          };
+            const formatConversationData = {
+              ...queryResponse,
+              uniqueName: fetchedConversation.uniqueName,
+              participant: participants[0],
+              unreadMessages,
+              fetchedConversation,
+            };
 
-          return formatConversationData;
+            return formatConversationData;
+          } else {
+            const [queryResponse] = await getWorkers(
+              `data.attributes.contact_uri CONTAINS "${participants[1]}"`
+            );
+
+            const formatConversationData = {
+              ...queryResponse,
+              uniqueName: fetchedConversation.uniqueName,
+              participant: participants[0],
+              unreadMessages,
+              fetchedConversation,
+            };
+
+            return formatConversationData;
+          }
         }
       );
 
