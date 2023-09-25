@@ -10,6 +10,7 @@ import {
   ScreenReaderOnly,
 } from '@twilio-paste/core';
 import { useState, useEffect } from 'react';
+import { useUIDSeed } from '@twilio-paste/core/uid-library';
 import { DownloadIcon } from '@twilio-paste/icons/esm/DownloadIcon';
 
 interface File {
@@ -32,6 +33,7 @@ const AttachmentSupport = ({
   const [screenReaderText, setScreenReaderText] = useState<string>('');
   const [files, setFiles] = useState<File[]>([]);
   const [uploadedFiles, setUploadedFiles] = useState<FileList | null>();
+  const randomId = useUIDSeed();
 
   const formatBytes = (bytes: number, decimals = 2) => {
     if (!+bytes) return '0 Bytes';
@@ -80,8 +82,6 @@ const AttachmentSupport = ({
       ? setIsModalButtonDisabled(true)
       : setIsModalButtonDisabled(false);
   }, [files]);
-
-  //  TODO: same file input validation and user feedback
 
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { files: newFiles } = event.target;
@@ -195,7 +195,7 @@ const AttachmentSupport = ({
             <FileUploaderItem
               //@ts-ignore
               variant={variant}
-              key={id}
+              key={Math.random()}
               fileIcon={<DownloadIcon decorative />}
               onButtonClick={() => {
                 handleRemovedItem(id);
