@@ -101,7 +101,7 @@ const useConversationsClient = (
 
         const reduxPayloadUnreadMessage = {
           unreadMessagesNumber: 0,
-          conversationUniqueName: 'test',
+          conversationUniqueName: fetchedConversation.uniqueName,
         };
 
         updateUnreadMessageCounter(reduxPayloadUnreadMessage);
