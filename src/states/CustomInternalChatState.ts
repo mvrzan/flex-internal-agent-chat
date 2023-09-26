@@ -43,15 +43,8 @@ export const customInternalChatSlice = createSlice({
             return;
           }
 
-          if (action.payload.unreadMessagesNumber === 0) {
-            conversation.unreadMessagesNumber = 0;
-          }
-
           conversation.unreadMessagesNumber =
             action.payload.unreadMessagesNumber;
-          if (conversation.unreadMessagesNumber) {
-            state.unreadMessages = conversation.unreadMessagesNumber;
-          }
         }
       });
 
