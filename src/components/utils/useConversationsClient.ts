@@ -3,6 +3,8 @@ import { Conversation } from '@twilio/conversations';
 import { useState, useEffect } from 'react';
 import { SetStateAction } from 'react';
 import { Message } from './types';
+import { useDispatch } from 'react-redux';
+import { actions } from '../../states';
 
 interface ConversationMessage {
   author: string | null;
@@ -26,6 +28,10 @@ const useConversationsClient = (
     useState<Conversation>();
   const conversationClient = Flex.Manager.getInstance().conversationsClient;
   const workerInitiatingConversation = conversationClient.user.identity;
+  const dispatch = useDispatch();
+
+  const updateUnreadMessageCounter = (unreadMessagesNumber: number | null) =>
+    dispatch(actions.customInternalChat.updateCounter(unreadMessagesNumber));
 
   useEffect(() => {
     let hookInvoked = true;
@@ -90,7 +96,7 @@ const useConversationsClient = (
         fetchedConversation.setAllMessagesRead();
         fetchedConversation.removeAllListeners();
         setConversationMessages([]);
-
+        updateUnreadMessageCounter(0);
         // when the messages gets updated, update the conversationMessages state
         fetchedConversation.on('messageUpdated', updatedMessage => {
           console.log('messageUpdated');

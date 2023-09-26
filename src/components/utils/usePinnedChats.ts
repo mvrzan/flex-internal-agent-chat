@@ -2,6 +2,8 @@ import { useEffect, useState } from 'react';
 import * as Flex from '@twilio/flex-ui';
 import { readFromLocalStorage } from '../utils/localStorageUtil';
 import { FilteredWorkerInfo } from './types';
+import { useDispatch } from 'react-redux';
+import { actions } from '../../states';
 
 const usePinnedChats = (
   newPinnedChats: string[] | undefined,
@@ -15,6 +17,10 @@ const usePinnedChats = (
   ]
     .sort()
     .join('+');
+  const dispatch = useDispatch();
+
+  const updateUnreadMessageCounter = (unreadMessagesNumber: number | null) =>
+    dispatch(actions.customInternalChat.updateCounter(unreadMessagesNumber));
 
   const instantQuerySearch = async (index: string, query: string) => {
     const instantQueryClient =
@@ -75,9 +81,13 @@ const usePinnedChats = (
           const unreadMessages =
             await fetchedConversation.getUnreadMessagesCount();
 
+          updateUnreadMessageCounter(unreadMessages);
+
           fetchedConversation.on('messageAdded', async message => {
             const unreadMessages =
               await fetchedConversation.getUnreadMessagesCount();
+
+            updateUnreadMessageCounter(unreadMessages);
 
             setPinnedChats(prevState => {
               if (prevState !== undefined) {
@@ -158,6 +168,8 @@ const usePinnedChats = (
           const unreadMessages =
             await chat.fetchedConversation.getUnreadMessagesCount();
 
+          updateUnreadMessageCounter(unreadMessages);
+
           setPinnedChats(prevState => {
             if (prevState !== undefined) {
               return prevState.map(prevMessage =>
@@ -172,6 +184,8 @@ const usePinnedChats = (
         chat.fetchedConversation.on('messageAdded', async message => {
           const unreadMessages =
             await chat.fetchedConversation.getUnreadMessagesCount();
+
+          updateUnreadMessageCounter(unreadMessages);
 
           setPinnedChats(prevState => {
             if (prevState !== undefined) {

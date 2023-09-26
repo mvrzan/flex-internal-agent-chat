@@ -10,6 +10,7 @@ import {
   PasteCustomCSS,
   CustomizationProviderProps,
 } from '@twilio-paste/core/customization';
+import { namespace, reducers } from './states/index';
 
 const PLUGIN_NAME = 'InternalAgentChatPlugin';
 
@@ -18,7 +19,9 @@ export default class InternalAgentChatPlugin extends FlexPlugin {
     super(PLUGIN_NAME);
   }
 
-  async init(flex: typeof Flex): Promise<void> {
+  async init(flex: typeof Flex, manager: Flex.Manager): Promise<void> {
+    manager.store.addReducer?.(namespace, reducers);
+
     flex.setProviders({
       CustomProvider: RootComponent => props => {
         const pasteProviderProps: CustomizationProviderProps & {
@@ -56,8 +59,11 @@ export default class InternalAgentChatPlugin extends FlexPlugin {
             },
             BADGE_PINNED_CHATS: {
               boxShadow: 'none',
-              marginLeft: 'spaceNegative60',
-              marginBottom: 'space60',
+              fontSize: 'fontSize10',
+              marginLeft: 'spaceNegative20',
+              alignItems: 'unset',
+              padding: 'space0',
+              background: 'none',
             },
           },
         };
