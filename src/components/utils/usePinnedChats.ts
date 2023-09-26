@@ -4,6 +4,7 @@ import { readFromLocalStorage } from '../utils/localStorageUtil';
 import { FilteredWorkerInfo } from './types';
 import { useDispatch } from 'react-redux';
 import { actions } from '../../states';
+import { UnreadMessagesPayload } from '../../states/CustomInternalChatState';
 
 const usePinnedChats = (
   newPinnedChats: string[] | undefined,
@@ -19,8 +20,9 @@ const usePinnedChats = (
     .join('+');
   const dispatch = useDispatch();
 
-  const updateUnreadMessageCounter = (unreadMessagesNumber: number | null) =>
-    dispatch(actions.customInternalChat.updateCounter(unreadMessagesNumber));
+  const updateUnreadMessageCounter = (
+    unreadMessagesNumber: UnreadMessagesPayload
+  ) => dispatch(actions.customInternalChat.updateCounter(unreadMessagesNumber));
 
   const instantQuerySearch = async (index: string, query: string) => {
     const instantQueryClient =
@@ -81,13 +83,23 @@ const usePinnedChats = (
           const unreadMessages =
             await fetchedConversation.getUnreadMessagesCount();
 
-          updateUnreadMessageCounter(unreadMessages);
+          const reduxPayloadUnreadMessage = {
+            unreadMessagesNumber: unreadMessages,
+            conversationUniqueName: pinnedChat,
+          };
+
+          updateUnreadMessageCounter(reduxPayloadUnreadMessage);
 
           fetchedConversation.on('messageAdded', async message => {
             const unreadMessages =
               await fetchedConversation.getUnreadMessagesCount();
 
-            updateUnreadMessageCounter(unreadMessages);
+            const newUnreadMessages = {
+              unreadMessagesNumber: unreadMessages,
+              conversationUniqueName: message.conversation.uniqueName,
+            };
+
+            updateUnreadMessageCounter(newUnreadMessages);
 
             setPinnedChats(prevState => {
               if (prevState !== undefined) {
@@ -168,7 +180,12 @@ const usePinnedChats = (
           const unreadMessages =
             await chat.fetchedConversation.getUnreadMessagesCount();
 
-          updateUnreadMessageCounter(unreadMessages);
+          const newUnreadMessages = {
+            unreadMessagesNumber: unreadMessages,
+            conversationUniqueName: message.conversation.uniqueName,
+          };
+
+          updateUnreadMessageCounter(newUnreadMessages);
 
           setPinnedChats(prevState => {
             if (prevState !== undefined) {
@@ -185,7 +202,12 @@ const usePinnedChats = (
           const unreadMessages =
             await chat.fetchedConversation.getUnreadMessagesCount();
 
-          updateUnreadMessageCounter(unreadMessages);
+          const newUnreadMessages = {
+            unreadMessagesNumber: unreadMessages,
+            conversationUniqueName: message.conversation.uniqueName,
+          };
+
+          updateUnreadMessageCounter(newUnreadMessages);
 
           setPinnedChats(prevState => {
             if (prevState !== undefined) {

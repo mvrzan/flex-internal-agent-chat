@@ -5,6 +5,7 @@ import { SetStateAction } from 'react';
 import { Message } from './types';
 import { useDispatch } from 'react-redux';
 import { actions } from '../../states';
+import { UnreadMessagesPayload } from '../../states/CustomInternalChatState';
 
 interface ConversationMessage {
   author: string | null;
@@ -30,8 +31,9 @@ const useConversationsClient = (
   const workerInitiatingConversation = conversationClient.user.identity;
   const dispatch = useDispatch();
 
-  const updateUnreadMessageCounter = (unreadMessagesNumber: number | null) =>
-    dispatch(actions.customInternalChat.updateCounter(unreadMessagesNumber));
+  const updateUnreadMessageCounter = (
+    unreadMessagesNumber: UnreadMessagesPayload
+  ) => dispatch(actions.customInternalChat.updateCounter(unreadMessagesNumber));
 
   useEffect(() => {
     let hookInvoked = true;
@@ -96,7 +98,14 @@ const useConversationsClient = (
         fetchedConversation.setAllMessagesRead();
         fetchedConversation.removeAllListeners();
         setConversationMessages([]);
-        updateUnreadMessageCounter(0);
+
+        const reduxPayloadUnreadMessage = {
+          unreadMessagesNumber: 0,
+          conversationUniqueName: 'test',
+        };
+
+        updateUnreadMessageCounter(reduxPayloadUnreadMessage);
+
         // when the messages gets updated, update the conversationMessages state
         fetchedConversation.on('messageUpdated', updatedMessage => {
           console.log('messageUpdated');
