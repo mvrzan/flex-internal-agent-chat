@@ -1,7 +1,7 @@
 import { Icon } from '@twilio/flex-ui';
 import { useSelector } from 'react-redux';
 import { Badge } from '@twilio-paste/core';
-import { namespace, AppState } from '../../states';
+import { AppState, namespace } from '../../states';
 
 interface MessageIconWithBadgeProps {
   activeView?: string;
@@ -13,7 +13,7 @@ const MessageIconWithBadge = ({
   viewName,
 }: MessageIconWithBadgeProps) => {
   const reduxUnreadMessages = useSelector(
-    (state: AppState) => state[namespace].customInternalChat.unreadMessages
+    (state: AppState) => state[namespace]?.customInternalChat?.unreadMessages
   );
 
   return (

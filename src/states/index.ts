@@ -15,7 +15,7 @@ export const actions = {
 
 export interface AppState {
   flex: FlexAppState;
-  pluginState: {
+  internalChatState: {
     customInternalChat: UnreadChatMessages;
   };
 }

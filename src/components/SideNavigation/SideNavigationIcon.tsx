@@ -1,7 +1,7 @@
 import { useSelector } from 'react-redux';
 import { Badge, Stack } from '@twilio-paste/core';
 import { SideLink, Actions } from '@twilio/flex-ui';
-import { namespace, AppState } from '../../states';
+import { AppState, namespace } from '../../states';
 import usePinnedChats from '../utils/usePinnedChats';
 import MessageIconWithBadge from './MessageIconWithBadge';
 
@@ -20,7 +20,7 @@ const SideNavigationIcon = ({ activeView, viewName }: SideNavigationProps) => {
   };
 
   const reduxUnreadMessages = useSelector(
-    (state: AppState) => state[namespace].customInternalChat.unreadMessages
+    (state: AppState) => state[namespace]?.customInternalChat?.unreadMessages
   );
 
   return (
