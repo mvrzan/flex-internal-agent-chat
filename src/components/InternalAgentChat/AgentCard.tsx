@@ -9,7 +9,7 @@ import {
   Button,
   Badge,
 } from '@twilio-paste/core';
-import { SelectedAgent, FilteredWorkerInfo } from '../utils/types';
+import { SelectedAgent, FilteredWorkerInfo } from '../../utils/types';
 
 interface AgentCardProps {
   fullName: string;

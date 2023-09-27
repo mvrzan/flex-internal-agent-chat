@@ -7,7 +7,7 @@ import {
   ChatBookend,
   ChatBookendItem,
 } from '@twilio-paste/core/chat-log';
-import { Message } from '../utils/types';
+import { Message } from '../../utils/types';
 import MediaMessage from '../MediaSupport/MediaMessage';
 
 interface GroupedMessagesProps {

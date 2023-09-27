@@ -2,7 +2,7 @@ import { useSelector } from 'react-redux';
 import { Badge, Stack } from '@twilio-paste/core';
 import { SideLink, Actions } from '@twilio/flex-ui';
 import { AppState, namespace } from '../../states';
-import usePinnedChats from '../utils/usePinnedChats';
+import usePinnedChats from '../../utils/usePinnedChats';
 import MessageIconWithBadge from './MessageIconWithBadge';
 import { useEffect, useState } from 'react';
 

@@ -4,8 +4,8 @@ import { useState, useEffect } from 'react';
 import { SetStateAction } from 'react';
 import { Message } from './types';
 import { useDispatch } from 'react-redux';
-import { actions } from '../../states';
-import { UnreadMessagesPayload } from '../../states/CustomInternalChatState';
+import { actions } from '../states';
+import { UnreadMessagesPayload } from '../states/CustomInternalChatState';
 
 interface ConversationMessage {
   author: string | null;

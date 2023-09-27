@@ -8,8 +8,8 @@ import {
 } from '@twilio-paste/core/chat-log';
 import { SendIcon } from '@twilio-paste/icons/esm/SendIcon';
 import moment from 'moment';
-import { Message, SelectedAgent } from '../utils/types';
-import useConversationsClient from '../utils/useConversationsClient';
+import { Message, SelectedAgent } from '../../utils/types';
+import useConversationsClient from '../../utils/useConversationsClient';
 import GroupedMessages from './GroupedMessages';
 import TypingIndicator from './TypingIndicator';
 import NewConversationView from './NewConversationView';

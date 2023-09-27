@@ -14,9 +14,9 @@ import ChatInterface from './ChatInterface';
 import LandingScreen from './LandingScreen';
 import NewPinnedChats from './NewPinnedChats';
 import SelectedAgentView from './SelectedAgentView';
-import usePinnedChats from '../utils/usePinnedChats';
-import { WorkerData, SelectedAgent } from '../utils/types';
-import { useLiveQueryClient } from '../utils/useLiveQueryClient';
+import usePinnedChats from '../../utils/usePinnedChats';
+import { WorkerData, SelectedAgent } from '../../utils/types';
+import { useLiveQueryClient } from '../../utils/useLiveQueryClient';
 
 const MainAgentChatView = () => {
   const [selectedAgent, setSelectedAgent] = useState<SelectedAgent>(Object);

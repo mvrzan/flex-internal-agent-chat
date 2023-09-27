@@ -11,14 +11,14 @@ import {
   UserDialogListItem,
 } from '@twilio-paste/core/user-dialog';
 import { Stack, Text, StatusBadge } from '@twilio-paste/core';
-import { SelectedAgent } from '../utils/types';
+import { SelectedAgent } from '../../utils/types';
 import { PinIcon } from '@twilio-paste/icons/esm/PinIcon';
 import { DeleteIcon } from '@twilio-paste/icons/esm/DeleteIcon';
-import { useLiveQueryClient } from '../utils/useLiveQueryClient';
+import { useLiveQueryClient } from '../../utils/useLiveQueryClient';
 import {
   writeToLocalStorage,
   readFromLocalStorage,
-} from '../utils/localStorageUtil';
+} from '../../utils/localStorageUtil';
 
 interface SelectedAgentViewProps {
   selectedAgent: SelectedAgent;

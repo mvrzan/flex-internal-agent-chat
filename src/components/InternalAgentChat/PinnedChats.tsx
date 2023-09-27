@@ -6,7 +6,7 @@ import {
   Stack,
   Badge,
 } from '@twilio-paste/core';
-import { SelectedAgent } from '../utils/types';
+import { SelectedAgent } from '../../utils/types';
 
 interface PinnedChatsProps {
   pinnedConversations: any;

@@ -1,10 +1,10 @@
 import { useEffect, useState } from 'react';
 import * as Flex from '@twilio/flex-ui';
-import { readFromLocalStorage } from '../utils/localStorageUtil';
+import { readFromLocalStorage } from './localStorageUtil';
 import { FilteredWorkerInfo } from './types';
 import { useDispatch } from 'react-redux';
-import { actions } from '../../states';
-import { UnreadMessagesPayload } from '../../states/CustomInternalChatState';
+import { actions } from '../states';
+import { UnreadMessagesPayload } from '../states/CustomInternalChatState';
 
 const usePinnedChats = (
   newPinnedChats: string[] | string | undefined,

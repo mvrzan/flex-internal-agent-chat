@@ -1,5 +1,5 @@
 import { Text, Stack } from '@twilio-paste/core';
-import { FilteredWorkerInfo, SelectedAgent } from '../utils/types';
+import { FilteredWorkerInfo, SelectedAgent } from '../../utils/types';
 import AgentCard from './AgentCard';
 
 interface NewPinnedChatsProps {
