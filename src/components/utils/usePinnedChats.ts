@@ -7,7 +7,7 @@ import { actions } from '../../states';
 import { UnreadMessagesPayload } from '../../states/CustomInternalChatState';
 
 const usePinnedChats = (
-  newPinnedChats: string[] | undefined,
+  newPinnedChats: string[] | string | undefined,
   selectedAgentContactUri?: string
 ) => {
   const [pinnedChats, setPinnedChats] = useState<FilteredWorkerInfo[]>();

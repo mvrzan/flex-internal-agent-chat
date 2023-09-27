@@ -4,6 +4,7 @@ import { SideLink, Actions } from '@twilio/flex-ui';
 import { AppState, namespace } from '../../states';
 import usePinnedChats from '../utils/usePinnedChats';
 import MessageIconWithBadge from './MessageIconWithBadge';
+import { useEffect, useState } from 'react';
 
 interface SideNavigationProps {
   activeView?: string;
@@ -11,7 +12,12 @@ interface SideNavigationProps {
 }
 
 const SideNavigationIcon = ({ activeView, viewName }: SideNavigationProps) => {
-  usePinnedChats(undefined);
+  const [currentView, setCurrentView] = useState('');
+  usePinnedChats(currentView);
+
+  useEffect(() => {
+    setCurrentView(activeView!);
+  }, [activeView]);
 
   const navigateHandler = () => {
     Actions.invokeAction('NavigateToView', {
