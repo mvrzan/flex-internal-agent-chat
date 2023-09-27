@@ -101,6 +101,8 @@ const usePinnedChats = (
 
             updateUnreadMessageCounter(newUnreadMessages);
 
+            if (!hookInvoked) return;
+
             setPinnedChats(prevState => {
               if (prevState !== undefined) {
                 return prevState.map(prevMessage =>
