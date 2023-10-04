@@ -47,3 +47,19 @@ export interface FilteredWorkerInfo {
   participant: string | null;
   fetchedConversation: Conversation;
 }
+
+export interface FilteredConversation {
+  firstName: string;
+  lastName: string;
+  contactUri: string;
+  fullName: string;
+  imageUrl: string;
+  value: string;
+  workerSid: string;
+  email: string;
+  activityName: string;
+  uniqueName: string | null;
+  participant: string | null;
+  fetchedConversation: Conversation;
+  unreadMessagesNumber: number;
+}
