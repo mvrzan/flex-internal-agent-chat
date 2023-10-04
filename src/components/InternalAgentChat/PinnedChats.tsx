@@ -2,19 +2,19 @@ import { Text, Stack } from '@twilio-paste/core';
 import { FilteredWorkerInfo, SelectedAgent } from '../../utils/types';
 import AgentCard from './AgentCard';
 
-interface NewPinnedChatsProps {
+interface PinnedChatsProps {
   pinnedChats: FilteredWorkerInfo[] | undefined;
   selectedAgent: SelectedAgent;
   setIsAgentSelected: React.Dispatch<React.SetStateAction<boolean>>;
   setSelectedAgent: React.Dispatch<React.SetStateAction<SelectedAgent>>;
 }
 
-const NewPinnedChats = ({
+const PinnedChats = ({
   pinnedChats,
   selectedAgent,
   setIsAgentSelected,
   setSelectedAgent,
-}: NewPinnedChatsProps) => {
+}: PinnedChatsProps) => {
   return (
     <Stack orientation="vertical" spacing="space20">
       {pinnedChats?.length !== 0 && (
@@ -44,4 +44,4 @@ const NewPinnedChats = ({
   );
 };
 
-export default NewPinnedChats;
+export default PinnedChats;

@@ -12,7 +12,7 @@ import { SearchIcon } from '@twilio-paste/icons/esm/SearchIcon';
 import AgentCard from './AgentCard';
 import ChatInterface from './ChatInterface';
 import LandingScreen from './LandingScreen';
-import NewPinnedChats from './NewPinnedChats';
+import NewPinnedChats from './PinnedChats';
 import SelectedAgentView from './SelectedAgentView';
 import usePinnedChats from '../../utils/usePinnedChats';
 import { WorkerData, SelectedAgent } from '../../utils/types';
