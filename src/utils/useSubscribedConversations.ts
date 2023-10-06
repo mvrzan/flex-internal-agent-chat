@@ -1,39 +1,81 @@
 import * as Flex from '@twilio/flex-ui';
 import { useEffect, useState } from 'react';
 import { Conversation } from '@twilio/conversations';
+import { UnreadMessagesPayload } from '../states/CustomInternalChatState';
+import { useDispatch } from 'react-redux';
+import { actions } from '../states';
+import { FilteredConversation } from './types';
 
 const useSubscribedConversations = (activeView: string | undefined) => {
-  const [totalUnreadMessagesNumber, setTotalUnreadMessagesNumber] =
-    useState<number>(0);
   const [activeConversations, setActiveConversations] =
-    useState<Conversation[]>();
+    useState<FilteredConversation[]>();
   const conversationClient = Flex.Manager.getInstance().conversationsClient;
+  const dispatch = useDispatch();
+
+  const updateUnreadMessageCounter = (
+    unreadMessagesNumber: UnreadMessagesPayload
+  ) => dispatch(actions.customInternalChat.updateCounter(unreadMessagesNumber));
+
+  const instantQuerySearch = async (index: string, query: string) => {
+    const instantQueryClient =
+      await Flex.Manager.getInstance().insightsClient.instantQuery(index);
+
+    const queryPromise = new Promise(resolve => {
+      instantQueryClient.on('searchResult', items => {
+        resolve(items);
+      });
+    });
+
+    await instantQueryClient.search(query);
+
+    return queryPromise;
+  };
+
+  const getWorkers = async (query = '') => {
+    const queryItems: any = await instantQuerySearch(
+      'tr-worker',
+      `${query !== '' ? `${query}` : ''}`
+    );
+
+    const responseWorkers = Object.keys(queryItems)
+      .map(workerSid => queryItems[workerSid])
+      .map(worker => {
+        return {
+          firstName: worker.attributes.full_name.split(' ')[0],
+          lastName: worker.attributes.full_name.split(' ')[1],
+          contactUri: worker.attributes.contact_uri.split(':')[1],
+          fullName: worker.attributes.full_name,
+          imageUrl: worker.attributes.image_url,
+          value: worker.attributes.contact_uri,
+          workerSid: worker.worker_sid,
+          email: worker.attributes.email,
+          activityName: worker.activity_name,
+        };
+      });
+
+    return responseWorkers;
+  };
 
   useEffect(() => {
     const getSubscribedConversations = async () => {
       try {
-        const subscribedConversationsResponse =
+        const { items: allSubscribedConversationsArray } =
           await conversationClient.getSubscribedConversations();
 
-        const internalAgentChatConversations =
-          subscribedConversationsResponse.items.filter(
+        const onlyInternalAgentChatConversations =
+          allSubscribedConversationsArray.filter(
             (conversation: Conversation) => {
-              if (conversation.attributes) {
-                // TODO: change this to internalChat
-                if (
-                  conversation.attributes.hasOwnProperty('testAttribute') &&
-                  conversation.state?.current === 'active'
-                )
-                  return conversation;
-              }
+              if (!conversation.attributes) return;
+
+              if (
+                conversation.attributes.hasOwnProperty('internalChat') &&
+                conversation.state?.current === 'active'
+              )
+                return conversation;
             }
           );
 
-        console.log('filteredConversations', internalAgentChatConversations);
-
-        setActiveConversations(internalAgentChatConversations);
-
-        return internalAgentChatConversations;
+        return onlyInternalAgentChatConversations;
       } catch (error) {
         if (error instanceof Error) {
           console.error(
@@ -48,21 +90,106 @@ const useSubscribedConversations = (activeView: string | undefined) => {
       try {
         const internalAgentChatConversations =
           await getSubscribedConversations();
-        let unreadMessageCounter = 0;
 
         if (internalAgentChatConversations?.length === 0) return;
 
         internalAgentChatConversations?.forEach(
           async (conversation: Conversation) => {
+            conversation.removeAllListeners();
+
             const unreadMessagesNumber =
               await conversation.getUnreadMessagesCount();
 
-            if (unreadMessagesNumber) {
-              unreadMessageCounter += unreadMessagesNumber;
-              setTotalUnreadMessagesNumber(unreadMessageCounter);
+            if (unreadMessagesNumber === null) return;
 
-              // filter activeConversations based on unreadMessagesNumber
+            const newUnreadMessages = {
+              unreadMessagesNumber: unreadMessagesNumber,
+              conversationUniqueName: conversation.uniqueName,
+            };
+
+            updateUnreadMessageCounter(newUnreadMessages);
+
+            conversation.on('messageAdded', async message => {
+              try {
+                const unreadMessagesNumber =
+                  await conversation.getUnreadMessagesCount();
+
+                if (unreadMessagesNumber === null) return;
+
+                const newUnreadMessages = {
+                  unreadMessagesNumber: unreadMessagesNumber,
+                  conversationUniqueName: message.conversation.uniqueName,
+                };
+
+                updateUnreadMessageCounter(newUnreadMessages);
+              } catch (error) {
+                if (error instanceof Error) {
+                  console.error(
+                    'There was a problem getting unread message count when a new messages has been added',
+                    error
+                  );
+                }
+              }
+            });
+
+            const participants = [...conversation._participants]
+              .map(participant => {
+                if (
+                  participant[1].identity !== conversationClient.user.identity
+                ) {
+                  return participant[1].identity;
+                }
+              })
+              .filter(participant => participant);
+
+            // check if the participant is the logged in agent
+            if (participants[0] !== conversationClient.user.identity) {
+              const [queryResponse] = await getWorkers(
+                `data.attributes.contact_uri CONTAINS "${participants[0]}"`
+              );
+
+              if (queryResponse === undefined) return;
+
+              const formatConversationData = {
+                ...queryResponse,
+                uniqueName: conversation.uniqueName,
+                participant: participants[0],
+                unreadMessagesNumber,
+                fetchedConversation: conversation,
+              };
+
+              setActiveConversations((prevState: any) => {
+                if (prevState !== undefined) {
+                  return [...prevState, formatConversationData];
+                } else {
+                  return [formatConversationData];
+                }
+              });
+            } else {
+              const [queryResponse] = await getWorkers(
+                `data.attributes.contact_uri CONTAINS "${participants[1]}"`
+              );
+
+              if (queryResponse === undefined) return;
+
+              const formatConversationData = {
+                ...queryResponse,
+                uniqueName: conversation.uniqueName,
+                participant: participants[0],
+                unreadMessagesNumber,
+                fetchedConversation: conversation,
+              };
+
+              setActiveConversations(prevState => {
+                if (prevState !== undefined) {
+                  return [...prevState, formatConversationData];
+                } else {
+                  return [formatConversationData];
+                }
+              });
             }
+
+            // TODO: filter activeConversations based on unreadMessagesNumber count and date so the newest ones are at the top of the array
           }
         );
       } catch (error) {
@@ -75,30 +202,10 @@ const useSubscribedConversations = (activeView: string | undefined) => {
       }
     };
 
-    const setConversationListeners = async () => {
-      try {
-        const subscribedConversations = await getSubscribedConversations();
-
-        console.log('hereI am', subscribedConversations);
-
-        subscribedConversations?.forEach((conversation: Conversation) => {
-          conversation.on('messageAdded', message => {
-            console.log('message added from new hook 1');
-          });
-        });
-      } catch (error) {
-        if (error instanceof Error) {
-          console.error(
-            'There was a problem setting up a conversation event listener.',
-            error
-          );
-        }
-      }
-    };
-    setConversationListeners();
+    checkUnreadMessages();
   }, [activeView]);
 
-  return totalUnreadMessagesNumber;
+  return activeConversations;
 };
 
 export default useSubscribedConversations;

@@ -2,17 +2,15 @@ import { useCallback, useEffect, useState } from 'react';
 import { Combobox } from '@twilio-paste/core';
 import getWorkers from '../../utils/instantQueryUtil';
 import { SearchIcon } from '@twilio-paste/icons/esm/SearchIcon';
-import AgentCard from './AgentCard';
 import { SelectedAgent } from '../../utils/types';
+import SearchResults from './SearchResults';
 
 interface AgentSearchProps {
-  selectedAgent: SelectedAgent;
   setIsAgentSelected: React.Dispatch<React.SetStateAction<boolean>>;
   setSelectedAgent: React.Dispatch<React.SetStateAction<SelectedAgent>>;
 }
 
 const AgentSearch = ({
-  selectedAgent,
   setIsAgentSelected,
   setSelectedAgent,
 }: AgentSearchProps) => {
@@ -44,23 +42,20 @@ const AgentSearch = ({
     setIsAgentSelected(true);
   };
 
-  const DropDownSelection = (worker: any) => {
-    return (
-      <AgentCard
-        key={worker.workerSid}
-        fullName={worker.fullName}
-        firstName={worker.firstName}
-        lastName={worker.lastName}
-        imageUrl={worker.imageUrl}
-        activityName={'Offline'}
-        email={worker.email}
-        contactUri={worker.contactUri}
-        setIsAgentSelected={setIsAgentSelected}
-        setSelectedAgent={setSelectedAgent}
-        selectedAgent={selectedAgent}
-      />
-    );
+  //TODO: Send the search query directly into the util
+  const agentSearchHandler = async (agentName: string) => {
+    const workers = await getWorkers(agentName);
+    setInputItems(workers);
+    // setWorkers(workers);
   };
+
+  const DropDownSelection = (worker: any) => (
+    <SearchResults
+      fullName={worker.fullName}
+      imageUrl={worker.imageUrl}
+      activityName={worker.activityName}
+    />
+  );
 
   return (
     <Combobox
@@ -74,6 +69,7 @@ const AgentSearch = ({
       onSelectedItemChange={item => saveHandler(item.selectedItem)}
       onInputValueChange={({ inputValue }) => {
         if (inputValue !== undefined) {
+          //   agentSearchHandler(inputValue);
           setInputItems(
             workers.filter(item =>
               // @ts-ignore

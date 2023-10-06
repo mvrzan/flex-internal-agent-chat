@@ -88,7 +88,7 @@ const usePinnedChats = (
             conversationUniqueName: pinnedChat,
           };
 
-          updateUnreadMessageCounter(reduxPayloadUnreadMessage);
+          // updateUnreadMessageCounter(reduxPayloadUnreadMessage);
 
           fetchedConversation.on('messageAdded', async message => {
             const unreadMessages =
@@ -99,7 +99,7 @@ const usePinnedChats = (
               conversationUniqueName: message.conversation.uniqueName,
             };
 
-            updateUnreadMessageCounter(newUnreadMessages);
+            // updateUnreadMessageCounter(newUnreadMessages);
 
             if (!hookInvoked) return;
 
@@ -187,7 +187,7 @@ const usePinnedChats = (
             conversationUniqueName: message.conversation.uniqueName,
           };
 
-          updateUnreadMessageCounter(newUnreadMessages);
+          // updateUnreadMessageCounter(newUnreadMessages);
 
           setPinnedChats(prevState => {
             if (prevState !== undefined) {
@@ -209,7 +209,7 @@ const usePinnedChats = (
             conversationUniqueName: message.conversation.uniqueName,
           };
 
-          updateUnreadMessageCounter(newUnreadMessages);
+          // updateUnreadMessageCounter(newUnreadMessages);
 
           setPinnedChats(prevState => {
             if (prevState !== undefined) {

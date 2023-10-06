@@ -1,33 +1,23 @@
-import { ChangeEvent, useState } from 'react';
-import {
-  Heading,
-  Stack,
-  Flex,
-  Separator,
-  Box,
-  Input,
-  Text,
-} from '@twilio-paste/core';
-import { SearchIcon } from '@twilio-paste/icons/esm/SearchIcon';
-import AgentCard from './AgentCard';
+import { useState } from 'react';
+import { Heading, Stack, Flex, Separator, Box } from '@twilio-paste/core';
+import ActiveChats from './ActiveChats';
+import AgentSearch from './AgentSearch';
+import PinnedChats from './PinnedChats';
 import ChatInterface from './ChatInterface';
 import LandingScreen from './LandingScreen';
-import NewPinnedChats from './PinnedChats';
 import SelectedAgentView from './SelectedAgentView';
 import usePinnedChats from '../../utils/usePinnedChats';
-import { WorkerData, SelectedAgent } from '../../utils/types';
-import { useLiveQueryClient } from '../../utils/useLiveQueryClient';
+import { SelectedAgent } from '../../utils/types';
 
-const MainAgentChatView = () => {
+const MainAgentChatView = ({
+  route: {
+    location: { pathname },
+  },
+}: any) => {
   const [selectedAgent, setSelectedAgent] = useState<SelectedAgent>(Object);
   const [isAgentSelected, setIsAgentSelected] = useState<boolean>(false);
   const [newPinnedChats, setNewPinnedChats] = useState<string[]>();
-  const [workerData, setWorkerName] = useLiveQueryClient();
   const pinnedChats = usePinnedChats(newPinnedChats, selectedAgent.contactUri);
-
-  const inputHandler = async (event: ChangeEvent<HTMLInputElement>) => {
-    setWorkerName(event.target.value);
-  };
 
   return (
     <Box
@@ -52,37 +42,24 @@ const MainAgentChatView = () => {
       >
         <Stack orientation="vertical" spacing="space20">
           <Box marginBottom="space40" width="250px">
-            <Input
-              type="text"
-              placeholder="Search for agents..."
-              insertBefore={<SearchIcon decorative />}
-              onChange={inputHandler}
+            <AgentSearch
+              setIsAgentSelected={setIsAgentSelected}
+              setSelectedAgent={setSelectedAgent}
             />
           </Box>
-          <NewPinnedChats
+          <PinnedChats
             pinnedChats={pinnedChats}
             setIsAgentSelected={setIsAgentSelected}
             setSelectedAgent={setSelectedAgent}
             selectedAgent={selectedAgent}
           />
-          <Text as="span" fontSize="fontSize20" fontWeight="fontWeightSemibold">
-            Contact Center Agents
-          </Text>
-          {workerData?.map((agent: WorkerData) => (
-            <AgentCard
-              key={agent.workerSid}
-              fullName={agent.fullName}
-              firstName={agent.firstName}
-              lastName={agent.lastName}
-              imageUrl={agent.imageUrl}
-              activityName={agent.activityName}
-              email={agent.email}
-              contactUri={agent.contactUri}
-              setIsAgentSelected={setIsAgentSelected}
-              setSelectedAgent={setSelectedAgent}
-              selectedAgent={selectedAgent}
-            />
-          ))}
+          <ActiveChats
+            activeView={pathname}
+            pinnedChats={pinnedChats}
+            setIsAgentSelected={setIsAgentSelected}
+            setSelectedAgent={setSelectedAgent}
+            selectedAgent={selectedAgent}
+          />
         </Stack>
         {!isAgentSelected ? (
           <LandingScreen />
