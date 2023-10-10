@@ -13,7 +13,8 @@ const MessageIconWithBadge = ({
   viewName,
 }: MessageIconWithBadgeProps) => {
   const reduxUnreadMessages = useSelector(
-    (state: AppState) => state[namespace]?.customInternalChat?.unreadMessages
+    (state: AppState) =>
+      state[namespace]?.customInternalChat?.unreadMessagesNumber
   );
 
   return (

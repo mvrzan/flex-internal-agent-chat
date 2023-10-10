@@ -80,22 +80,22 @@ const usePinnedChats = (
             await conversationClient.getConversationByUniqueName(pinnedChat);
           fetchedConversation.removeAllListeners();
 
-          const unreadMessages =
+          const unreadMessagesNumber =
             await fetchedConversation.getUnreadMessagesCount();
 
           const reduxPayloadUnreadMessage = {
-            unreadMessagesNumber: unreadMessages,
+            unreadMessagesNumber,
             conversationUniqueName: pinnedChat,
           };
 
           // updateUnreadMessageCounter(reduxPayloadUnreadMessage);
 
           fetchedConversation.on('messageAdded', async message => {
-            const unreadMessages =
+            const unreadMessagesNumber =
               await fetchedConversation.getUnreadMessagesCount();
 
             const newUnreadMessages = {
-              unreadMessagesNumber: unreadMessages,
+              unreadMessagesNumber,
               conversationUniqueName: message.conversation.uniqueName,
             };
 
@@ -107,7 +107,7 @@ const usePinnedChats = (
               if (prevState !== undefined) {
                 return prevState.map(prevMessage =>
                   prevMessage.uniqueName === message.conversation.uniqueName
-                    ? { ...prevMessage, unreadMessages }
+                    ? { ...prevMessage, unreadMessagesNumber }
                     : prevMessage
                 );
               }
@@ -128,7 +128,7 @@ const usePinnedChats = (
               ...queryResponse,
               uniqueName: fetchedConversation.uniqueName,
               participant: participants[0],
-              unreadMessages,
+              unreadMessagesNumber,
               fetchedConversation,
             };
 
@@ -142,7 +142,7 @@ const usePinnedChats = (
               ...queryResponse,
               uniqueName: fetchedConversation.uniqueName,
               participant: participants[0],
-              unreadMessages,
+              unreadMessagesNumber,
               fetchedConversation,
             };
 
@@ -173,17 +173,17 @@ const usePinnedChats = (
         setPinnedChats(prevState => {
           if (prevState !== undefined) {
             return prevState.map(prevMessage => {
-              return { ...prevMessage, unreadMessages: 0 };
+              return { ...prevMessage, unreadMessagesNumber: 0 };
             });
           }
         });
 
         chat.fetchedConversation.on('messageAdded', async message => {
-          const unreadMessages =
+          const unreadMessagesNumber =
             await chat.fetchedConversation.getUnreadMessagesCount();
 
           const newUnreadMessages = {
-            unreadMessagesNumber: unreadMessages,
+            unreadMessagesNumber,
             conversationUniqueName: message.conversation.uniqueName,
           };
 
@@ -193,7 +193,7 @@ const usePinnedChats = (
             if (prevState !== undefined) {
               return prevState.map(prevMessage =>
                 prevMessage.uniqueName === message.conversation.uniqueName
-                  ? { ...prevMessage, unreadMessages }
+                  ? { ...prevMessage, unreadMessagesNumber }
                   : prevMessage
               );
             }
@@ -201,11 +201,11 @@ const usePinnedChats = (
         });
       } else {
         chat.fetchedConversation.on('messageAdded', async message => {
-          const unreadMessages =
+          const unreadMessagesNumber =
             await chat.fetchedConversation.getUnreadMessagesCount();
 
           const newUnreadMessages = {
-            unreadMessagesNumber: unreadMessages,
+            unreadMessagesNumber,
             conversationUniqueName: message.conversation.uniqueName,
           };
 
@@ -215,7 +215,7 @@ const usePinnedChats = (
             if (prevState !== undefined) {
               return prevState.map(prevMessage =>
                 prevMessage.uniqueName === message.conversation.uniqueName
-                  ? { ...prevMessage, unreadMessages }
+                  ? { ...prevMessage, unreadMessagesNumber }
                   : prevMessage
               );
             }

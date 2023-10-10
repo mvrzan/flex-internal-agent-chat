@@ -80,13 +80,13 @@ const AgentCard = ({
             {fullName}
           </Text>
         </Stack>
-        {pinnedChat?.unreadMessages !== null &&
-          pinnedChat?.unreadMessages !== undefined &&
-          pinnedChat?.unreadMessages !== 0 && (
+        {pinnedChat?.unreadMessagesNumber !== null &&
+          pinnedChat?.unreadMessagesNumber !== undefined &&
+          pinnedChat?.unreadMessagesNumber !== 0 && (
             <Badge as="span" variant="neutral_counter">
-              {pinnedChat?.unreadMessages >= 99
+              {pinnedChat?.unreadMessagesNumber >= 99
                 ? '99+'
-                : pinnedChat?.unreadMessages}
+                : pinnedChat?.unreadMessagesNumber}
             </Badge>
           )}
         <Tooltip text={activityName}>

@@ -122,6 +122,17 @@ const useSubscribedConversations = (activeView: string | undefined) => {
                 };
 
                 updateUnreadMessageCounter(newUnreadMessages);
+
+                setActiveConversations(prevConversations => {
+                  if (prevConversations !== undefined) {
+                    return prevConversations.map(prevConversation =>
+                      prevConversation.uniqueName ===
+                      message.conversation.uniqueName
+                        ? { ...prevConversation, unreadMessagesNumber }
+                        : prevConversation
+                    );
+                  }
+                });
               } catch (error) {
                 if (error instanceof Error) {
                   console.error(

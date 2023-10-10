@@ -2,12 +2,12 @@ import { createSlice } from '@reduxjs/toolkit';
 import type { PayloadAction } from '@reduxjs/toolkit';
 
 export interface UnreadChatMessages {
-  unreadMessages: number;
+  unreadMessagesNumber: number;
   conversations: UnreadMessagesPayload[];
 }
 
 const initialState: UnreadChatMessages = {
-  unreadMessages: 0,
+  unreadMessagesNumber: 0,
   conversations: [],
 };
 
@@ -56,7 +56,7 @@ export const customInternalChatSlice = createSlice({
         }
       });
 
-      state.unreadMessages = counter;
+      state.unreadMessagesNumber = counter;
     },
   },
 });
