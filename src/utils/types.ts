@@ -63,3 +63,23 @@ export interface FilteredConversation {
   fetchedConversation: Conversation;
   unreadMessagesNumber: number;
 }
+
+export interface MainAgentChatViewProps {
+  isViewActive: boolean;
+  route: {
+    location: {
+      hash: string;
+      key: string;
+      pathname: string;
+      search: string;
+      state: string;
+    };
+    match: {
+      isExact: boolean;
+      params: {};
+      path: string;
+      url: string;
+    };
+  };
+  staticContext: string;
+}
