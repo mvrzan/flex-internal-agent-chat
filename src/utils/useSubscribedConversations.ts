@@ -5,6 +5,7 @@ import { UnreadMessagesPayload } from '../states/CustomInternalChatState';
 import { useDispatch } from 'react-redux';
 import { actions } from '../states';
 import { FilteredConversation } from './types';
+import { readFromLocalStorage } from './localStorageUtil';
 
 const useSubscribedConversations = (activeView: string | undefined) => {
   const [activeConversations, setActiveConversations] =
@@ -75,7 +76,16 @@ const useSubscribedConversations = (activeView: string | undefined) => {
             }
           );
 
-        return onlyInternalAgentChatConversations;
+        const pinnedChatsFromLocalStorage: string[] = JSON.parse(
+          readFromLocalStorage('PinnedChats') as string
+        );
+
+        const filteredConversations = onlyInternalAgentChatConversations.filter(
+          conversation =>
+            !pinnedChatsFromLocalStorage.includes(conversation.uniqueName!)
+        );
+
+        return filteredConversations;
       } catch (error) {
         if (error instanceof Error) {
           console.error(
@@ -103,7 +113,7 @@ const useSubscribedConversations = (activeView: string | undefined) => {
             if (unreadMessagesNumber === null) return;
 
             const newUnreadMessages = {
-              unreadMessagesNumber: unreadMessagesNumber,
+              unreadMessagesNumber,
               conversationUniqueName: conversation.uniqueName,
             };
 
@@ -117,7 +127,7 @@ const useSubscribedConversations = (activeView: string | undefined) => {
                 if (unreadMessagesNumber === null) return;
 
                 const newUnreadMessages = {
-                  unreadMessagesNumber: unreadMessagesNumber,
+                  unreadMessagesNumber,
                   conversationUniqueName: message.conversation.uniqueName,
                 };
 
