@@ -1,17 +1,17 @@
 import React from 'react';
 import * as Flex from '@twilio/flex-ui';
 import { FlexPlugin } from '@twilio/flex-plugin';
-import SideNavigationIcon from '../src/components/SideNavigation/SideNavigationIcon';
-import { View } from '@twilio/flex-ui';
-import MainAgentChatView from '../src/components/InternalAgentChat/MainAgentChatView';
-import ChatDialog from '../src/components/ChatDialog/ChatDialog';
 import {
   CustomizationProvider,
   PasteCustomCSS,
   CustomizationProviderProps,
 } from '@twilio-paste/core/customization';
+
 import { namespace, reducers } from './states/index';
 import customPasteElements from './utils/customPasteElements';
+import ChatDialog from '../src/components/ChatDialog/ChatDialog';
+import SideNavigationIcon from '../src/components/SideNavigation/SideNavigationIcon';
+import MainAgentChatView from '../src/components/InternalAgentChat/MainAgentChatView';
 
 const PLUGIN_NAME = 'InternalAgentChatPlugin';
 
@@ -57,9 +57,9 @@ export default class InternalAgentChatPlugin extends FlexPlugin {
     );
 
     flex.ViewCollection.Content.add(
-      <View name="internal-agent-chat" key="internal-agent-chat-view">
+      <Flex.View name="internal-agent-chat" key="internal-agent-chat-view">
         <MainAgentChatView key="internal-agent-chat-content" />
-      </View>
+      </Flex.View>
     );
   }
 }
