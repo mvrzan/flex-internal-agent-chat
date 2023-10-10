@@ -2,9 +2,6 @@ import { useEffect, useState } from 'react';
 import * as Flex from '@twilio/flex-ui';
 import { readFromLocalStorage } from './localStorageUtil';
 import { FilteredWorkerInfo } from './types';
-import { useDispatch } from 'react-redux';
-import { actions } from '../states';
-import { UnreadMessagesPayload } from '../states/CustomInternalChatState';
 
 const usePinnedChats = (
   newPinnedChats: string[] | string | undefined,
@@ -18,11 +15,6 @@ const usePinnedChats = (
   ]
     .sort()
     .join('+');
-  const dispatch = useDispatch();
-
-  const updateUnreadMessageCounter = (
-    unreadMessagesNumber: UnreadMessagesPayload
-  ) => dispatch(actions.customInternalChat.updateCounter(unreadMessagesNumber));
 
   const instantQuerySearch = async (index: string, query: string) => {
     const instantQueryClient =
@@ -83,23 +75,9 @@ const usePinnedChats = (
           const unreadMessagesNumber =
             await fetchedConversation.getUnreadMessagesCount();
 
-          const reduxPayloadUnreadMessage = {
-            unreadMessagesNumber,
-            conversationUniqueName: pinnedChat,
-          };
-
-          // updateUnreadMessageCounter(reduxPayloadUnreadMessage);
-
           fetchedConversation.on('messageAdded', async message => {
             const unreadMessagesNumber =
               await fetchedConversation.getUnreadMessagesCount();
-
-            const newUnreadMessages = {
-              unreadMessagesNumber,
-              conversationUniqueName: message.conversation.uniqueName,
-            };
-
-            // updateUnreadMessageCounter(newUnreadMessages);
 
             if (!hookInvoked) return;
 
@@ -182,13 +160,6 @@ const usePinnedChats = (
           const unreadMessagesNumber =
             await chat.fetchedConversation.getUnreadMessagesCount();
 
-          const newUnreadMessages = {
-            unreadMessagesNumber,
-            conversationUniqueName: message.conversation.uniqueName,
-          };
-
-          // updateUnreadMessageCounter(newUnreadMessages);
-
           setPinnedChats(prevState => {
             if (prevState !== undefined) {
               return prevState.map(prevMessage =>
@@ -203,13 +174,6 @@ const usePinnedChats = (
         chat.fetchedConversation.on('messageAdded', async message => {
           const unreadMessagesNumber =
             await chat.fetchedConversation.getUnreadMessagesCount();
-
-          const newUnreadMessages = {
-            unreadMessagesNumber,
-            conversationUniqueName: message.conversation.uniqueName,
-          };
-
-          // updateUnreadMessageCounter(newUnreadMessages);
 
           setPinnedChats(prevState => {
             if (prevState !== undefined) {
