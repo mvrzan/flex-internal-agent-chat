@@ -58,7 +58,11 @@ export default class InternalAgentChatPlugin extends FlexPlugin {
 
     flex.ViewCollection.Content.add(
       <Flex.View name="internal-agent-chat" key="internal-agent-chat-view">
-        <MainAgentChatView key="internal-agent-chat-content" />
+        <MainAgentChatView
+          key="internal-agent-chat-content"
+          name="internal-agent-chat-content-view"
+          children
+        />
       </Flex.View>
     );
   }
