@@ -1,10 +1,26 @@
 import { Manager } from '@twilio/flex-ui';
 
+interface Worker {
+  activity_name: string;
+  attributes: {
+    contact_uri: string;
+    full_name: string;
+    email: string;
+    image_url: string;
+  };
+  date_activity_changed?: string;
+  date_updated: string;
+  friendly_name: string;
+  worker_activity_sid: string;
+  worker_sid: string;
+  workspace_sid: string;
+}
+
 const instantQuerySearch = async (index: string, query: string) => {
   const instantQueryClient =
     await Manager.getInstance().insightsClient.instantQuery(index);
 
-  const queryPromise = new Promise(resolve => {
+  const queryPromise = new Promise<Worker[]>(resolve => {
     instantQueryClient.on('searchResult', items => {
       resolve(items);
     });
@@ -16,17 +32,15 @@ const instantQuerySearch = async (index: string, query: string) => {
 };
 
 const getWorkers = async (query = '') => {
-  const queryItems: any = await instantQuerySearch(
+  const queryItems = await instantQuerySearch(
     'tr-worker',
-
     `${query !== '' ? `data.attributes.full_name CONTAINS "${query}"` : ''}`
   );
 
   const responseWorkers = Object.keys(queryItems)
-    .map(workerSid => queryItems[workerSid])
+    .map(workerSid => <Worker>queryItems[workerSid as keyof typeof queryItems])
     .map(worker => {
-      const { contact_uri, full_name, email, image_url, activity_name } =
-        worker.attributes;
+      const { contact_uri, full_name, email, image_url } = worker.attributes;
 
       return {
         firstName: full_name.split(' ')[0],
