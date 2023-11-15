@@ -1,4 +1,5 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
+import { ViewProps } from '@twilio/flex-ui';
 import { Heading, Stack, Flex, Separator, Box } from '@twilio-paste/core';
 import ActiveChats from './ActiveChats';
 import AgentSearch from './AgentSearch';
@@ -6,18 +7,24 @@ import PinnedChats from './PinnedChats';
 import ChatInterface from './ChatInterface';
 import LandingScreen from './LandingScreen';
 import SelectedAgentView from './SelectedAgentView';
-import usePinnedChats from '../../utils/usePinnedChats';
 import { SelectedAgent } from '../../utils/types';
+import useConversations from '../../utils/useConversations';
 
 const MainAgentChatView = ({
   route: {
     location: { pathname },
   },
-}: any) => {
+}: ViewProps) => {
   const [selectedAgent, setSelectedAgent] = useState<SelectedAgent>(Object);
   const [isAgentSelected, setIsAgentSelected] = useState<boolean>(false);
   const [newPinnedChats, setNewPinnedChats] = useState<string[]>();
-  const pinnedChats = usePinnedChats(newPinnedChats, selectedAgent.contactUri);
+  const [pinnedChatState, setPinnedChatState] = useState<boolean>(false);
+  const [conversations, pinnedConversations] = useConversations(
+    pathname,
+    newPinnedChats,
+    pinnedChatState,
+    selectedAgent.contactUri
+  );
 
   return (
     <Box
@@ -41,24 +48,23 @@ const MainAgentChatView = ({
         paddingBottom="space0"
       >
         <Stack orientation="vertical" spacing="space20">
-          <Box marginBottom="space40" width="250px">
+          <Box marginBottom="space40" width="260px">
             <AgentSearch
               setIsAgentSelected={setIsAgentSelected}
               setSelectedAgent={setSelectedAgent}
             />
           </Box>
           <PinnedChats
-            pinnedChats={pinnedChats}
+            pinnedChats={pinnedConversations}
             setIsAgentSelected={setIsAgentSelected}
             setSelectedAgent={setSelectedAgent}
             selectedAgent={selectedAgent}
           />
           <ActiveChats
-            activeView={pathname}
-            pinnedChats={pinnedChats}
             setIsAgentSelected={setIsAgentSelected}
             setSelectedAgent={setSelectedAgent}
             selectedAgent={selectedAgent}
+            activeConversations={conversations}
           />
         </Stack>
         {!isAgentSelected ? (
@@ -78,6 +84,8 @@ const MainAgentChatView = ({
             <SelectedAgentView
               selectedAgent={selectedAgent}
               setPinnedChats={setNewPinnedChats}
+              pinnedChatState={pinnedChatState}
+              setPinnedChatState={setPinnedChatState}
             />
             <Separator orientation="horizontal" verticalSpacing="space50" />
             <Flex vAlignContent="bottom" height="90%" paddingBottom="space40">
