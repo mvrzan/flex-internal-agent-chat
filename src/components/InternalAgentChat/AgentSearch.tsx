@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Combobox } from '@twilio-paste/core';
 import getWorkers from '../../utils/instantQueryUtil';
 import { SearchIcon } from '@twilio-paste/icons/esm/SearchIcon';
@@ -10,11 +10,22 @@ interface AgentSearchProps {
   setSelectedAgent: React.Dispatch<React.SetStateAction<SelectedAgent>>;
 }
 
+interface Worker {
+  activityName: string;
+  contactUri: string;
+  email: string;
+  firstName: string;
+  fullName: string;
+  lastName: string;
+  imageUrl: string;
+  workerSid: string;
+}
+
 const AgentSearch = ({
   setIsAgentSelected,
   setSelectedAgent,
 }: AgentSearchProps) => {
-  const [workers, setWorkers] = useState([{}]);
+  const [workers, setWorkers] = useState<Worker[]>([]);
   const [inputItems, setInputItems] = useState([{}]);
 
   useEffect(() => {
@@ -26,7 +37,7 @@ const AgentSearch = ({
     callGetWorkers();
   }, []);
 
-  const saveHandler = async (selectedItem: any) => {
+  const saveHandler = (selectedItem: Worker) => {
     const payload = {
       fullName: selectedItem.fullName,
       firstName: selectedItem.firstName,
@@ -43,13 +54,13 @@ const AgentSearch = ({
   };
 
   //TODO: Send the search query directly into the util
-  const agentSearchHandler = async (agentName: string) => {
-    const workers = await getWorkers(agentName);
-    setInputItems(workers);
-    // setWorkers(workers);
-  };
+  // const agentSearchHandler = async (agentName: string) => {
+  //   const workers = await getWorkers(agentName);
+  //   setInputItems(workers);
+  //   // setWorkers(workers);
+  // };
 
-  const DropDownSelection = (worker: any) => (
+  const DropDownSelection = (worker: Worker) => (
     <SearchResults
       fullName={worker.fullName}
       imageUrl={worker.imageUrl}
@@ -60,7 +71,6 @@ const AgentSearch = ({
   return (
     <Combobox
       placeholder="Search for an agent..."
-      autocomplete
       labelText=""
       insertBefore={<SearchIcon decorative />}
       items={inputItems}
@@ -72,7 +82,6 @@ const AgentSearch = ({
           //   agentSearchHandler(inputValue);
           setInputItems(
             workers.filter(item =>
-              // @ts-ignore
               item.firstName.toLowerCase().startsWith(inputValue.toLowerCase())
             )
           );

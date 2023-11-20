@@ -23,11 +23,15 @@ import {
 interface SelectedAgentViewProps {
   selectedAgent: SelectedAgent;
   setPinnedChats: React.Dispatch<React.SetStateAction<string[] | undefined>>;
+  pinnedChatState: boolean;
+  setPinnedChatState: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 const SelectedAgentView = ({
   selectedAgent,
   setPinnedChats,
+  pinnedChatState,
+  setPinnedChatState,
 }: SelectedAgentViewProps) => {
   const userDialogList = useUserDialogListState();
   const [_, setWorkerName, agentActivity] = useLiveQueryClient();
@@ -55,9 +59,11 @@ const SelectedAgentView = ({
       const updatedValue = [...previousValues, chatIdentifier];
       writeToLocalStorage('PinnedChats', updatedValue);
       setPinnedChats(updatedValue);
+      setPinnedChatState(!pinnedChatState);
     } else {
       writeToLocalStorage('PinnedChats', [chatIdentifier]);
       setPinnedChats([chatIdentifier]);
+      setPinnedChatState(!pinnedChatState);
     }
   };
 
@@ -74,6 +80,7 @@ const SelectedAgentView = ({
     }
     setPinnedChats(filteredChats);
     writeToLocalStorage('PinnedChats', [...filteredChats]);
+    setPinnedChatState(!pinnedChatState);
   };
 
   const NewStatusBadge = useCallback(() => {

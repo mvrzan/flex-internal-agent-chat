@@ -7,11 +7,22 @@ import { actions } from '../states';
 import { FilteredConversation } from './types';
 import { readFromLocalStorage } from './localStorageUtil';
 
-const useSubscribedConversations = (activeView: string | undefined) => {
-  const [activeConversations, setActiveConversations] =
-    useState<FilteredConversation[]>();
+const useSubscribedConversations = (
+  activeView: string | undefined,
+  pinnedChatState?: boolean,
+  selectedAgentContactUri?: string
+) => {
+  const [activeConversations, setActiveConversations] = useState<
+    FilteredConversation[] | undefined
+  >([]);
   const conversationClient = Flex.Manager.getInstance().conversationsClient;
   const dispatch = useDispatch();
+  const uniqueName: string = [
+    selectedAgentContactUri,
+    conversationClient.user.identity,
+  ]
+    .sort()
+    .join('+');
 
   const updateUnreadMessageCounter = (
     unreadMessagesNumber: UnreadMessagesPayload
@@ -58,6 +69,7 @@ const useSubscribedConversations = (activeView: string | undefined) => {
   };
 
   useEffect(() => {
+    setActiveConversations([]);
     const getSubscribedConversations = async () => {
       try {
         const { items: allSubscribedConversationsArray } =
@@ -76,16 +88,7 @@ const useSubscribedConversations = (activeView: string | undefined) => {
             }
           );
 
-        const pinnedChatsFromLocalStorage: string[] = JSON.parse(
-          readFromLocalStorage('PinnedChats') as string
-        );
-
-        const filteredConversations = onlyInternalAgentChatConversations.filter(
-          conversation =>
-            !pinnedChatsFromLocalStorage.includes(conversation.uniqueName!)
-        );
-
-        return filteredConversations;
+        return onlyInternalAgentChatConversations;
       } catch (error) {
         if (error instanceof Error) {
           console.error(
@@ -103,9 +106,18 @@ const useSubscribedConversations = (activeView: string | undefined) => {
 
         if (internalAgentChatConversations?.length === 0) return;
 
+        const pinnedChatsFromLocalStorage: string[] = JSON.parse(
+          readFromLocalStorage('PinnedChats') as string
+        );
+
         internalAgentChatConversations?.forEach(
           async (conversation: Conversation) => {
             conversation.removeAllListeners();
+            // setActiveConversations(undefined);
+
+            if (conversation.uniqueName === uniqueName) {
+              conversation.setAllMessagesRead();
+            }
 
             const unreadMessagesNumber =
               await conversation.getUnreadMessagesCount();
@@ -133,16 +145,22 @@ const useSubscribedConversations = (activeView: string | undefined) => {
 
                 updateUnreadMessageCounter(newUnreadMessages);
 
-                setActiveConversations(prevConversations => {
-                  if (prevConversations !== undefined) {
-                    return prevConversations.map(prevConversation =>
-                      prevConversation.uniqueName ===
-                      message.conversation.uniqueName
-                        ? { ...prevConversation, unreadMessagesNumber }
-                        : prevConversation
-                    );
-                  }
-                });
+                if (
+                  !pinnedChatsFromLocalStorage.includes(
+                    conversation.uniqueName!
+                  )
+                ) {
+                  setActiveConversations(prevConversations => {
+                    if (prevConversations !== undefined) {
+                      return prevConversations.map(prevConversation =>
+                        prevConversation.uniqueName ===
+                        message.conversation.uniqueName
+                          ? { ...prevConversation, unreadMessagesNumber }
+                          : prevConversation
+                      );
+                    }
+                  });
+                }
               } catch (error) {
                 if (error instanceof Error) {
                   console.error(
@@ -179,13 +197,17 @@ const useSubscribedConversations = (activeView: string | undefined) => {
                 fetchedConversation: conversation,
               };
 
-              setActiveConversations((prevState: any) => {
-                if (prevState !== undefined) {
-                  return [...prevState, formatConversationData];
-                } else {
-                  return [formatConversationData];
-                }
-              });
+              if (
+                !pinnedChatsFromLocalStorage.includes(conversation.uniqueName!)
+              ) {
+                setActiveConversations((prevState: any) => {
+                  if (prevState !== undefined) {
+                    return [...prevState, formatConversationData];
+                  } else {
+                    return [formatConversationData];
+                  }
+                });
+              }
             } else {
               const [queryResponse] = await getWorkers(
                 `data.attributes.contact_uri CONTAINS "${participants[1]}"`
@@ -201,13 +223,17 @@ const useSubscribedConversations = (activeView: string | undefined) => {
                 fetchedConversation: conversation,
               };
 
-              setActiveConversations(prevState => {
-                if (prevState !== undefined) {
-                  return [...prevState, formatConversationData];
-                } else {
-                  return [formatConversationData];
-                }
-              });
+              if (
+                !pinnedChatsFromLocalStorage.includes(conversation.uniqueName!)
+              ) {
+                setActiveConversations((prevState: any) => {
+                  if (prevState !== undefined) {
+                    return [...prevState, formatConversationData];
+                  } else {
+                    return [formatConversationData];
+                  }
+                });
+              }
             }
 
             // TODO: filter activeConversations based on unreadMessagesNumber count and date so the newest ones are at the top of the array
@@ -224,7 +250,7 @@ const useSubscribedConversations = (activeView: string | undefined) => {
     };
 
     checkUnreadMessages();
-  }, [activeView]);
+  }, [activeView, pinnedChatState]);
 
   return activeConversations;
 };

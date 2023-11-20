@@ -1,25 +1,20 @@
 import { Text, Stack } from '@twilio-paste/core';
 import AgentCard from './AgentCard';
-import useSubscribedConversations from '../../utils/useSubscribedConversations';
-import { FilteredWorkerInfo, SelectedAgent } from '../../utils/types';
+import { SelectedAgent, FilteredConversation } from '../../utils/types';
 
 interface ActiveChatsProps {
-  activeView: string;
-  pinnedChats: FilteredWorkerInfo[] | undefined;
   selectedAgent: SelectedAgent;
   setIsAgentSelected: React.Dispatch<React.SetStateAction<boolean>>;
   setSelectedAgent: React.Dispatch<React.SetStateAction<SelectedAgent>>;
+  activeConversations: FilteredConversation[] | undefined;
 }
 
 const ActiveChats = ({
-  activeView,
-  pinnedChats,
   selectedAgent,
   setIsAgentSelected,
   setSelectedAgent,
+  activeConversations,
 }: ActiveChatsProps) => {
-  const activeConversations = useSubscribedConversations(activeView);
-
   return (
     <Stack orientation="vertical" spacing="space20">
       {activeConversations?.length !== 0 && (

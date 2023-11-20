@@ -1,3 +1,4 @@
+import React from 'react';
 import { StatusBadge } from '@twilio-paste/core/status';
 import { Stack, Avatar, Text, Flex, Tooltip, Box } from '@twilio-paste/core';
 

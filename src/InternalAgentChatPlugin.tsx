@@ -24,21 +24,20 @@ export default class InternalAgentChatPlugin extends FlexPlugin {
     manager.store.addReducer?.(namespace, reducers);
 
     flex.setProviders({
-      CustomProvider: RootComponent => props => {
-        const pasteProviderProps: CustomizationProviderProps & {
-          style: PasteCustomCSS;
-        } = {
-          baseTheme: props.theme?.isLight ? 'default' : 'dark',
-          theme: props.theme?.tokens,
-          style: { minWidth: '100%', height: '100%' },
-          elements: { ...customPasteElements },
-        };
-        return (
-          <CustomizationProvider {...pasteProviderProps}>
-            <RootComponent {...props} />
-          </CustomizationProvider>
-        );
-      },
+      CustomProvider: RootComponent =>
+        function Provider(props) {
+          const pasteProviderProps: CustomizationProviderProps & {
+            style: PasteCustomCSS;
+          } = {
+            style: { minWidth: '100%', height: '100%' },
+            elements: { ...customPasteElements },
+          };
+          return (
+            <CustomizationProvider {...pasteProviderProps}>
+              <RootComponent {...props} />
+            </CustomizationProvider>
+          );
+        },
     });
 
     flex.MainHeader.Content.add(<ChatDialog key="internal-chat" />, {
@@ -61,8 +60,9 @@ export default class InternalAgentChatPlugin extends FlexPlugin {
         <MainAgentChatView
           key="internal-agent-chat-content"
           name="internal-agent-chat-content-view"
-          children
-        />
+        >
+          {''}
+        </MainAgentChatView>
       </Flex.View>
     );
   }
