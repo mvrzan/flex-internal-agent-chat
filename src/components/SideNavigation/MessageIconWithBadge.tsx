@@ -1,6 +1,7 @@
+import React from 'react';
 import { Icon } from '@twilio/flex-ui';
 import { useSelector } from 'react-redux';
-import { Badge } from '@twilio-paste/core';
+import { Badge } from '@twilio-paste/core/badge';
 import { AppState, namespace } from '../../states';
 
 interface MessageIconWithBadgeProps {
