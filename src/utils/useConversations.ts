@@ -70,8 +70,6 @@ const useConversations = (
         };
       });
 
-    console.log('responseWorkers', responseWorkers);
-
     return responseWorkers;
   };
 
