@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { useSelector } from 'react-redux';
 import { Stack } from '@twilio-paste/core/stack';
 import { Badge } from '@twilio-paste/core/badge';
@@ -15,13 +15,8 @@ interface SideNavigationProps {
 }
 
 const SideNavigationIcon = ({ activeView, viewName }: SideNavigationProps) => {
-  const [currentView, setCurrentView] = useState('');
-  usePinnedChats(currentView);
+  usePinnedChats(activeView);
   useSubscribedConversations(activeView);
-
-  useEffect(() => {
-    setCurrentView(activeView!);
-  }, [activeView]);
 
   const navigateHandler = () => {
     Actions.invokeAction('NavigateToView', {
