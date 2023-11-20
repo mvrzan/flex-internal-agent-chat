@@ -1,6 +1,7 @@
-import { useSelector } from 'react-redux';
 import React, { useEffect, useState } from 'react';
-import { Badge, Stack } from '@twilio-paste/core';
+import { useSelector } from 'react-redux';
+import { Stack } from '@twilio-paste/core/stack';
+import { Badge } from '@twilio-paste/core/badge';
 import { SideLink, Actions } from '@twilio/flex-ui';
 
 import { AppState, namespace } from '../../states';
