@@ -1,6 +1,11 @@
 import React from 'react';
 import { StatusBadge } from '@twilio-paste/core/status';
-import { Stack, Avatar, Text, Flex, Tooltip, Box } from '@twilio-paste/core';
+import { Stack } from '@twilio-paste/core/stack';
+import { Avatar } from '@twilio-paste/core/avatar';
+import { Text } from '@twilio-paste/text';
+import { Flex } from '@twilio-paste/core/flex';
+import { Tooltip } from '@twilio-paste/core/tooltip';
+import { Box } from '@twilio-paste/core/box';
 
 interface SearchResultsProps {
   fullName: string;
