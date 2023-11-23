@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from 'react';
-import { Combobox } from '@twilio-paste/core';
-import getWorkers from '../../utils/instantQueryUtil';
+import { Combobox } from '@twilio-paste/core/combobox';
 import { SearchIcon } from '@twilio-paste/icons/esm/SearchIcon';
-import { SelectedAgent } from '../../utils/types';
+
 import SearchResults from './SearchResults';
+import { SelectedAgent } from '../../utils/types';
+import getWorkers from '../../utils/instantQueryUtil';
 
 interface AgentSearchProps {
   setIsAgentSelected: React.Dispatch<React.SetStateAction<boolean>>;
@@ -33,6 +34,7 @@ const AgentSearch = ({
       const workers = await getWorkers();
       setInputItems(workers);
       setWorkers(workers);
+      console.log('workers', workers);
     };
     callGetWorkers();
   }, []);
@@ -57,6 +59,7 @@ const AgentSearch = ({
   // const agentSearchHandler = async (agentName: string) => {
   //   const workers = await getWorkers(agentName);
   //   setInputItems(workers);
+  //   console.log('workers', workers);
   //   // setWorkers(workers);
   // };
 
@@ -70,6 +73,7 @@ const AgentSearch = ({
 
   return (
     <Combobox
+      autocomplete
       placeholder="Search for an agent..."
       labelText=""
       insertBefore={<SearchIcon decorative />}
@@ -79,7 +83,7 @@ const AgentSearch = ({
       onSelectedItemChange={item => saveHandler(item.selectedItem)}
       onInputValueChange={({ inputValue }) => {
         if (inputValue !== undefined) {
-          //   agentSearchHandler(inputValue);
+          // agentSearchHandler(inputValue);
           setInputItems(
             workers.filter(item =>
               item.firstName.toLowerCase().startsWith(inputValue.toLowerCase())
