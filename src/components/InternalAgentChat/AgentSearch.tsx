@@ -26,15 +26,12 @@ const AgentSearch = ({
   setIsAgentSelected,
   setSelectedAgent,
 }: AgentSearchProps) => {
-  const [workers, setWorkers] = useState<Worker[]>([]);
-  const [inputItems, setInputItems] = useState([{}]);
+  const [inputItems, setInputItems] = useState<Worker[]>([]);
 
   useEffect(() => {
     const callGetWorkers = async () => {
       const workers = await getWorkers();
       setInputItems(workers);
-      setWorkers(workers);
-      console.log('workers', workers);
     };
     callGetWorkers();
   }, []);
@@ -55,21 +52,22 @@ const AgentSearch = ({
     setIsAgentSelected(true);
   };
 
-  //TODO: Send the search query directly into the util
-  // const agentSearchHandler = async (agentName: string) => {
-  //   const workers = await getWorkers(agentName);
-  //   setInputItems(workers);
-  //   console.log('workers', workers);
-  //   // setWorkers(workers);
-  // };
+  // TODO: Implement debounce
+  const agentSearchHandler = async (agentName: string) => {
+    const workers = await getWorkers(agentName);
 
-  const DropDownSelection = (worker: Worker) => (
-    <SearchResults
-      fullName={worker.fullName}
-      imageUrl={worker.imageUrl}
-      activityName={worker.activityName}
-    />
-  );
+    setInputItems(workers);
+  };
+
+  const DropDownSelection = (worker: Worker) => {
+    return (
+      <SearchResults
+        fullName={worker.fullName}
+        imageUrl={worker.imageUrl}
+        activityName={worker.activityName}
+      />
+    );
+  };
 
   return (
     <Combobox
@@ -83,9 +81,9 @@ const AgentSearch = ({
       onSelectedItemChange={item => saveHandler(item.selectedItem)}
       onInputValueChange={({ inputValue }) => {
         if (inputValue !== undefined) {
-          // agentSearchHandler(inputValue);
+          agentSearchHandler(inputValue);
           setInputItems(
-            workers.filter(item =>
+            inputItems.filter(item =>
               item.firstName.toLowerCase().startsWith(inputValue.toLowerCase())
             )
           );
