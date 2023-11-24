@@ -5,8 +5,7 @@ import {
   Position,
   createPopup,
 } from '@picmo/popup-picker';
-import { Button } from '@twilio-paste/core';
-import { PopupEvent } from '@picmo/popup-picker/dist/PopupEvents';
+import { Button } from '@twilio-paste/core/button';
 
 interface EmojiInputActionOwnProps {
   setNewMessage: React.Dispatch<React.SetStateAction<string>>;
@@ -38,12 +37,11 @@ const EmojiInputAction = ({
   };
 
   const togglePicker = () => {
-    if (picker.isOpen) picker.close();
-    else picker.open();
+    picker.isOpen ? picker.close() : picker.open();
   };
 
   useEffect(() => {
-    let popupOptions: PopupOptions = {
+    const popupOptions: PopupOptions = {
       referenceElement: buttonRef.current as HTMLButtonElement | undefined,
       triggerElement: buttonRef.current as HTMLButtonElement | undefined,
       position: 'bottom-start',
