@@ -1,6 +1,17 @@
-import { Card, Heading, Paragraph, Text } from '@twilio-paste/core';
+import React from 'react';
 
-const NewConversationView = ({ selectedAgent }: any) => {
+import { Text } from '@twilio-paste/text';
+import { Card } from '@twilio-paste/core/card';
+import { Heading } from '@twilio-paste/core/heading';
+import { Paragraph } from '@twilio-paste/core/paragraph';
+
+import { SelectedAgent } from '../../utils/types';
+
+interface NewConversationViewProps {
+  selectedAgent: SelectedAgent;
+}
+
+const NewConversationView = ({ selectedAgent }: NewConversationViewProps) => {
   return (
     <Card>
       <Text as="div" textAlign="center">
