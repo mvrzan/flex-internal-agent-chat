@@ -127,11 +127,11 @@ const ChatInterface = ({ selectedAgent }: ChatInterfaceProps) => {
     <Flex vertical width="100%" height="100%">
       <Flex element="FLEX_WITH_OVERFLOW" width="100%" height="5000px">
         <Box width="100%">
-          {isLoadingMessages ? (
-            <LoadingConversations />
-          ) : isEmpty ? (
+          {isLoadingMessages && <LoadingConversations />}
+          {isEmpty && !isLoadingMessages && (
             <NewConversationView selectedAgent={selectedAgent} />
-          ) : (
+          )}
+          {!isLoadingMessages && !isEmpty && (
             <ChatLog ref={messagesEndRef}>
               <ChatBookend>
                 <ChatBookendItem>
