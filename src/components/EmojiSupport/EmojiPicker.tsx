@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState, memo } from 'react';
 import { EmojiIcon } from '@twilio-paste/icons/esm/EmojiIcon';
 import {
   PopupPickerController,
@@ -100,4 +100,6 @@ const EmojiInputAction = ({
   );
 };
 
-export default EmojiInputAction;
+const MemoizedEmojiInputAction = memo(EmojiInputAction);
+
+export default MemoizedEmojiInputAction;
