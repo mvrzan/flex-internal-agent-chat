@@ -1,20 +1,28 @@
-import { useState, useEffect, useRef, KeyboardEvent } from 'react';
+import React, { useState, useEffect, useRef, KeyboardEvent } from 'react';
 import { Manager } from '@twilio/flex-ui';
-import { Box, Stack, Button, Flex, Text, TextArea } from '@twilio-paste/core';
+
+import { Text } from '@twilio-paste/text';
+import { Box } from '@twilio-paste/core/box';
+import { Flex } from '@twilio-paste/core/flex';
+import { Stack } from '@twilio-paste/core/stack';
+import { Button } from '@twilio-paste/core/button';
+import { TextArea } from '@twilio-paste/core/textarea';
 import {
   ChatLog,
   ChatBookend,
   ChatBookendItem,
 } from '@twilio-paste/core/chat-log';
 import { SendIcon } from '@twilio-paste/icons/esm/SendIcon';
+
 import moment from 'moment';
 import { Message, SelectedAgent } from '../../utils/types';
 import useConversationsClient from '../../utils/useConversationsClient';
+
 import GroupedMessages from './GroupedMessages';
 import TypingIndicator from './TypingIndicator';
 import NewConversationView from './NewConversationView';
 import LoadingConversations from './LoadingConversations';
-import EmojiInputAction from '../EmojiSupport/EmojiPicker';
+import MemoizedEmojiInputAction from '../EmojiSupport/EmojiPicker';
 import AttachmentButton from '../AttachmentSupport/AttachmentButton';
 
 interface ChatInterfaceProps {
@@ -24,7 +32,9 @@ interface ChatInterfaceProps {
 const ChatInterface = ({ selectedAgent }: ChatInterfaceProps) => {
   const [newMessage, setNewMessage] = useState('');
   const [isButtonDisabled, setIsButtonDisabled] = useState(true);
-  const [mediaMessages, setMediaMessages] = useState<any>([]);
+  const [mediaMessages, setMediaMessages] = useState<FormData[] | undefined>(
+    []
+  );
   const messagesEndRef = useRef<null | HTMLDivElement>(null);
   const inputRef = useRef<null | HTMLTextAreaElement>(null);
   const conversationClient = Manager.getInstance().conversationsClient;
@@ -68,10 +78,11 @@ const ChatInterface = ({ selectedAgent }: ChatInterfaceProps) => {
 
   const sendMessage = async (): Promise<void> => {
     try {
-      if (mediaMessages.length !== 0) {
-        mediaMessages.forEach(async (message: any) => {
+      if (mediaMessages?.length !== 0) {
+        mediaMessages?.forEach(async (message: FormData) => {
           const newFormattedMessage = new FormData();
-          newFormattedMessage.append('file', message);
+
+          newFormattedMessage.append('file', message as unknown as File);
           await instantiatedConversation?.sendMessage(newFormattedMessage);
         });
         setMediaMessages([]);
@@ -170,11 +181,13 @@ const ChatInterface = ({ selectedAgent }: ChatInterfaceProps) => {
           />
           <Flex hAlignContent="between" vAlignContent="center" width="100%">
             <Stack orientation="horizontal" spacing="space0">
-              <EmojiInputAction
+              <MemoizedEmojiInputAction
                 setNewMessage={setNewMessage}
                 inputRef={inputRef}
               />
               <AttachmentButton
+                // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+                // @ts-expect-error
                 setMediaMessages={setMediaMessages}
                 setIsButtonDisabled={setIsButtonDisabled}
                 sendMessage={sendMessage}
