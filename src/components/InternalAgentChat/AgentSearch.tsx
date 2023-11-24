@@ -1,10 +1,12 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { Combobox } from '@twilio-paste/core/combobox';
 import { SearchIcon } from '@twilio-paste/icons/esm/SearchIcon';
 
+import { debounce } from 'lodash';
 import SearchResults from './SearchResults';
 import { SelectedAgent } from '../../utils/types';
 import getWorkers from '../../utils/instantQueryUtil';
+import { formatSelectedAgentUtil } from '../../utils/formatSelectedAgentUtil';
 
 interface AgentSearchProps {
   setIsAgentSelected: React.Dispatch<React.SetStateAction<boolean>>;
@@ -28,6 +30,14 @@ const AgentSearch = ({
 }: AgentSearchProps) => {
   const [inputItems, setInputItems] = useState<Worker[]>([]);
 
+  const debouncedAgentSearch = useCallback(
+    debounce(
+      async (agentName: string) => setInputItems(await getWorkers(agentName)),
+      500
+    ),
+    []
+  );
+
   useEffect(() => {
     const callGetWorkers = async () => {
       const workers = await getWorkers();
@@ -36,38 +46,24 @@ const AgentSearch = ({
     callGetWorkers();
   }, []);
 
-  const saveHandler = (selectedItem: Worker) => {
-    const payload = {
-      fullName: selectedItem.fullName,
-      firstName: selectedItem.firstName,
-      lastName: selectedItem.lastName,
-      imageUrl: selectedItem.imageUrl,
-      activityName: 'Offline',
-      email: selectedItem.email,
-      workerSid: selectedItem.workerSid,
-      contactUri: selectedItem.contactUri,
-    };
+  const saveHandler = (selectedAgent: Worker) => {
+    const formattedAgentData = formatSelectedAgentUtil(selectedAgent);
 
-    setSelectedAgent(payload);
+    setSelectedAgent(formattedAgentData);
     setIsAgentSelected(true);
   };
 
-  // TODO: Implement debounce
-  const agentSearchHandler = async (agentName: string) => {
-    const workers = await getWorkers(agentName);
-
-    setInputItems(workers);
+  const agentSearchHandler = (agentName: string) => {
+    debouncedAgentSearch(agentName);
   };
 
-  const DropDownSelection = (worker: Worker) => {
-    return (
-      <SearchResults
-        fullName={worker.fullName}
-        imageUrl={worker.imageUrl}
-        activityName={worker.activityName}
-      />
-    );
-  };
+  const DropDownSelection = (worker: Worker) => (
+    <SearchResults
+      fullName={worker.fullName}
+      imageUrl={worker.imageUrl}
+      activityName={worker.activityName}
+    />
+  );
 
   return (
     <Combobox
@@ -80,14 +76,13 @@ const AgentSearch = ({
       itemToString={() => ''}
       onSelectedItemChange={item => saveHandler(item.selectedItem)}
       onInputValueChange={({ inputValue }) => {
-        if (inputValue !== undefined) {
-          agentSearchHandler(inputValue);
-          setInputItems(
-            inputItems.filter(item =>
-              item.firstName.toLowerCase().startsWith(inputValue.toLowerCase())
-            )
-          );
-        }
+        if (inputValue === undefined) return;
+        setInputItems(
+          inputItems.filter(item =>
+            item.firstName.toLowerCase().startsWith(inputValue.toLowerCase())
+          )
+        );
+        agentSearchHandler(inputValue);
       }}
     />
   );
