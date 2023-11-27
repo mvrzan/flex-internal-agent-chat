@@ -14,7 +14,7 @@ import {
 } from '@twilio-paste/core/chat-log';
 import { SendIcon } from '@twilio-paste/icons/esm/SendIcon';
 
-import moment from 'moment';
+import { dateFormatter } from '../../utils/dateHandler';
 import { Message, SelectedAgent } from '../../utils/types';
 import useConversationsClient from '../../utils/useConversationsClient';
 
@@ -138,10 +138,7 @@ const ChatInterface = ({ selectedAgent }: ChatInterfaceProps) => {
                   <Text as="span" fontWeight="fontWeightBold">
                     Chat Started
                   </Text>
-                  ・
-                  {moment(conversationMessages[0].dateCreated).format(
-                    'MM/DD/YYYY, h:mm:ss a'
-                  )}
+                  ・{dateFormatter(conversationMessages[0].dateCreated)}
                 </ChatBookendItem>
                 <ChatBookendItem>Previous messages</ChatBookendItem>
               </ChatBookend>
