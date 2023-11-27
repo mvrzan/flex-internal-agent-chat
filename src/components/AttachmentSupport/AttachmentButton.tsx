@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { Button } from '@twilio-paste/core';
 import { AttachIcon } from '@twilio-paste/icons/esm/AttachIcon';
 import AttachmentModal from './AttachmentModal';
