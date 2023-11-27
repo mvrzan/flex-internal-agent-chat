@@ -1,3 +1,4 @@
+import React, { useState, useEffect } from 'react';
 import {
   FileUploader,
   FileUploaderHelpText,
@@ -7,9 +8,8 @@ import {
   FileUploaderItem,
   FileUploaderItemTitle,
   FileUploaderItemDescription,
-  ScreenReaderOnly,
-} from '@twilio-paste/core';
-import { useState, useEffect } from 'react';
+} from '@twilio-paste/core/file-uploader';
+import { ScreenReaderOnly } from '@twilio-paste/core/screen-reader-only';
 import { DownloadIcon } from '@twilio-paste/icons/esm/DownloadIcon';
 
 interface File {
@@ -21,7 +21,9 @@ interface File {
 }
 
 interface AttachmentButtonOwnProps {
-  setMediaMessages: React.Dispatch<React.SetStateAction<FormData | undefined>>;
+  setMediaMessages: React.Dispatch<
+    React.SetStateAction<FormData | undefined | []>
+  >;
   setIsModalButtonDisabled: React.Dispatch<React.SetStateAction<boolean>>;
 }
 

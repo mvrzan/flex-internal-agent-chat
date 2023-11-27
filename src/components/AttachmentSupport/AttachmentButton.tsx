@@ -1,10 +1,12 @@
 import React, { useState } from 'react';
-import { Button } from '@twilio-paste/core';
+import { Button } from '@twilio-paste/core/button';
 import { AttachIcon } from '@twilio-paste/icons/esm/AttachIcon';
 import AttachmentModal from './AttachmentModal';
 
 interface AttachmentButtonOwnProps {
-  setMediaMessages: React.Dispatch<React.SetStateAction<FormData | undefined>>;
+  setMediaMessages: React.Dispatch<
+    React.SetStateAction<FormData | undefined | []>
+  >;
   setIsButtonDisabled: React.Dispatch<React.SetStateAction<boolean>>;
   sendMessage: () => Promise<void>;
   inputRef: React.MutableRefObject<HTMLTextAreaElement | null>;

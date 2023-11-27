@@ -1,19 +1,21 @@
+import React, { useState } from 'react';
 import {
   Modal,
   ModalBody,
-  ModalHeader,
-  ModalHeading,
   ModalFooter,
   ModalFooterActions,
-  Button,
-} from '@twilio-paste/core';
+  ModalHeader,
+  ModalHeading,
+} from '@twilio-paste/core/modal';
+import { Button } from '@twilio-paste/core/button';
 import AttachmentSupport from './AttachmentSupport';
-import { useState } from 'react';
 
 interface ImageModalOwnProps {
   modalOpen: boolean;
   setModalOpen: React.Dispatch<React.SetStateAction<boolean>>;
-  setMediaMessages: React.Dispatch<React.SetStateAction<FormData | undefined>>;
+  setMediaMessages: React.Dispatch<
+    React.SetStateAction<FormData | undefined | []>
+  >;
   setIsButtonDisabled: React.Dispatch<React.SetStateAction<boolean>>;
   sendMessage: () => Promise<void>;
 }
