@@ -32,7 +32,7 @@ interface ChatInterfaceProps {
 const ChatInterface = ({ selectedAgent }: ChatInterfaceProps) => {
   const [newMessage, setNewMessage] = useState('');
   const [isButtonDisabled, setIsButtonDisabled] = useState(true);
-  const [mediaMessages, setMediaMessages] = useState<FormData[] | undefined>(
+  const [mediaMessages, setMediaMessages] = useState<FormData | undefined | []>(
     []
   );
   const messagesEndRef = useRef<null | HTMLDivElement>(null);
@@ -78,8 +78,9 @@ const ChatInterface = ({ selectedAgent }: ChatInterfaceProps) => {
 
   const sendMessage = async (): Promise<void> => {
     try {
-      if (mediaMessages?.length !== 0) {
-        mediaMessages?.forEach(async (message: FormData) => {
+      if (Array.isArray(mediaMessages) && mediaMessages.length !== 0) {
+        mediaMessages?.forEach(async (message: FormDataEntryValue) => {
+          if (message === undefined) return;
           const newFormattedMessage = new FormData();
 
           newFormattedMessage.append('file', message as unknown as File);
@@ -183,8 +184,6 @@ const ChatInterface = ({ selectedAgent }: ChatInterfaceProps) => {
                 inputRef={inputRef}
               />
               <AttachmentButton
-                // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-                // @ts-expect-error
                 setMediaMessages={setMediaMessages}
                 setIsButtonDisabled={setIsButtonDisabled}
                 sendMessage={sendMessage}
