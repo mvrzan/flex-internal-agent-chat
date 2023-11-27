@@ -1,5 +1,4 @@
 import React from 'react';
-import moment from 'moment';
 import {
   ChatMessage,
   ChatMessageMeta,
@@ -10,6 +9,7 @@ import {
 } from '@twilio-paste/core/chat-log';
 import { Message } from '../../utils/types';
 import MediaMessage from '../MediaSupport/MediaMessage';
+import { dateFormatter, dateStringFormatter } from '../../utils/dateHandler';
 
 interface GroupedMessagesProps {
   message: Message;
@@ -23,13 +23,15 @@ const GroupedMessages = ({
   identity,
   prevMessage,
 }: GroupedMessagesProps) => {
+  const today = new Date();
+  const formattedToday = today.toLocaleDateString();
+
   return (
     <>
       {prevMessage !== undefined &&
-      moment(message.dateCreated).format('MM/DD/YYYY') !==
-        moment(prevMessage?.dateCreated).format('MM/DD/YYYY') &&
-      moment(message.dateCreated).format('MM/DD/YYYY') ===
-        moment().format('MM/DD/YYYY') ? (
+      dateStringFormatter(message.dateCreated) !==
+        dateStringFormatter(prevMessage?.dateCreated) &&
+      dateStringFormatter(message.dateCreated) === formattedToday ? (
         <>
           <ChatBookend>
             <ChatBookendItem>Today</ChatBookendItem>
@@ -53,10 +55,7 @@ const GroupedMessages = ({
                 />
                 <ChatMessageMeta aria-label={`chat-message-${message.author}`}>
                   <ChatMessageMetaItem>
-                    {message.author} ・{' '}
-                    {moment(message.dateCreated).format(
-                      'MM/DD/YYYY, h:mm:ss a'
-                    )}
+                    {message.author} ・ {dateFormatter(message.dateCreated)}
                   </ChatMessageMetaItem>
                 </ChatMessageMeta>
               </div>
@@ -66,10 +65,7 @@ const GroupedMessages = ({
                 <ChatBubble key={message.sid}>{message.body}</ChatBubble>
                 <ChatMessageMeta aria-label={`chat-message-${message.author}`}>
                   <ChatMessageMetaItem>
-                    {message.author} ・{' '}
-                    {moment(message.dateCreated).format(
-                      'MM/DD/YYYY, h:mm:ss a'
-                    )}
+                    {message.author} ・ {dateFormatter(message.dateCreated)}
                   </ChatMessageMetaItem>
                 </ChatMessageMeta>
               </>
@@ -94,8 +90,7 @@ const GroupedMessages = ({
               />
               <ChatMessageMeta aria-label={`chat-message-${message.author}`}>
                 <ChatMessageMetaItem>
-                  {message.author} ・{' '}
-                  {moment(message.dateCreated).format('MM/DD/YYYY, h:mm:ss a')}
+                  {message.author} ・ {dateFormatter(message.dateCreated)}
                 </ChatMessageMetaItem>
               </ChatMessageMeta>
             </div>
@@ -105,8 +100,7 @@ const GroupedMessages = ({
               <ChatBubble key={message.sid}>{message.body}</ChatBubble>
               <ChatMessageMeta aria-label={`chat-message-${message.author}`}>
                 <ChatMessageMetaItem>
-                  {message.author} ・{' '}
-                  {moment(message.dateCreated).format('MM/DD/YYYY, h:mm:ss a')}
+                  {message.author} ・ {dateFormatter(message.dateCreated)}
                 </ChatMessageMetaItem>
               </ChatMessageMeta>
             </>
