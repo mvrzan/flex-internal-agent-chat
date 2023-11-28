@@ -18,7 +18,7 @@ import { dateFormatter } from '../../utils/dateHandler';
 import { Message, SelectedAgent } from '../../utils/types';
 import useConversationsClient from '../../utils/useConversationsClient';
 
-import GroupedMessages from './GroupedMessages';
+import MemoizedGroupedMessages from './GroupedMessages';
 import TypingIndicator from './TypingIndicator';
 import NewConversationView from './NewConversationView';
 import LoadingConversations from './LoadingConversations';
@@ -145,7 +145,7 @@ const ChatInterface = ({ selectedAgent }: ChatInterfaceProps) => {
               </ChatBookend>
               {conversationMessages?.map((message: Message, index: number) => {
                 return (
-                  <GroupedMessages
+                  <MemoizedGroupedMessages
                     key={message.sid}
                     message={message}
                     prevMessage={conversationMessages[index - 1]}

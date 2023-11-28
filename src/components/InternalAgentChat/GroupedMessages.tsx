@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { memo } from 'react';
 import {
   ChatMessage,
   ChatMessageMeta,
@@ -26,6 +26,7 @@ const GroupedMessages = ({
   const today = new Date();
   const formattedToday = today.toLocaleDateString();
 
+  console.log('GroupedMessages');
   return (
     <>
       {prevMessage !== undefined &&
@@ -111,4 +112,6 @@ const GroupedMessages = ({
   );
 };
 
-export default GroupedMessages;
+const MemoizedGroupedMessages = memo(GroupedMessages);
+
+export default MemoizedGroupedMessages;
