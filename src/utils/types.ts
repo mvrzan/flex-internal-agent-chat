@@ -1,7 +1,7 @@
 import { Conversation } from '@twilio/conversations';
 
 export interface Message {
-  attributes: Object;
+  attributes: object;
   author: string;
   body: string;
   dateCreated: Date;
