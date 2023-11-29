@@ -17,7 +17,6 @@ interface GroupedMessagesProps {
   prevMessage: Message;
 }
 
-//TODO: Clean the logic here. There are some DRY patterns
 const GroupedMessages = ({
   message,
   identity,
@@ -26,13 +25,18 @@ const GroupedMessages = ({
   const today = new Date();
   const formattedToday = today.toLocaleDateString();
 
-  console.log('GroupedMessages');
+  const firstMessageTodayHandler = (
+    prevMessage: Message,
+    newMessageDateCreated: Date
+  ) =>
+    dateStringFormatter(newMessageDateCreated) !==
+      dateStringFormatter(prevMessage?.dateCreated) &&
+    dateStringFormatter(newMessageDateCreated) === formattedToday;
+
   return (
     <>
       {prevMessage !== undefined &&
-      dateStringFormatter(message.dateCreated) !==
-        dateStringFormatter(prevMessage?.dateCreated) &&
-      dateStringFormatter(message.dateCreated) === formattedToday ? (
+      firstMessageTodayHandler(prevMessage, message.dateCreated) ? (
         <>
           <ChatBookend>
             <ChatBookendItem>Today</ChatBookendItem>
@@ -61,7 +65,7 @@ const GroupedMessages = ({
                 </ChatMessageMeta>
               </div>
             )}
-            {message.body !== '' && message.body !== null && (
+            {!!message.body && (
               <>
                 <ChatBubble key={message.sid}>{message.body}</ChatBubble>
                 <ChatMessageMeta aria-label={`chat-message-${message.author}`}>
@@ -96,7 +100,7 @@ const GroupedMessages = ({
               </ChatMessageMeta>
             </div>
           )}
-          {message.body !== '' && message.body !== null && (
+          {!!message.body && (
             <>
               <ChatBubble key={message.sid}>{message.body}</ChatBubble>
               <ChatMessageMeta aria-label={`chat-message-${message.author}`}>
