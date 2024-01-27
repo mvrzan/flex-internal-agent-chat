@@ -16,7 +16,7 @@ import { SendIcon } from '@twilio-paste/icons/esm/SendIcon';
 
 import { dateFormatter } from '../../utils/dateHandler';
 import { Message, SelectedAgent } from '../../utils/types';
-import useConversationsClient from '../../utils/useConversationsClient';
+import useConversationsClient from '../../hooks/useConversationsClient';
 
 import MemoizedGroupedMessages from './GroupedMessages';
 import TypingIndicator from './TypingIndicator';
