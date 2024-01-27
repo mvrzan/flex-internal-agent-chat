@@ -18,10 +18,14 @@ const SideNavigationIcon = ({ activeView, viewName }: SideNavigationProps) => {
   usePinnedChats(activeView);
   useSubscribedConversations(activeView);
 
-  const navigateHandler = () => {
-    Actions.invokeAction('NavigateToView', {
-      viewName: viewName,
-    });
+  const navigateHandler = async () => {
+    try {
+      await Actions.invokeAction('NavigateToView', {
+        viewName: viewName,
+      });
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   const reduxUnreadMessages = useSelector(
