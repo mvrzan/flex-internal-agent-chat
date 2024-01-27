@@ -8,7 +8,7 @@ import ChatInterface from './ChatInterface';
 import LandingScreen from './LandingScreen';
 import SelectedAgentView from './SelectedAgentView';
 import { SelectedAgent } from '../../utils/types';
-import useConversations from '../../utils/useConversations';
+import useConversations from '../../hooks/useConversations';
 
 const MainAgentChatView = ({
   route: {

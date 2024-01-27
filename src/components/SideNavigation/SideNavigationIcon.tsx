@@ -7,7 +7,7 @@ import { SideLink, Actions } from '@twilio/flex-ui';
 import { AppState, namespace } from '../../states';
 import usePinnedChats from '../../utils/usePinnedChats';
 import MessageIconWithBadge from './MessageIconWithBadge';
-import useSubscribedConversations from '../../utils/useSubscribedConversations';
+import useSubscribedConversations from '../../hooks/useSubscribedConversations';
 
 interface SideNavigationProps {
   activeView?: string;
