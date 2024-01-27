@@ -7,8 +7,8 @@
   },
   "dependencies": {
     "@picmo/popup-picker": "^5.8.5",
-    "@twilio-paste/core": "^19.4.0",
-    "@twilio-paste/icons": "^11.2.1",
+    "@twilio-paste/core": "^20.7.0",
+    "@twilio-paste/icons": "^12.2.2",
     "@twilio/flex-plugin-scripts": "6.1.2",
     "@types/react-redux": "^7.1.26",
     "lodash.debounce": "^4.0.8",
