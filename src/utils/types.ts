@@ -21,6 +21,22 @@ export interface SelectedAgent {
   imageUrl: string;
 }
 
+export interface Worker {
+  activity_name: string;
+  attributes: {
+    contact_uri: string;
+    full_name: string;
+    email: string;
+    image_url: string;
+  };
+  date_activity_changed?: string;
+  date_updated: string;
+  friendly_name: string;
+  worker_activity_sid: string;
+  worker_sid: string;
+  workspace_sid: string;
+}
+
 export interface WorkerData {
   firstName: string;
   lastName: string;
@@ -44,7 +60,7 @@ export interface FilteredWorkerInfo {
   email: string;
   activityName: string;
   uniqueName: string | null;
-  participant: string | null;
+  participant: string | null | undefined;
   fetchedConversation: Conversation;
 }
 
@@ -59,7 +75,7 @@ export interface FilteredConversation {
   email: string;
   activityName: string;
   uniqueName: string | null;
-  participant: string | null;
+  participant: string | null | undefined;
   fetchedConversation: Conversation;
   unreadMessagesNumber: number;
 }
