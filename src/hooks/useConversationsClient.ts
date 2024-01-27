@@ -1,8 +1,7 @@
 import * as Flex from '@twilio/flex-ui';
 import { Conversation } from '@twilio/conversations';
 import { useState, useEffect } from 'react';
-import { SetStateAction } from 'react';
-import { Message } from './types';
+import { Message } from '../utils/types';
 import { useDispatch } from 'react-redux';
 import { actions } from '../states';
 import { UnreadMessagesPayload } from '../states/CustomInternalChatState';
@@ -11,9 +10,11 @@ interface ConversationMessage {
   author: string | null;
   sid: string | undefined;
   body: string | null;
-  dateCreated: Date | undefined;
+  dateCreated: Date | null;
   attributes: string | undefined;
   type: string | undefined;
+  mediaUrl: string | null;
+  mediaType: string | null;
 }
 
 const useConversationsClient = (
@@ -109,29 +110,29 @@ const useConversationsClient = (
         // when the messages gets updated, update the conversationMessages state
         fetchedConversation.on('messageUpdated', updatedMessage => {
           console.log('messageUpdated');
-          setConversationMessages(
-            (prevState: SetStateAction<Message[] | undefined>) => {
-              if (prevState !== undefined) {
-                // @ts-ignore
-                return prevState.map((prevMessage: ConversationMessage) =>
-                  prevMessage.sid === updatedMessage.message.sid
-                    ? updatedMessage.message
-                    : prevMessage
-                );
-              }
+          setConversationMessages((prevState: Message[]) => {
+            if (prevState instanceof Array) {
+              return prevState.map(prevMessage =>
+                prevMessage.sid === updatedMessage.message.sid
+                  ? updatedMessage.message
+                  : prevMessage
+              ) as Message[]; // Explicitly cast the return value to Message[]
             }
-          );
+            return [];
+          });
         });
 
         // when the messages gets added, update the conversationMessages state
-        fetchedConversation.on('messageAdded', async (message: any) => {
+        fetchedConversation.on('messageAdded', async message => {
           console.log('messageAdded');
           const mediaUrl =
-            message.type === 'media'
+            message.type === 'media' && message.media !== null
               ? await message.media.getContentTemporaryUrl()
               : '';
           const mediaType =
-            message.type === 'media' ? message.media.contentType : '';
+            message.type === 'media' && message.media !== null
+              ? message.media.contentType
+              : '';
           const author = message.author;
           const sid = message.sid;
           const body = message.body;
@@ -146,14 +147,15 @@ const useConversationsClient = (
             attributes: '',
             type: '',
           };
-          setConversationMessages((prevState: SetStateAction<Message[]>) => {
-            if (prevState !== undefined) {
-              // @ts-ignore
-              return [...prevState, updatedMessage];
-            } else {
-              return [updatedMessage];
+          setConversationMessages(
+            (prevState: (Message | ConversationMessage)[]) => {
+              if (prevState instanceof Array) {
+                return [...prevState, updatedMessage] as Message[];
+              } else {
+                return [updatedMessage] as unknown as Message[];
+              }
             }
-          });
+          );
           fetchedConversation.setAllMessagesRead();
         });
 
@@ -168,10 +170,13 @@ const useConversationsClient = (
         //3. Load messages
         const paginator = await fetchedConversation.getMessages(1000);
         const messages = await Promise.all(
-          paginator.items.map(async (s: any) => {
+          paginator.items.map(async s => {
             const mediaUrl =
-              s.type === 'media' ? await s.media.getContentTemporaryUrl() : '';
-            const mediaType = s.type === 'media' ? s.media.contentType : '';
+              s.type === 'media' && s.media !== null
+                ? await s.media.getContentTemporaryUrl()
+                : '';
+            const mediaType =
+              s.type === 'media' && s.media !== null ? s.media.contentType : '';
             return {
               author: s.author,
               sid: s.sid,
@@ -181,7 +186,7 @@ const useConversationsClient = (
               type: s.type,
               mediaUrl,
               mediaType,
-            };
+            } as Message; // Add type assertion to Message
           })
         );
         if (!hookInvoked) return;

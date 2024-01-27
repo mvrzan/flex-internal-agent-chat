@@ -1,7 +1,7 @@
 import { Manager, WorkerAttributes } from '@twilio/flex-ui';
 import { useEffect, useState } from 'react';
 import { LiveQuery } from 'twilio-sync/lib/livequery';
-import { WorkerData } from './types';
+import { WorkerData } from '../utils/types';
 
 export const useLiveQueryClient = () => {
   const [workerName, setWorkerName] = useState<string>('');
