@@ -1,13 +1,15 @@
+import React from 'react';
+
+import { Box } from '@twilio-paste/core/box';
 import {
-  Box,
   Modal,
   ModalBody,
   ModalHeader,
   ModalHeading,
-  Stack,
-  Text,
-  Button,
-} from '@twilio-paste/core';
+} from '@twilio-paste/core/modal';
+import { Stack } from '@twilio-paste/core/stack';
+import { Text } from '@twilio-paste/core/text';
+import { Button } from '@twilio-paste/core/button';
 import { DownloadIcon } from '@twilio-paste/icons/esm/DownloadIcon';
 import { LinkExternalIcon } from '@twilio-paste/icons/esm/LinkExternalIcon';
 
