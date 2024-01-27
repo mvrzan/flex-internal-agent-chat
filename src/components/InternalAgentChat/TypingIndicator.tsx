@@ -1,4 +1,6 @@
-import { Stack, Text } from '@twilio-paste/core';
+import React from 'react';
+import { Stack } from '@twilio-paste/core/stack';
+import { Text } from '@twilio-paste/core/text';
 import './TypingIndicator.css';
 
 interface TypingIndicatorProps {
