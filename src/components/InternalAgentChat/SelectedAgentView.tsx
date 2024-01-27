@@ -17,7 +17,7 @@ import { StatusBadge } from '@twilio-paste/core/status';
 import { SelectedAgent } from '../../utils/types';
 import { PinIcon } from '@twilio-paste/icons/esm/PinIcon';
 import { DeleteIcon } from '@twilio-paste/icons/esm/DeleteIcon';
-import { useLiveQueryClient } from '../../utils/useLiveQueryClient';
+import { useLiveQueryClient } from '../../hooks/useLiveQueryClient';
 import {
   writeToLocalStorage,
   readFromLocalStorage,
