@@ -4,8 +4,8 @@ import { Conversation } from '@twilio/conversations';
 import { UnreadMessagesPayload } from '../states/CustomInternalChatState';
 import { useDispatch } from 'react-redux';
 import { actions } from '../states';
-import { FilteredConversation } from './types';
-import { readFromLocalStorage } from './localStorageUtil';
+import { FilteredConversation } from '../utils/types';
+import { readFromLocalStorage } from '../utils/localStorageUtil';
 
 const useConversations = (
   activeView: string | undefined,
@@ -122,9 +122,8 @@ const useConversations = (
           return;
 
         // get pinned chats from browser local storage
-        const pinnedChatsFromLocalStorage: string[] = JSON.parse(
-          readFromLocalStorage('PinnedChats') as string
-        );
+        const pinnedChatsFromLocalStorage: string[] =
+          JSON.parse(readFromLocalStorage('PinnedChats') as string) ?? [];
 
         if (pinnedChatsFromLocalStorage?.length === 0)
           setPinnedConversations([]);

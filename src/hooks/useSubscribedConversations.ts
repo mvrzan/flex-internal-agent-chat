@@ -4,8 +4,8 @@ import { Conversation } from '@twilio/conversations';
 import { UnreadMessagesPayload } from '../states/CustomInternalChatState';
 import { useDispatch } from 'react-redux';
 import { actions } from '../states';
-import { FilteredConversation } from './types';
-import { readFromLocalStorage } from './localStorageUtil';
+import { FilteredConversation, Worker } from '../utils/types';
+import { readFromLocalStorage } from '../utils/localStorageUtil';
 
 const useSubscribedConversations = (
   activeView: string | undefined,
@@ -32,7 +32,7 @@ const useSubscribedConversations = (
     const instantQueryClient =
       await Flex.Manager.getInstance().insightsClient.instantQuery(index);
 
-    const queryPromise = new Promise(resolve => {
+    const queryPromise = new Promise<Worker[]>(resolve => {
       instantQueryClient.on('searchResult', items => {
         resolve(items);
       });
@@ -44,13 +44,15 @@ const useSubscribedConversations = (
   };
 
   const getWorkers = async (query = '') => {
-    const queryItems: any = await instantQuerySearch(
+    const queryItems = await instantQuerySearch(
       'tr-worker',
       `${query !== '' ? `${query}` : ''}`
     );
 
     const responseWorkers = Object.keys(queryItems)
-      .map(workerSid => queryItems[workerSid])
+      .map(
+        workerSid => <Worker>queryItems[workerSid as keyof typeof queryItems]
+      )
       .map(worker => {
         return {
           firstName: worker.attributes.full_name.split(' ')[0],
@@ -81,7 +83,10 @@ const useSubscribedConversations = (
               if (!conversation.attributes) return;
 
               if (
-                conversation.attributes.hasOwnProperty('internalChat') &&
+                Object.prototype.hasOwnProperty.call(
+                  conversation.attributes,
+                  'internalChat'
+                ) &&
                 conversation.state?.current === 'active'
               )
                 return conversation;
@@ -106,9 +111,8 @@ const useSubscribedConversations = (
 
         if (internalAgentChatConversations?.length === 0) return;
 
-        const pinnedChatsFromLocalStorage: string[] = JSON.parse(
-          readFromLocalStorage('PinnedChats') as string
-        );
+        const pinnedChatsFromLocalStorage: string[] =
+          JSON.parse(readFromLocalStorage('PinnedChats') as string) ?? [];
 
         internalAgentChatConversations?.forEach(
           async (conversation: Conversation) => {
@@ -200,7 +204,7 @@ const useSubscribedConversations = (
               if (
                 !pinnedChatsFromLocalStorage.includes(conversation.uniqueName!)
               ) {
-                setActiveConversations((prevState: any) => {
+                setActiveConversations(prevState => {
                   if (prevState !== undefined) {
                     return [...prevState, formatConversationData];
                   } else {
@@ -226,7 +230,7 @@ const useSubscribedConversations = (
               if (
                 !pinnedChatsFromLocalStorage.includes(conversation.uniqueName!)
               ) {
-                setActiveConversations((prevState: any) => {
+                setActiveConversations(prevState => {
                   if (prevState !== undefined) {
                     return [...prevState, formatConversationData];
                   } else {
