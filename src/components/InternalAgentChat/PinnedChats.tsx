@@ -1,11 +1,11 @@
 import React from 'react';
 import { Text } from '@twilio-paste/text';
 import { Stack } from '@twilio-paste/core/stack';
-import { FilteredWorkerInfo, SelectedAgent } from '../../utils/types';
+import { FilteredConversation, SelectedAgent } from '../../utils/types';
 import AgentCard from './AgentCard';
 
 interface PinnedChatsProps {
-  pinnedChats: FilteredWorkerInfo[] | undefined;
+  pinnedChats: FilteredConversation[] | undefined;
   selectedAgent: SelectedAgent;
   setIsAgentSelected: React.Dispatch<React.SetStateAction<boolean>>;
   setSelectedAgent: React.Dispatch<React.SetStateAction<SelectedAgent>>;

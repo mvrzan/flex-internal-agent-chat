@@ -1,15 +1,13 @@
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { StatusBadge } from '@twilio-paste/core/status';
-import {
-  Stack,
-  Avatar,
-  Text,
-  Flex,
-  Tooltip,
-  Button,
-  Badge,
-} from '@twilio-paste/core';
-import { SelectedAgent, FilteredWorkerInfo } from '../../utils/types';
+import { Stack } from '@twilio-paste/core/stack';
+import { Text } from '@twilio-paste/core/text';
+import { Avatar } from '@twilio-paste/core/avatar';
+import { Flex } from '@twilio-paste/core/flex';
+import { Tooltip } from '@twilio-paste/core/tooltip';
+import { Button } from '@twilio-paste/core/button';
+import { Badge } from '@twilio-paste/core/badge';
+import { SelectedAgent, FilteredConversation } from '../../utils/types';
 
 interface AgentCardProps {
   fullName: string;
@@ -22,7 +20,7 @@ interface AgentCardProps {
   selectedAgent: SelectedAgent;
   setIsAgentSelected: React.Dispatch<React.SetStateAction<boolean>>;
   setSelectedAgent: React.Dispatch<React.SetStateAction<SelectedAgent>>;
-  pinnedChat?: any;
+  pinnedChat?: FilteredConversation;
 }
 
 // TODO: Randomly change the color of avatars: https://paste.twilio.design/components/avatar#changing-the-color-of-an-avatar
