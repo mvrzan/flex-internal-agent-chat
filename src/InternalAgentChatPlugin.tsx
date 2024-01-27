@@ -9,7 +9,6 @@ import {
 
 import { namespace, reducers } from './states/index';
 import customPasteElements from './utils/customPasteElements';
-import ChatDialog from '../src/components/ChatDialog/ChatDialog';
 import SideNavigationIcon from '../src/components/SideNavigation/SideNavigationIcon';
 import MainAgentChatView from '../src/components/InternalAgentChat/MainAgentChatView';
 
@@ -29,6 +28,10 @@ export default class InternalAgentChatPlugin extends FlexPlugin {
           const pasteProviderProps: CustomizationProviderProps & {
             style: PasteCustomCSS;
           } = {
+            // eslint-disable-next-line react/prop-types
+            baseTheme: props?.theme?.isLight ? 'default' : 'dark',
+            // eslint-disable-next-line react/prop-types
+            theme: props.theme?.tokens,
             style: { minWidth: '100%', height: '100%' },
             elements: { ...customPasteElements },
           };
@@ -38,11 +41,6 @@ export default class InternalAgentChatPlugin extends FlexPlugin {
             </CustomizationProvider>
           );
         },
-    });
-
-    flex.MainHeader.Content.add(<ChatDialog key="internal-chat" />, {
-      sortOrder: -999,
-      align: 'end',
     });
 
     flex.SideNav.Content.add(
