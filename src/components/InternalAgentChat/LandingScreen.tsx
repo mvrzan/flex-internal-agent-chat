@@ -1,3 +1,5 @@
+import React from 'react';
+
 import {
   ProgressSteps,
   ProgressStepIncomplete,
@@ -5,14 +7,13 @@ import {
   ProgressStepCurrent,
   ProgressStepSeparator,
 } from '@twilio-paste/core/progress-steps';
-import {
-  Card,
-  Heading,
-  Paragraph,
-  Stack,
-  Separator,
-  Box,
-} from '@twilio-paste/core';
+
+import { Card } from '@twilio-paste/core/card';
+import { Heading } from '@twilio-paste/core/heading';
+import { Paragraph } from '@twilio-paste/core/paragraph';
+import { Stack } from '@twilio-paste/core/stack';
+import { Separator } from '@twilio-paste/core/separator';
+import { Box } from '@twilio-paste/core/box';
 
 const LandingScreen = () => {
   return (
@@ -32,11 +33,11 @@ const LandingScreen = () => {
           </ProgressStepCurrent>
           <ProgressStepSeparator />
           <ProgressStepIncomplete as="div">
-            Click on the Agent's profile to start a chat
+            Click on the Agent&apos;s profile to start a chat
           </ProgressStepIncomplete>
           <ProgressStepSeparator />
           <ProgressStepIncomplete as="div">
-            Optional: Add additional Agent's to your chat
+            Optional: Add additional Agent&apos;s to your chat
           </ProgressStepIncomplete>
           <ProgressStepSeparator />
           <ProgressStepComplete as="div">Start your chat</ProgressStepComplete>
