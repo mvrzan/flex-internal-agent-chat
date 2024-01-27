@@ -71,7 +71,7 @@ const ImageModal = ({
           justifyContent="center"
           marginBottom="space70"
         >
-          <a href={'/Screenshot+2023-08-15+at+8.14.03+AM.png'} download>
+          <a href={url} download target="_blank" rel="noreferrer">
             <img src={url} alt="attachment" style={{ maxWidth: '50rem' }} />
           </a>
         </Box>
