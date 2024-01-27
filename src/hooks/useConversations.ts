@@ -4,7 +4,7 @@ import { Conversation } from '@twilio/conversations';
 import { UnreadMessagesPayload } from '../states/CustomInternalChatState';
 import { useDispatch } from 'react-redux';
 import { actions } from '../states';
-import { FilteredConversation } from '../utils/types';
+import { FilteredConversation, Worker } from '../utils/types';
 import { readFromLocalStorage } from '../utils/localStorageUtil';
 
 const useConversations = (
@@ -36,7 +36,7 @@ const useConversations = (
     const instantQueryClient =
       await Flex.Manager.getInstance().insightsClient.instantQuery(index);
 
-    const queryPromise = new Promise(resolve => {
+    const queryPromise = new Promise<Worker[]>(resolve => {
       instantQueryClient.on('searchResult', items => {
         resolve(items);
       });
@@ -48,14 +48,15 @@ const useConversations = (
   };
 
   const getWorkers = async (query = '') => {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const queryItems: any = await instantQuerySearch(
+    const queryItems = await instantQuerySearch(
       'tr-worker',
       `${query !== '' ? `${query}` : ''}`
     );
 
     const responseWorkers = Object.keys(queryItems)
-      .map(workerSid => queryItems[workerSid])
+      .map(
+        workerSid => <Worker>queryItems[workerSid as keyof typeof queryItems]
+      )
       .map(worker => {
         return {
           firstName: worker.attributes.full_name.split(' ')[0],
