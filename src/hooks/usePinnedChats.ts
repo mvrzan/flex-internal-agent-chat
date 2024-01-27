@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import * as Flex from '@twilio/flex-ui';
-import { readFromLocalStorage } from './localStorageUtil';
-import { FilteredWorkerInfo } from './types';
+import { readFromLocalStorage } from '../utils/localStorageUtil';
+import { FilteredWorkerInfo, Worker } from '../utils/types';
 
 const usePinnedChats = (
   newPinnedChats: string[] | string | undefined,
@@ -20,7 +20,7 @@ const usePinnedChats = (
     const instantQueryClient =
       await Flex.Manager.getInstance().insightsClient.instantQuery(index);
 
-    const queryPromise = new Promise(resolve => {
+    const queryPromise = new Promise<Worker[]>(resolve => {
       instantQueryClient.on('searchResult', items => {
         resolve(items);
       });
@@ -32,13 +32,15 @@ const usePinnedChats = (
   };
 
   const getWorkers = async (query = '') => {
-    const queryItems: any = await instantQuerySearch(
+    const queryItems = await instantQuerySearch(
       'tr-worker',
       `${query !== '' ? `${query}` : ''}`
     );
 
     const responseWorkers = Object.keys(queryItems)
-      .map(workerSid => queryItems[workerSid])
+      .map(
+        workerSid => <Worker>queryItems[workerSid as keyof typeof queryItems]
+      )
       .map(worker => {
         return {
           firstName: worker.attributes.full_name.split(' ')[0],
