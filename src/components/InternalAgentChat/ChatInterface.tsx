@@ -78,7 +78,7 @@ const ChatInterface = ({ selectedAgent }: ChatInterfaceProps) => {
 
   const sendMessage = async (): Promise<void> => {
     try {
-      if (Array.isArray(mediaMessages) && mediaMessages.length !== 0) {
+      if (mediaMessages instanceof FormData) {
         mediaMessages?.forEach(async (message: FormDataEntryValue) => {
           if (message === undefined) return;
           const newFormattedMessage = new FormData();
