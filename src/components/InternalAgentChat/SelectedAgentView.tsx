@@ -1,4 +1,4 @@
-import { useCallback, useEffect } from 'react';
+import React, { useCallback, useEffect } from 'react';
 import * as Flex from '@twilio/flex-ui';
 import {
   UserDialog,
@@ -10,7 +10,10 @@ import {
   UserDialogList,
   UserDialogListItem,
 } from '@twilio-paste/core/user-dialog';
-import { Stack, Text, StatusBadge } from '@twilio-paste/core';
+import { Stack } from '@twilio-paste/core/stack';
+import { Text } from '@twilio-paste/core/text';
+import { StatusBadge } from '@twilio-paste/core/status';
+
 import { SelectedAgent } from '../../utils/types';
 import { PinIcon } from '@twilio-paste/icons/esm/PinIcon';
 import { DeleteIcon } from '@twilio-paste/icons/esm/DeleteIcon';
@@ -34,7 +37,7 @@ const SelectedAgentView = ({
   setPinnedChatState,
 }: SelectedAgentViewProps) => {
   const userDialogList = useUserDialogListState();
-  const [_, setWorkerName, agentActivity] = useLiveQueryClient();
+  const [, setWorkerName, agentActivity] = useLiveQueryClient();
   const conversationClient = Flex.Manager.getInstance().conversationsClient;
   const uniqueName: string = [
     selectedAgent.contactUri,
