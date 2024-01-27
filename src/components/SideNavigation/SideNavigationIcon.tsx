@@ -5,7 +5,7 @@ import { Badge } from '@twilio-paste/core/badge';
 import { SideLink, Actions } from '@twilio/flex-ui';
 
 import { AppState, namespace } from '../../states';
-import usePinnedChats from '../../utils/usePinnedChats';
+import usePinnedChats from '../../hooks/usePinnedChats';
 import MessageIconWithBadge from './MessageIconWithBadge';
 import useSubscribedConversations from '../../hooks/useSubscribedConversations';
 
