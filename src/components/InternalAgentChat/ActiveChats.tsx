@@ -32,7 +32,6 @@ const ActiveChats = ({
           firstName={conversation.firstName}
           lastName={conversation.lastName}
           imageUrl={conversation.imageUrl}
-          activityName={conversation.activityName}
           email={conversation.email}
           contactUri={conversation.contactUri}
           selectedAgent={selectedAgent}

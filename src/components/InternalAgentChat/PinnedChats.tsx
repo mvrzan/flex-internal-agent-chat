@@ -30,7 +30,6 @@ const PinnedChats = ({
         firstName={chat.firstName}
         lastName={chat.lastName}
         imageUrl={chat.imageUrl}
-        activityName={chat.activityName}
         email={chat.email}
         contactUri={chat.contactUri}
         selectedAgent={selectedAgent}
