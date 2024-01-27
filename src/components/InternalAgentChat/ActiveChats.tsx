@@ -1,4 +1,7 @@
-import { Text, Stack } from '@twilio-paste/core';
+import React from 'react';
+
+import { Stack } from '@twilio-paste/core/stack';
+import { Text } from '@twilio-paste/core/text';
 import AgentCard from './AgentCard';
 import { SelectedAgent, FilteredConversation } from '../../utils/types';
 
@@ -22,7 +25,7 @@ const ActiveChats = ({
           Active chats
         </Text>
       )}
-      {activeConversations?.map((conversation: any) => (
+      {activeConversations?.map(conversation => (
         <AgentCard
           key={conversation.uniqueName}
           fullName={conversation.fullName}
