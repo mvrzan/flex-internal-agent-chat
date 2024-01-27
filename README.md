@@ -7,7 +7,7 @@ Twilio Flex Plugins allow you to customize the appearance and behavior of [Twili
 Make sure you have [Node.js](https://nodejs.org) as well as [`npm`](https://npmjs.com). We support Node >= 10.12 (and recommend the _even_ versions of Node). Afterwards, install the dependencies by running `npm install`:
 
 ```bash
-cd 
+cd
 
 # If you use npm
 npm install
@@ -29,3 +29,18 @@ twilio plugins:install @twilio-labs/plugin-flex
 
 Run `twilio flex:plugins --help` to see all the commands we currently support. For further details on Flex Plugins refer to our documentation on the [Twilio Docs](https://www.twilio.com/docs/flex/developer/plugins/cli) page.
 
+## Things to document
+
+Conversation API dependencies
+In order to create a Conversation for the internal agent chat, specific Conversation roles' permissions have to be updated. Specifically, the `admin` `service` role's permissions have to be elevated to allow for `createConversation` permission.
+
+LiveQuery limitations
+There is no clean up process in place!
+
+## Potential ToDos
+
+User feedback in case you are unable to create new Conversations
+
+## Known issues
+
+Fix a bug where you can send multiple attachment when doing upload and drag&drop
