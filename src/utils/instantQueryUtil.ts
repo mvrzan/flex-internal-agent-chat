@@ -34,10 +34,13 @@ const instantQuerySearch = async (index: string, query: string) => {
   return queryPromise;
 };
 
-const getWorkers = async (query = '') => {
+const getWorkers = async (
+  query = '',
+  querySearch = `data.attributes.full_name CONTAINS`
+) => {
   const queryItems = await instantQuerySearch(
     'tr-worker',
-    `${query !== '' ? `data.attributes.full_name CONTAINS "${query}"` : ''}`
+    `${query !== '' ? `${querySearch} "${query}"` : ''}`
   );
 
   const responseWorkers = Object.keys(queryItems)
