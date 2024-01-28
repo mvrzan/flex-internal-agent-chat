@@ -1,5 +1,8 @@
 import { Manager } from '@twilio/flex-ui';
 
+// Type: Utility
+// Description: Contains a function that formats the selected agent data from the Flex InstantQuery
+
 interface Worker {
   activity_name: string;
   attributes: {

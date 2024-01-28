@@ -1,3 +1,6 @@
+// Type: Utility
+// Description: Contains a function that formats the selected agent data
+
 interface Worker {
   activityName: string;
   contactUri: string;

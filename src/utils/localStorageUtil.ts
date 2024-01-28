@@ -1,3 +1,6 @@
+// Type: Utility
+// Description: Contains functions that interact with localStorage
+
 export const readFromLocalStorage = (key: string) => {
   if (!key || typeof key !== 'string') {
     throw new Error(`${key} of type ${typeof key} is an invalid key.`);

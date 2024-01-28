@@ -1,5 +1,8 @@
 import { PasteCustomCSS } from '@twilio-paste/core/customization';
 
+// Type: Utility
+// Description: Custom CSS for Paste elements that are not exported as components.
+
 const customPasteElements = {
   FLEX_WITH_OVERFLOW: {
     overflowY: 'auto',
