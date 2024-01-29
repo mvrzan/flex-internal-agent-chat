@@ -93,7 +93,7 @@ Pinned chats are stored into browser local storage and read during plugin initia
 
 ## Remaining work items
 
-Since this plugin was in progress when I got laid off from Twilio, there are a lot of unfinished work here. Here is a list of potential items to implement into the plugin:
+Since this plugin was in progress when I got laid off from Twilio, there is a lot of unfinished work here. Here is a list of potential items to implement into the plugin:
 
 1. User feedback in case you are unable to create new Conversations. Right now if you are unable to create a conversation, the error will be displayed in the console and that is it. My plan was to add additional user feedback throughout the plugin to have a nicer user experience.
 2. IMPORTANT: There is no Conversation clean up process in place. What this means is that Flex agents are able to create new [Conversations](https://www.twilio.com/docs/conversations) just by finding an Agent to chat. An Agent can be a member of 1000 Conversations before they are prevented from joining additional Conversations. Depending on your workload, you may not hit this limit, but regardless, a proper clean up process needs to be implemented.
