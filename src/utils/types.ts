@@ -55,7 +55,6 @@ export interface FilteredWorkerInfo {
   contactUri: string;
   fullName: string;
   imageUrl: string;
-  value: string;
   workerSid: string;
   email: string;
   activityName: string;
@@ -70,7 +69,6 @@ export interface FilteredConversation {
   contactUri: string;
   fullName: string;
   imageUrl: string;
-  value: string;
   workerSid: string;
   email: string;
   activityName: string;
