@@ -65,6 +65,10 @@ Search for an agent to start a chat.
 
 <img width="100%" src="./screenshots/unread-chats.png"/>
 
+**Emoji support**
+
+<img width="100%" src="./screenshots/emoji-support.png"/>
+
 **File upload and media support**
 
 ![](./screenshots/file-upload-media-support.gif)
