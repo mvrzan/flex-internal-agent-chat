@@ -119,9 +119,14 @@ const useConversations = (
             .filter(participant => participant);
 
           // use instantQuery to get worker details based on the filtered participant
+          const workerIdentity =
+            participants[0] === undefined
+              ? conversationClient.user.identity
+              : (participants[0] as string);
+
           const [queryResponse] = await getWorkers(
-            participants[0] as string,
-            `data.friendly_name EQ`
+            workerIdentity,
+            `data.attributes.contact_uri CONTAINS`
           );
 
           if (queryResponse === undefined) continue;
