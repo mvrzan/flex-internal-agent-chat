@@ -45,41 +45,37 @@ It is important to mention that this plugin does not have a serverless backend, 
 
 The plugin is available to both agents and supervisors alike and it allows the following functionalities:
 
-**View default Flex keyboard shortcuts:**
+**New UI for internal chats**
 
-<img width="100%" src="./screenshots/default-keyboard-shortcuts.png"/>
+<img width="100%" src="./screenshots/internal-agent-chat.png"/>
 
-This view allows users to see the default Flex keyboard shortcuts and their current mappings.
+This is a dedicated view to allow users to find agents and initiate chats.
 
-**View custom Flex keyboard shortcuts**
+**Agent search**
 
-<img width="100%" src="./screenshots/custom-keyboard-shortcuts.png"/>
+<img width="100%" src="./screenshots/agent-search.png"/>
 
-This view allows users to see custom added keyboard shortcuts and their current mappings.
+Search for an agent to start a chat.
 
-**A settings screen for easy management**
+**Start your chat!**
 
-![](./screenshots/settings.gif)
+<img width="100%" src="./screenshots/start-chat.png"/>
 
-**Delete shortcuts**
+**Unread chat support**
 
-![](./screenshots/delete-shortcuts.gif)
+<img width="100%" src="./screenshots/unread-chats.png"/>
 
-**Remap a shortcut**
+**File upload and media support**
 
-![](./screenshots/remap-shortcut.gif)
+![](./screenshots/file-upload-media-support.gif)
 
-**Adjust key throttling**
+**Pin your chats**
 
-![](./screenshots/key-throttling.gif)
+![](./screenshots/pin-unpin-chat.gif)
 
-**Disable keyboard shortcuts**
+**Live Agent status updates**
 
-![](screenshots/disable-shortcuts.gif)
-
-**Reset keyboard shortcuts to default values**
-
-![](./screenshots/reset-shortcuts.gif)
+![](screenshots/live-status-updates.gif)
 
 ### How are you persisting pinned chats between refreshes?
 
@@ -87,7 +83,9 @@ Pinned chats are stored into browser local storage and read during plugin initia
 
 ## Known Issues
 
-There is a bug where multiple attachmenets will not be recognized if they are a combinaton of a standard upload and Drag & Drop option.
+1. There is a bug where multiple attachmenets will not be recognized if they are a combinaton of a standard upload and Drag & Drop option.
+2. After starting the chat, it will not automatically populate the "Active chats" column.
+3. When pinning and unpinning chats, the order is not preserved.
 
 ## Remaining work items
 
@@ -95,6 +93,7 @@ Since this plugin was in progress when I got laid off from Twilio, there are a l
 
 1. User feedback in case you are unable to create new Conversations. Right now if you are unable to create a conversation, the error will be displayed in the console and that is it. My plan was to add additional user feedback throughout the plugin to have a nicer user experience.
 2. IMPORTANT: There is no Conversation clean up process in place. What this means is that Flex agents are able to create new [Conversations](https://www.twilio.com/docs/conversations) just by finding an Agent to chat. An Agent can be a member of 1000 Conversations before they are prevented from joining additional Conversations. Depending on your workload, you may not hit this limit, but regardless, a proper clean up process needs to be implemented.
+3. Missed chats will not automatically show up unless they are active or pinned chats.
 
 ## Development
 
