@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react';
 import * as Flex from '@twilio/flex-ui';
 import { readFromLocalStorage } from '../utils/localStorageUtil';
-import { FilteredWorkerInfo, Worker } from '../utils/types';
+import { FilteredWorkerInfo } from '../utils/types';
+import getWorkers from '../utils/instantQueryUtil';
 
 const usePinnedChats = (
   newPinnedChats: string[] | string | undefined,
@@ -15,48 +16,6 @@ const usePinnedChats = (
   ]
     .sort()
     .join('+');
-
-  const instantQuerySearch = async (index: string, query: string) => {
-    const instantQueryClient =
-      await Flex.Manager.getInstance().insightsClient.instantQuery(index);
-
-    const queryPromise = new Promise<Worker[]>(resolve => {
-      instantQueryClient.on('searchResult', items => {
-        resolve(items);
-      });
-    });
-
-    await instantQueryClient.search(query);
-
-    return queryPromise;
-  };
-
-  const getWorkers = async (query = '') => {
-    const queryItems = await instantQuerySearch(
-      'tr-worker',
-      `${query !== '' ? `${query}` : ''}`
-    );
-
-    const responseWorkers = Object.keys(queryItems)
-      .map(
-        workerSid => <Worker>queryItems[workerSid as keyof typeof queryItems]
-      )
-      .map(worker => {
-        return {
-          firstName: worker.attributes.full_name.split(' ')[0],
-          lastName: worker.attributes.full_name.split(' ')[1],
-          contactUri: worker.attributes.contact_uri.split(':')[1],
-          fullName: worker.attributes.full_name,
-          imageUrl: worker.attributes.image_url,
-          value: worker.attributes.contact_uri,
-          workerSid: worker.worker_sid,
-          email: worker.attributes.email,
-          activityName: worker.activity_name,
-        };
-      });
-
-    return responseWorkers;
-  };
 
   useEffect(() => {
     let hookInvoked = true;
@@ -101,7 +60,8 @@ const usePinnedChats = (
           // check if the participant is the logged in agent
           if (participants[0] !== conversationClient.user.identity) {
             const [queryResponse] = await getWorkers(
-              `data.attributes.contact_uri CONTAINS "${participants[0]}"`
+              participants[0] as string,
+              `data.attributes.contact_uri CONTAINS`
             );
 
             const formatConversationData = {
@@ -115,7 +75,8 @@ const usePinnedChats = (
             return formatConversationData;
           } else {
             const [queryResponse] = await getWorkers(
-              `data.attributes.contact_uri CONTAINS "${participants[1]}"`
+              participants[1] as string,
+              `data.attributes.contact_uri CONTAINS`
             );
 
             const formatConversationData = {
